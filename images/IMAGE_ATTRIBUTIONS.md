@@ -19,5 +19,8 @@ Local filenames below match `scripts/download_module2_images.sh` if you want **o
 | `io_servo_drive.jpg` | [Ingenia i127-01 Servo Amplifier.jpg](https://commons.wikimedia.org/wiki/File:Ingenia_i127-01_Servo_Amplifier.jpg) | Gemaperezsegura | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 | `io_stepper_motor.jpg` | [Nema 17 Stepper Motor.jpg](https://commons.wikimedia.org/wiki/File:Nema_17_Stepper_Motor.jpg) | oomlout | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) |
 | `io_vfd.jpg` | [Variable-Frequency-Inverter.jpg](https://commons.wikimedia.org/wiki/File:Variable-Frequency-Inverter.jpg) | Projuktiponno | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `solenoid_valve_coil.jpg` | [Solenoid coil of a pneumatic valve.jpg](https://commons.wikimedia.org/wiki/File:Solenoid_coil_of_a_pneumatic_valve.jpg) | Sarah Adrita | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| `rotary_encoder.jpg` | [Rotary encoder.jpg](https://commons.wikimedia.org/wiki/File:Rotary_encoder.jpg) | Joao Paulo Chagas | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| `dol_motor_starter.jpg` | [Dol starter.jpg](https://commons.wikimedia.org/wiki/File:Dol_starter.jpg) | Jubayer al tawsib | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 
 When redistributing or publishing this training package, keep this file with the images and comply with each license (attribution and share-alike where required).

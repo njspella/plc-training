@@ -16,6 +16,9 @@ const WikimediaModule2Images = {
   servoDrive: 'https://upload.wikimedia.org/wikipedia/commons/9/9c/Ingenia_i127-01_Servo_Amplifier.jpg',
   stepperMotor: 'https://upload.wikimedia.org/wikipedia/commons/8/83/Nema_17_Stepper_Motor.jpg',
   vfd: 'https://upload.wikimedia.org/wikipedia/commons/7/7e/Variable-Frequency-Inverter.jpg',
+  solenoidValveCoil: 'https://upload.wikimedia.org/wikipedia/commons/5/51/Solenoid_coil_of_a_pneumatic_valve.jpg',
+  rotaryEncoder: 'https://upload.wikimedia.org/wikipedia/commons/c/cf/Rotary_encoder.jpg',
+  dolMotorStarter: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Dol_starter.jpg',
 };
 
 const TrainingData = {
@@ -364,6 +367,7 @@ const TrainingData = {
             { type: "image", src: WikimediaModule2Images.contactorRelay, alt: "Contactor mounted on DIN rail", caption: "Contactor on DIN rail — common style of relay/contactor switched by a PLC output" },
             { type: "heading", text: "Solenoid Valves" },
             { type: "paragraph", text: "Solenoid valves control pneumatic or hydraulic flow. The PLC digital output energizes the solenoid coil, which shifts a spool to direct air or fluid to cylinders, actuators, or clamps." },
+            { type: "image", src: WikimediaModule2Images.solenoidValveCoil, alt: "Solenoid coil on a pneumatic valve", caption: "Solenoid coil (example: 24 V DC) — PLC output energizes the coil to shift the valve spool" },
             { type: "table", headers: ["Type", "Action", "Application"],
               rows: [
                 ["5/2 single-solenoid", "Spring return — de-energize returns to home", "Single-acting cylinders, simple extend/retract"],
@@ -381,8 +385,10 @@ const TrainingData = {
             { type: "callout", variant: "warning", title: "VFD Safety Note", text: "VFD DC bus capacitors retain dangerous voltage (up to 800VDC) after the drive is powered off. Wait for the DC bus voltage to decay to zero (check the drive display or measure with a meter) before working on VFD wiring." },
             { type: "heading", text: "Motor Contactors & Starters" },
             { type: "paragraph", text: "For motors without VFDs, contactors switch motor power on/off. A motor starter = contactor + overload relay. The PLC energizes the contactor coil (usually through an interposing relay), and the overload relay's auxiliary contacts feed back to a PLC input for trip monitoring." },
+            { type: "image", src: WikimediaModule2Images.dolMotorStarter, alt: "DOL motor starter enclosure", caption: "DOL (direct-on-line) motor starter — contactor, overload, and control in one assembly (example)" },
             { type: "heading", text: "Encoders" },
-            { type: "paragraph", text: "Encoders provide position and speed feedback. <strong>Incremental encoders</strong> output A/B pulses proportional to rotation (connect to PLC high-speed counter inputs). <strong>Absolute encoders</strong> output a unique position value even after power loss (connect via SSI, BiSS, or EtherCAT)." }
+            { type: "paragraph", text: "Encoders provide position and speed feedback. <strong>Incremental encoders</strong> output A/B pulses proportional to rotation (connect to PLC high-speed counter inputs). <strong>Absolute encoders</strong> output a unique position value even after power loss (connect via SSI, BiSS, or EtherCAT)." },
+            { type: "image", src: WikimediaModule2Images.rotaryEncoder, alt: "Rotary incremental encoder", caption: "Incremental rotary encoder — shaft rotation produces A/B quadrature pulses for position and speed" }
           ]
         }
       ],

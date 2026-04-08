@@ -26,5 +26,8 @@ fetch io_servo_motor.jpg "https://upload.wikimedia.org/wikipedia/commons/d/d2/Se
 fetch io_servo_drive.jpg "https://upload.wikimedia.org/wikipedia/commons/9/9c/Ingenia_i127-01_Servo_Amplifier.jpg"
 fetch io_stepper_motor.jpg "https://upload.wikimedia.org/wikipedia/commons/8/83/Nema_17_Stepper_Motor.jpg"
 fetch io_vfd.jpg "https://upload.wikimedia.org/wikipedia/commons/7/7e/Variable-Frequency-Inverter.jpg"
+fetch solenoid_valve_coil.jpg "https://upload.wikimedia.org/wikipedia/commons/5/51/Solenoid_coil_of_a_pneumatic_valve.jpg"
+fetch rotary_encoder.jpg "https://upload.wikimedia.org/wikipedia/commons/c/cf/Rotary_encoder.jpg"
+fetch dol_motor_starter.jpg "https://upload.wikimedia.org/wikipedia/commons/0/01/Dol_starter.jpg"
 
 echo "Done. See images/IMAGE_ATTRIBUTIONS.md for licenses and credits."
