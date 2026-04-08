@@ -134,12 +134,21 @@ const App = (function () {
     return icons[name] || '';
   }
 
+  function escapeAttr(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;');
+  }
+
   // ===== PLACEHOLDER IMAGE =====
   function placeholderImage(alt, caption) {
     return `<div class="placeholder-img">
       <div class="ph-icon">${icon('camera')}</div>
       <div class="ph-label">${alt || caption || 'Equipment Photo'}</div>
-      <div class="ph-hint">Replace with actual photo</div>
+      <div class="ph-hint">Add an image file or run scripts/download_module2_images.sh</div>
     </div>`;
   }
 
@@ -644,7 +653,11 @@ const App = (function () {
           html += `<ol class="steps-list">${b.items.map(i => `<li>${i}</li>`).join('')}</ol>`;
           break;
         case 'image':
-          html += placeholderImage(b.alt, b.caption);
+          if (b.src) {
+            html += `<figure class="slide-image"><img src="${escapeAttr(b.src)}" alt="${escapeAttr(b.alt || '')}" loading="lazy" decoding="async"/></figure>`;
+          } else {
+            html += placeholderImage(b.alt, b.caption);
+          }
           if (b.caption) html += `<p class="image-caption">${b.caption}</p>`;
           break;
         case 'callout':

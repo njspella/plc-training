@@ -1655,6 +1655,23 @@ body {
   border-radius: 10px;
 }
 
+.slide-image {
+  margin: 8px auto;
+  text-align: center;
+}
+
+.slide-image img {
+  max-width: 100%;
+  max-height: min(52vh, 420px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  vertical-align: middle;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
 /* Slide transition */
 @keyframes slideEnterRight {
   from { opacity: 0; transform: translateX(40px); }

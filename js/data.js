@@ -272,10 +272,11 @@ const TrainingData = {
           summary: "Proximity sensors, limit switches, photoelectric sensors, push buttons",
           content: [
             { type: "heading", text: "Proximity Sensors" },
-            { type: "image", src: "images/inputs_sensors.png", alt: "Proximity and Limit Switches", caption: "Proximity sensors and limit switches — common PLC input devices" },
+            { type: "image", src: "images/io_inductive_proximity.jpg", alt: "Cylindrical inductive proximity sensor", caption: "Inductive proximity sensor — detects metal without contact" },
             { type: "paragraph", text: "An inductive proximity sensor detects metal objects without physical contact. It sends a 24VDC signal to the PLC digital input when a metal target enters its sensing range. Available in NPN (sinking) and PNP (sourcing) output types." },
             { type: "heading", text: "Limit Switches" },
             { type: "paragraph", text: "A limit switch is a mechanical contact sensor that triggers when an actuator (lever, roller, plunger) reaches its end-of-travel position. Provides either Normally Open (N/O) or Normally Closed (N/C) dry contacts." },
+            { type: "image", src: "images/io_limit_switch_roller.jpg", alt: "Miniature microswitch with roller lever actuator", caption: "Roller-lever limit / microswitch — typical end-of-travel sensing" },
             { type: "heading", text: "Photoelectric Sensors" },
             { type: "paragraph", text: "Photoelectric sensors use light beams for detection. Three main types are used in manufacturing:" },
             { type: "table", headers: ["Type", "Configuration", "Range", "Best For"],
@@ -285,10 +286,12 @@ const TrainingData = {
                 ["Diffuse", "Emitter/receiver in one housing, detects object directly", "Short (up to 1m)", "Close-range part detection, color/contrast sensing"]
               ]
             },
+            { type: "image", src: "images/io_photoelectric.jpg", alt: "Photoelectric sensor device", caption: "Photoelectric sensor — through-beam, retroreflective, and diffuse types use similar hardware" },
             { type: "callout", variant: "tip", title: "Maintenance Tip", text: "Dirty lenses are the #1 cause of photoelectric sensor failures. Regular cleaning with a lint-free cloth can prevent most false triggers and missed detections." },
             { type: "heading", text: "Push Buttons" },
-            { type: "image", src: "images/inputs_buttons.png", alt: "Push Buttons", caption: "Push buttons — operator input devices" },
-            { type: "paragraph", text: "Push buttons provide operator input to the PLC. Can be N/O (closes when pressed) or N/C (opens when pressed), momentary (spring-return) or maintained (latching). E-stop buttons are always N/C — they open the safety circuit when pressed and must be physically reset." }
+            { type: "image", src: "images/io_operator_panel_pushbuttons.JPG", alt: "Industrial operator panel with pushbuttons", caption: "Operator panel with pushbuttons — typical start/stop and mode selection" },
+            { type: "paragraph", text: "Push buttons provide operator input to the PLC. Can be N/O (closes when pressed) or N/C (opens when pressed), momentary (spring-return) or maintained (latching). E-stop buttons are always N/C — they open the safety circuit when pressed and must be physically reset." },
+            { type: "image", src: "images/io_emergency_stop.jpg", alt: "Red emergency stop pushbutton", caption: "Emergency stop — wired as normally closed (N/C) in the safety circuit" }
           ]
         },
         {
@@ -297,7 +300,7 @@ const TrainingData = {
           summary: "Area scanners, light curtains, safety relays, and OSSD concepts",
           content: [
             { type: "heading", text: "Area Scanners" },
-            { type: "image", src: "images/area_scanner.png", alt: "Area Scanner", caption: "Area scanner — laser-based safety device" },
+            { type: "image", src: "images/safety_laser_scanner_3d.jpg", alt: "3D laser radar obstacle detection installation", caption: "3D laser scanning for obstacle detection (example: level-crossing system — illustrates zone scanning, not a specific OS32C model)" },
             { type: "paragraph", text: "An area scanner uses a rotating laser to scan a defined area of space. If it detects a person or obstruction within its configured safety zone, it sends a signal to the PLC to stop or de-energize connected equipment." },
             { type: "list", items: [
               "Configurable warning and protective fields",
@@ -307,8 +310,9 @@ const TrainingData = {
             ]},
             { type: "heading", text: "Light Curtains" },
             { type: "paragraph", text: "A light curtain is an infrared safety barrier consisting of an emitter and receiver pair. If any beam is broken (e.g., a hand reaches through), the OSSD outputs drop and the machine stops. Used to guard press brakes, palletizers, and robotic cells." },
+            { type: "image", src: "images/safety_light_curtain.png", alt: "Diagram of a light curtain guarding a machine opening", caption: "Light curtain concept — interrupted beams drop OSSD outputs (diagram)" },
             { type: "heading", text: "Safety Relays" },
-            { type: "image", src: "images/inputs_safety.png", alt: "Safety Devices", caption: "Safety relays and light curtains" },
+            { type: "image", src: "images/io_contactor_relay.jpg", alt: "Industrial contactor on DIN rail", caption: "DIN-rail power switching device — safety relays are often similar rail-mounted modules with dual-channel inputs" },
             { type: "paragraph", text: "Safety relays monitor safety circuits using dual-channel inputs with forced-guided contacts. They verify that both OSSD channels from a safety device agree before allowing machine operation. If the channels disagree (indicating a fault), the relay locks out and requires manual reset." },
             { type: "heading", text: "What is OSSD?" },
             { type: "callout", variant: "info", title: "OSSD — Output Signal Switching Device", text: "Safety-rated devices use two independent output channels (OSSD1 and OSSD2). Both must be ON for the machine to run. This dual-channel design means a single component failure cannot defeat the safety function. Standard single-channel sensors cannot be used for safety-rated applications." }
@@ -320,16 +324,18 @@ const TrainingData = {
           summary: "Light towers, motors, drives, relays, solenoid valves, and VFDs",
           content: [
             { type: "heading", text: "Light Tower (Stack Light)" },
-            { type: "image", src: "images/outputs_relay_light.png", alt: "Light Tower and Relay", caption: "Stack light and relay output devices" },
+            { type: "image", src: "images/io_stack_light.jpg", alt: "Red amber green stack light on machinery", caption: "Stack (tower) light — each color segment is typically a separate PLC output" },
             { type: "paragraph", text: "Stack lights indicate machine status: <strong>Green</strong> = running, <strong>Red</strong> = fault/stopped, <strong>Amber</strong> = warning/attention needed, <strong>Blue</strong> = operator call. Each color is driven by a separate PLC digital output." },
             { type: "heading", text: "Servo Motors & Drives" },
-            { type: "image", src: "images/outputs_motors.png", alt: "Servo and Stepper Motors", caption: "Servo and stepper motors" },
+            { type: "image", src: "images/io_servo_motor.jpg", alt: "Industrial servomotor", caption: "Servomotor — closed-loop position, speed, and torque control with feedback" },
             { type: "paragraph", text: "Servo motors provide precise position, speed, and torque control. The servo drive receives commands from the PLC (typically via EtherCAT or EtherNet/IP) and controls the motor accordingly. Used for CNC positioning, robotic joints, and precise material handling." },
-            { type: "image", src: "images/outputs_controller.png", alt: "Servo Motor Controller/Drive", caption: "Servo motor controller (drive)" },
+            { type: "image", src: "images/io_servo_drive.jpg", alt: "Servo amplifier drive unit", caption: "Servo drive (amplifier) — executes motion commands from the PLC over the fieldbus" },
             { type: "heading", text: "Stepper Motors" },
             { type: "paragraph", text: "Stepper motors provide open-loop position control using discrete step pulses. Simpler and less expensive than servos but limited in torque and speed. Used for lower-precision positioning applications." },
+            { type: "image", src: "images/io_stepper_motor.jpg", alt: "NEMA 17 stepper motor", caption: "Stepper motor — moved in discrete steps under pulse command from the PLC or indexer" },
             { type: "heading", text: "Relays" },
             { type: "paragraph", text: "Relays are electrically-operated switches that isolate PLC outputs from high-voltage or high-current loads. The PLC energizes the relay coil (24VDC), and the relay contacts switch the load circuit (which may be 120VAC, 240VAC, or higher)." },
+            { type: "image", src: "images/io_contactor_relay.jpg", alt: "Contactor mounted on DIN rail", caption: "Contactor on DIN rail — common style of relay/contactor switched by a PLC output" },
             { type: "heading", text: "Solenoid Valves" },
             { type: "paragraph", text: "Solenoid valves control pneumatic or hydraulic flow. The PLC digital output energizes the solenoid coil, which shifts a spool to direct air or fluid to cylinders, actuators, or clamps." },
             { type: "table", headers: ["Type", "Action", "Application"],
@@ -345,6 +351,7 @@ const TrainingData = {
               "<strong>Hardwired:</strong> PLC digital output for run/stop, analog output (4–20mA) for speed reference",
               "<strong>Network:</strong> PLC sends commands and reads feedback over EtherNet/IP, EtherCAT, or Modbus — start/stop, speed setpoint, actual speed, current draw, and fault codes all in one connection"
             ]},
+            { type: "image", src: "images/io_vfd.jpg", alt: "Variable frequency drive inverter unit", caption: "Variable-frequency drive — varies output frequency and voltage to the motor" },
             { type: "callout", variant: "warning", title: "VFD Safety Note", text: "VFD DC bus capacitors retain dangerous voltage (up to 800VDC) after the drive is powered off. Wait for the DC bus voltage to decay to zero (check the drive display or measure with a meter) before working on VFD wiring." },
             { type: "heading", text: "Motor Contactors & Starters" },
             { type: "paragraph", text: "For motors without VFDs, contactors switch motor power on/off. A motor starter = contactor + overload relay. The PLC energizes the contactor coil (usually through an interposing relay), and the overload relay's auxiliary contacts feed back to a PLC input for trip monitoring." },
