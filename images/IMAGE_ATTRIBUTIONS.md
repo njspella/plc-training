@@ -1,6 +1,8 @@
 # Image attributions (Module 2 — Safety & I/O)
 
-Local filenames below match `js/data.js`. Sources are [Wikimedia Commons](https://commons.wikimedia.org/). Run `bash scripts/download_module2_images.sh` to fetch them.
+**Slides load these from the Wikimedia CDN** via `WikimediaModule2Images` in `js/data.js` (no local files required).
+
+Local filenames below match `scripts/download_module2_images.sh` if you want **offline copies**. Sources are [Wikimedia Commons](https://commons.wikimedia.org/).
 
 | Local file | Commons file | Author / credit | License |
 |------------|--------------|-----------------|---------|

@@ -148,7 +148,7 @@ const App = (function () {
     return `<div class="placeholder-img">
       <div class="ph-icon">${icon('camera')}</div>
       <div class="ph-label">${alt || caption || 'Equipment Photo'}</div>
-      <div class="ph-hint">Add an image file or run scripts/download_module2_images.sh</div>
+      <div class="ph-hint">Set <code>src</code> on this slide block (Module 2 uses Wikimedia URLs in data.js)</div>
     </div>`;
   }
 
@@ -654,7 +654,7 @@ const App = (function () {
           break;
         case 'image':
           if (b.src) {
-            html += `<figure class="slide-image"><img src="${escapeAttr(b.src)}" alt="${escapeAttr(b.alt || '')}" loading="lazy" decoding="async"/></figure>`;
+            html += `<figure class="slide-image"><img src="${escapeAttr(b.src)}" alt="${escapeAttr(b.alt || '')}" loading="lazy" decoding="async" referrerpolicy="no-referrer"/></figure>`;
           } else {
             html += placeholderImage(b.alt, b.caption);
           }
