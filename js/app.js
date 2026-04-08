@@ -215,32 +215,38 @@ const App = (function () {
 
       if (slide.heading) parts.push(slide.heading);
 
-      if (slide.blocks) {
-        for (const b of slide.blocks) {
-          switch (b.type) {
-            case 'paragraph':
-              parts.push(this.stripHtml(b.text));
-              break;
-            case 'heading': case 'subheading':
-              parts.push(b.text);
-              break;
-            case 'list': case 'numbered': case 'steps':
-              parts.push(...b.items.map(i => this.stripHtml(i)));
-              break;
-            case 'callout':
-              parts.push(b.title + '. ' + this.stripHtml(b.text));
-              break;
-            case 'image':
-              if (b.caption) parts.push(b.caption);
-              break;
-            case 'table':
-              parts.push('Table columns: ' + b.headers.join(', ') + '.');
-              for (const row of b.rows) {
-                parts.push(row.join(', '));
-              }
-              break;
-          }
+      const pushBlockSpeech = (b) => {
+        switch (b.type) {
+          case 'sideBySide':
+            (b.left || []).forEach(pushBlockSpeech);
+            (b.right || []).forEach(pushBlockSpeech);
+            break;
+          case 'paragraph':
+            parts.push(this.stripHtml(b.text));
+            break;
+          case 'heading': case 'subheading':
+            parts.push(b.text);
+            break;
+          case 'list': case 'numbered': case 'steps':
+            parts.push(...b.items.map(i => this.stripHtml(i)));
+            break;
+          case 'callout':
+            parts.push(b.title + '. ' + this.stripHtml(b.text));
+            break;
+          case 'image':
+            if (b.caption) parts.push(b.caption);
+            break;
+          case 'table':
+            parts.push('Table columns: ' + b.headers.join(', ') + '.');
+            for (const row of b.rows) {
+              parts.push(row.join(', '));
+            }
+            break;
         }
+      };
+
+      if (slide.blocks) {
+        slide.blocks.forEach(pushBlockSpeech);
       }
 
       return this.cleanForSpeech(parts.join('. ').replace(/\.\./g, '.'));
@@ -672,6 +678,12 @@ const App = (function () {
             html += `<tr>${row.map(c => `<td>${c}</td>`).join('')}</tr>`;
           }
           html += `</tbody></table>`;
+          break;
+        case 'sideBySide':
+          html += `<div class="slide-side-by-side">
+            <div class="slide-side-by-side-col slide-side-by-side-left">${renderSlideBlocks(b.left || [])}</div>
+            <div class="slide-side-by-side-col slide-side-by-side-right">${renderSlideBlocks(b.right || [])}</div>
+          </div>`;
           break;
       }
     }

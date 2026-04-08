@@ -1674,6 +1674,43 @@ body {
   border-radius: 10px;
 }
 
+/* Photoelectric + tip: image column beside callout */
+.slide-side-by-side {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 12px 20px;
+  align-items: start;
+  margin: 6px 0 10px;
+}
+
+.slide-side-by-side .slide-side-by-side-col {
+  min-width: 0;
+}
+
+.slide-side-by-side .callout {
+  margin: 0;
+}
+
+.slide-side-by-side .slide-side-by-side-left .slide-image {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.slide-side-by-side .slide-side-by-side-left .slide-image img {
+  max-height: min(26vh, 190px);
+}
+
+@media (max-width: 720px) {
+  .slide-side-by-side {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .slide-side-by-side .slide-side-by-side-left .slide-image img {
+    max-height: min(22vh, 145px);
+  }
+}
+
 .slide-image {
   margin: 4px auto;
   text-align: center;

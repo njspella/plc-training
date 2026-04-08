@@ -306,8 +306,14 @@ const TrainingData = {
                 ["Diffuse", "Emitter/receiver in one housing, detects object directly", "Short (up to 1m)", "Close-range part detection, color/contrast sensing"]
               ]
             },
-            { type: "image", src: WikimediaModule2Images.photoelectric, alt: "Photoelectric sensor device", caption: "Photoelectric sensor — through-beam, retroreflective, and diffuse types use similar hardware" },
-            { type: "callout", variant: "tip", title: "Maintenance Tip", text: "Dirty lenses are the #1 cause of photoelectric sensor failures. Regular cleaning with a lint-free cloth can prevent most false triggers and missed detections." },
+            { type: "sideBySide",
+              left: [
+                { type: "image", src: WikimediaModule2Images.photoelectric, alt: "Photoelectric sensor device", caption: "Photoelectric sensor — through-beam, retroreflective, and diffuse types use similar hardware" }
+              ],
+              right: [
+                { type: "callout", variant: "tip", title: "Maintenance Tip", text: "Dirty lenses are the #1 cause of photoelectric sensor failures. Regular cleaning with a lint-free cloth can prevent most false triggers and missed detections." }
+              ]
+            },
             { type: "heading", text: "Push Buttons" },
             { type: "image", src: WikimediaModule2Images.operatorPanel, alt: "Industrial operator panel with pushbuttons", caption: "Operator panel with pushbuttons — typical start/stop and mode selection" },
             { type: "paragraph", text: "Push buttons provide operator input to the PLC. Can be N/O (closes when pressed) or N/C (opens when pressed), momentary (spring-return) or maintained (latching). E-stop buttons are always N/C — they open the safety circuit when pressed and must be physically reset." },
