@@ -1,3 +1,5 @@
 .DS_Store
 Thumbs.db
 *.log
+# Generated from js/data.js — run `npm run generate-offline`
+scripts/training_data.json

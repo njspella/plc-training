@@ -1,0 +1,10 @@
+{
+  "name": "plc-training",
+  "private": true,
+  "version": "1.0.0",
+  "description": "PLC tabletop training site + offline OOXML export",
+  "scripts": {
+    "export-data": "node scripts/export_training_data.js",
+    "generate-offline": "node scripts/export_training_data.js && python3 scripts/generate_offline_ooxml.py"
+  }
+}
