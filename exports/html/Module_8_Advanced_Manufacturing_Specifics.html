@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PLC Tabletop Training Program · Module 8: Advanced Manufacturing Specifics</title>
+<style>
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:1.5rem;color:#1e293b;line-height:1.45;}
+h1{font-size:0.95rem;color:#64748b;font-weight:600;margin:0 0 1rem 0;}
+.slide{page-break-after:always;margin-bottom:2rem;}
+.slide:last-child{page-break-after:auto;}
+.slide h2{color:#1e3a5f;font-size:1.05rem;margin:0 0 0.6rem 0;}
+.slide ul{margin:0;padding-left:1.2rem;}
+.slide li{margin:0.3rem 0;}
+@media print{.slide{page-break-after:always;}body{margin:1rem;}}
+</style>
+</head>
+<body>
+<h1>PLC Tabletop Training Program · Module 8: Advanced Manufacturing Specifics</h1>
+<section class="slide">
+<h2>Module 8: Advanced Manufacturing Specifics</h2>
+<ul>
+<li>PLC Tabletop Training Program · Lecture + Discussion · 3.5 h</li>
+<li>v1.0 (April 2026)</li>
+</ul></section>
+<section class="slide">
+<h2>Learning objectives</h2>
+<ul>
+<li>Locate and use custom build documentation for Vermeer machines</li>
+<li>Understand core ladder logic instructions and their symbols</li>
+<li>Configure basic servo motor parameters in Sysmac Studio</li>
+<li>Create and use global variables with proper naming conventions</li>
+<li>Add I/O modules and devices to an existing PLC configuration</li>
+</ul></section>
+<section class="slide">
+<h2>Overview</h2>
+<ul>
+<li>Custom machine documentation, ladder logic building blocks, servo motor configuration, global variables, and adding I/O components to a PLC.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Custom Machine Documentation</h2>
+<ul>
+<li>Where to find documentation for Cobot Carbide Tower, Cobot Reamer, Servo Motor, and Rodloader</li>
+</ul></section>
+<section class="slide">
+<h2>Custom Machine Documentation (content)</h2>
+<ul>
+<li>All custom build documentation is stored on the shared network drive under: Engineering &gt; Custom Builds &gt; [Machine Name]. Always check here first before making any changes.</li>
+<li>Table: Machine | Key Documents</li>
+<li>• Cobot Carbide Tower | Wiring diagrams, Omron NX1P2 PLC program, Sysmac Studio project file, robot cell layout. Check revision history for latest approved version.</li>
+<li>• Cobot Reamer | Task program, EtherCAT slave configuration, tooling offset table, safety zone drawings.</li>
+<li>• Servo Motor Incorporation | Axis mapping spreadsheet, drive parameter backup file, mechanical coupling specs, motion profile documentation.</li>
+<li>• Rodloader | Full wiring package, Productivity Suite project, I/O assignment list, sequence of operations document.</li>
+<li>[WARNING] Revision Control: Always verify you are working from the latest revision. Outdated documentation leads to incorrect troubleshooting and wasted time.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Ladder Logic Building Blocks — Part 1</h2>
+<ul>
+<li>Core instructions: contacts, coils, latches, timers, and counters</li>
+</ul></section>
+<section class="slide">
+<h2>Ladder Logic Building Blocks — Part 1 (content)</h2>
+<ul>
+<li>→ Contacts and Coils</li>
+<li>Table: Instruction | Symbol | Function</li>
+<li>• Normally Open (XIC/NO) | --[ ]-- | Passes power when the referenced bit is ON (1). Checks if an input is active.</li>
+<li>• Normally Closed (XIO/NC) | --[/]-- | Passes power when the referenced bit is OFF (0). Blocks logic when a fault/interlock is active.</li>
+<li>• Output Coil (OTE) | --( )-- | Sets the referenced bit ON when the rung has power. Turns OFF when power is lost.</li>
+<li>• Latch (OTL) | --(L)-- | Sets the bit ON and it stays ON even after the rung loses power. Requires an unlatch to turn off.</li>
+<li>• Unlatch (OTU) | --(U)-- | Turns off a latched bit. Used in pairs with OTL for start/stop logic.</li>
+<li>→ Timers</li>
+<li>Table: Timer | Function | Common Use</li>
+<li>• TON (Timer On-Delay) | Starts counting when rung is true. DN bit turns ON after preset time. | Debounce sensors, sequence delays, dwell times</li>
+</ul></section>
+<section class="slide">
+<h2>Ladder Logic Building Blocks — Part 1 (content)</h2>
+<ul>
+<li>• TOF (Timer Off-Delay) | Starts counting when rung goes false. DN bit stays ON for preset time after rung goes false. | Cooldown periods, coast-down timing</li>
+<li>• RTO (Retentive Timer) | Like TON but accumulator retains value when rung goes false. Must use RES to reset. | Total run-time tracking, accumulated process time</li>
+<li>→ Counters</li>
+<li>Table: Counter | Function | Common Use</li>
+<li>• CTU (Count Up) | Increments by 1 each time the rung transitions from false to true. DN bit turns ON at preset. | Part counting, cycle counting</li>
+<li>• CTD (Count Down) | Decrements by 1 each transition. DN bit turns ON when accumulator reaches zero. | Batch remaining count, magazine count</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Ladder Logic Building Blocks — Part 2</h2>
+<ul>
+<li>Comparison, math, move instructions, and other function blocks</li>
+</ul></section>
+<section class="slide">
+<h2>Ladder Logic Building Blocks — Part 2 (content)</h2>
+<ul>
+<li>→ Comparison Instructions</li>
+<li>Comparison instructions evaluate two values and pass power if the condition is true:</li>
+<li>Table: Instruction | Meaning | Example</li>
+<li>• EQU | Equal | Check if counter = target value</li>
+<li>• NEQ | Not Equal | Check if status flag has changed</li>
+<li>• GRT | Greater Than | Check if temperature exceeds limit</li>
+<li>• LES | Less Than | Check if pressure is below minimum</li>
+<li>• GEQ | Greater Than or Equal | Check if timer accumulator &gt;= setpoint</li>
+<li>• LEQ | Less Than or Equal | Check if speed is within range</li>
+<li>→ Math &amp; Move Instructions</li>
+</ul></section>
+<section class="slide">
+<h2>Ladder Logic Building Blocks — Part 2 (content)</h2>
+<ul>
+<li>• MOV (Move): Copies a value from Source to Destination. Used for loading setpoints, copying recipes, and resetting accumulators.</li>
+<li>• ADD / SUB / MUL / DIV: Arithmetic on tag values. Used for scaling analog signals, calculating rates, and batch arithmetic.</li>
+<li>• CPT (Compute): Evaluates a formula expression. Useful for complex calculations in a single instruction.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Servo Motor Configuration</h2>
+<ul>
+<li>Setting up servo axes in Omron Sysmac Studio over EtherCAT</li>
+</ul></section>
+<section class="slide">
+<h2>Servo Motor Configuration (content)</h2>
+<ul>
+<li>→ Adding a Servo Axis</li>
+<li>• In the Sysmac Studio project tree, go to Motion Control &gt; Axes</li>
+<li>• Right-click and add a new Servo Axis</li>
+<li>• Assign it to the EtherCAT node number matching the physical drive (check drive's rotary switches or DIP settings)</li>
+<li>→ Unit Conversion Settings</li>
+<li>Under Axis Parameters &gt; Unit Conversion, configure:</li>
+<li>• Encoder pulses per revolution</li>
+<li>• User units (mm, degrees, inches) per motor revolution</li>
+<li>• Gear ratio if a gearbox is present</li>
+<li>→ Key Parameters</li>
+</ul></section>
+<section class="slide">
+<h2>Servo Motor Configuration (content)</h2>
+<ul>
+<li>Table: Parameter | What It Controls | Risk if Wrong</li>
+<li>• Max Velocity | Speed limit for the axis | Too fast = mechanical damage, too slow = cycle time loss</li>
+<li>• Acceleration / Deceleration | Ramp rates | Too aggressive = motor faults, too gentle = slow response</li>
+<li>• Position Limits | Software travel limits | Prevents axis from moving beyond mechanical range</li>
+<li>• Torque Limit | Maximum motor force | Too high = potential to damage tooling or workpiece</li>
+<li>[WARNING] Parameter Changes on Production: Never change servo parameters on a production machine without comparing to the documented values first. Small changes to acceleration or position limits can cause crashes, product damage, or injury.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Global Variables &amp; Adding Components</h2>
+<ul>
+<li>Creating global variables, naming conventions, and adding I/O modules</li>
+</ul></section>
+<section class="slide">
+<h2>Global Variables &amp; Adding Components (content)</h2>
+<ul>
+<li>→ Creating Global Variables</li>
+<li>Global variables are accessible from any program block in the PLC project. In Omron Sysmac Studio, define them in the Global Variable Table. In Allen Bradley Studio 5000, these are Controller-scoped tags.</li>
+<li>→ Naming Convention</li>
+<li>Use a function area prefix for instant clarity:</li>
+<li>• SAFETY_ — E-stop, safety relay, scanner signals</li>
+<li>• MOTION_ — Servo axis commands and feedback</li>
+<li>• HMI_ — Operator interface signals</li>
+<li>• CONV_ — Conveyor system signals</li>
+<li>• IO_ — General I/O points</li>
+<li>→ Adding I/O Components</li>
+</ul></section>
+<section class="slide">
+<h2>Global Variables &amp; Adding Components (content)</h2>
+<ul>
+<li>Table: Platform | Steps</li>
+<li>• Omron (EtherCAT) | Right-click EtherCAT master &gt; Add Slave. Select from ESI library. Assign node address. Map tags to I/O channels in the I/O Map view.</li>
+<li>• Allen Bradley | Right-click I/O Configuration &gt; New Module. Search by catalog number. Set IP address and slot. Download and verify in I/O tree.</li>
+<li>• AutomationDirect | Use the I/O Configuration wizard in Productivity Suite. Select module type, assign slot, map tags.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Servo Parameters — Live Adjustment</h2>
+<ul>
+<li>After: Servo Motor Configuration</li>
+<li>Duration: 15 min</li>
+<li>On the EtherCAT servo drive, show current parameters. Make a safe change (reduce velocity by 50%), command a move, observe the difference. Restore original.</li>
+<li>Students read parameters, predict what a change will do, observe the result, then restore. Reinforces the read → predict → verify → restore cycle.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Add I/O Component End-to-End</h2>
+<ul>
+<li>After: Global Variables &amp; Adding Components</li>
+<li>Duration: 15 min</li>
+<li>Walk through adding a new tag for an unused I/O point: create tag, map to physical channel, write a simple rung, download, test with physical device.</li>
+<li>Students follow along on laptops, replicating the tag and rung. Each pair tests their logic on the bench — the capstone integrative activity.</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>A TON timer has a preset of 5000ms and the accumulator shows 5000ms. Is the DN (Done) bit ON or OFF?</li>
+<li>OFF — the timer is still counting | ON — the accumulator has reached the preset | It depends on the rung state | OFF — 5000ms means the timer has reset</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What is the difference between OTE (Output Coil) and OTL (Output Latch)?</li>
+<li>They are the same | OTE turns off when the rung loses power; OTL stays on until an OTU unlatch instruction | OTL is faster than OTE | OTE is used for digital, OTL for analog</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>Before changing servo motor parameters on a production machine, what should you do?</li>
+<li>Just make the change — parameters auto-revert on restart | Compare the current values to the documented values and backup the program first | Switch the PLC to PROGRAM mode | Disconnect the encoder</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What prefix would you use for a global variable controlling an E-stop circuit?</li>
+<li>CONV_ | MOTION_ | SAFETY_ | HMI_</li>
+</ul></section>
+</body></html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PLC Tabletop Training Program · Module 2: Safety &amp; Input/Output Devices</title>
+<style>
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:1.5rem;color:#1e293b;line-height:1.45;}
+h1{font-size:0.95rem;color:#64748b;font-weight:600;margin:0 0 1rem 0;}
+.slide{page-break-after:always;margin-bottom:2rem;}
+.slide:last-child{page-break-after:auto;}
+.slide h2{color:#1e3a5f;font-size:1.05rem;margin:0 0 0.6rem 0;}
+.slide ul{margin:0;padding-left:1.2rem;}
+.slide li{margin:0.3rem 0;}
+@media print{.slide{page-break-after:always;}body{margin:1rem;}}
+</style>
+</head>
+<body>
+<h1>PLC Tabletop Training Program · Module 2: Safety &amp; Input/Output Devices</h1>
+<section class="slide">
+<h2>Module 2: Safety &amp; Input/Output Devices</h2>
+<ul>
+<li>PLC Tabletop Training Program · Lecture + Lab · 2.5 h</li>
+<li>v1.0 (April 2026)</li>
+</ul></section>
+<section class="slide">
+<h2>Learning objectives</h2>
+<ul>
+<li>Identify the main input device types and describe the signal each sends to the PLC</li>
+<li>Identify the main output device types and describe how the PLC drives each</li>
+<li>Understand the difference between standard I/O and safety I/O (dual-channel, OSSD)</li>
+<li>Recognize additional field devices: photoelectric sensors, encoders, solenoid valves, VFDs</li>
+</ul></section>
+<section class="slide">
+<h2>Overview</h2>
+<ul>
+<li>Input devices (sensors, switches, safety devices) and output devices (motors, relays, valves) — how they work and how they connect to the PLC.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Input Devices — Sensors &amp; Switches</h2>
+<ul>
+<li>Proximity sensors, limit switches, photoelectric sensors, push buttons</li>
+</ul></section>
+<section class="slide">
+<h2>Input Devices — Sensors &amp; Switches (content)</h2>
+<ul>
+<li>→ Proximity Sensors</li>
+<li>[Figure] Inductive proximity sensor — detects metal without contact</li>
+<li>An inductive proximity sensor detects metal objects without physical contact. It sends a 24VDC signal to the PLC digital input when a metal target enters its sensing range. Available in NPN (sinking) and PNP (sourcing) output types.</li>
+<li>→ Limit Switches</li>
+<li>A limit switch is a mechanical contact sensor that triggers when an actuator (lever, roller, plunger) reaches its end-of-travel position. Provides either Normally Open (N/O) or Normally Closed (N/C) dry contacts.</li>
+<li>[Figure] Roller-lever limit / microswitch — typical end-of-travel sensing</li>
+<li>→ Photoelectric Sensors</li>
+<li>Photoelectric sensors use light beams for detection. Three main types are used in manufacturing:</li>
+<li>Table: Type | Configuration | Range | Best For</li>
+<li>• Through-beam | Separate emitter + receiver | Longest (up to 30m) | Part counting, conveyor jam detection — most reliable</li>
+</ul></section>
+<section class="slide">
+<h2>Input Devices — Sensors &amp; Switches (content)</h2>
+<ul>
+<li>• Retroreflective | Emitter/receiver in one housing + reflector | Medium (up to 10m) | Presence detection where mounting space is limited on one side</li>
+<li>• Diffuse | Emitter/receiver in one housing, detects object directly | Short (up to 1m) | Close-range part detection, color/contrast sensing</li>
+<li>[Figure] Photoelectric sensor — through-beam, retroreflective, and diffuse types use similar hardware</li>
+<li>[TIP] Maintenance Tip: Dirty lenses are the #1 cause of photoelectric sensor failures. Regular cleaning with a lint-free cloth can prevent most false triggers and missed detections.</li>
+<li>→ Push Buttons</li>
+<li>[Figure] Operator panel with pushbuttons — typical start/stop and mode selection</li>
+<li>Push buttons provide operator input to the PLC. Can be N/O (closes when pressed) or N/C (opens when pressed), momentary (spring-return) or maintained (latching). E-stop buttons are always N/C — they open the safety circuit when pressed and must be physically reset.</li>
+<li>[Figure] Emergency stop — wired as normally closed (N/C) in the safety circuit</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Safety Devices</h2>
+<ul>
+<li>Area scanners, light curtains, safety relays, and OSSD concepts</li>
+</ul></section>
+<section class="slide">
+<h2>Safety Devices (content)</h2>
+<ul>
+<li>→ Area Scanners</li>
+<li>[Figure] 3D laser scanning for obstacle detection (example: level-crossing system — illustrates zone scanning, not a specific OS32C model)</li>
+<li>An area scanner uses a rotating laser to scan a defined area of space. If it detects a person or obstruction within its configured safety zone, it sends a signal to the PLC to stop or de-energize connected equipment.</li>
+<li>• Configurable warning and protective fields</li>
+<li>• OSSD (Output Signal Switching Device) safety outputs to PLC</li>
+<li>• Common brands: SICK S300/S3000, Omron OS32C</li>
+<li>• Programmed via USB using manufacturer software</li>
+<li>→ Light Curtains</li>
+<li>A light curtain is an infrared safety barrier consisting of an emitter and receiver pair. If any beam is broken (e.g., a hand reaches through), the OSSD outputs drop and the machine stops. Used to guard press brakes, palletizers, and robotic cells.</li>
+<li>[Figure] Light curtain concept — interrupted beams drop OSSD outputs (diagram)</li>
+</ul></section>
+<section class="slide">
+<h2>Safety Devices (content)</h2>
+<ul>
+<li>→ Safety Relays</li>
+<li>[Figure] DIN-rail power switching device — safety relays are often similar rail-mounted modules with dual-channel inputs</li>
+<li>Safety relays monitor safety circuits using dual-channel inputs with forced-guided contacts. They verify that both OSSD channels from a safety device agree before allowing machine operation. If the channels disagree (indicating a fault), the relay locks out and requires manual reset.</li>
+<li>→ What is OSSD?</li>
+<li>[INFO] OSSD — Output Signal Switching Device: Safety-rated devices use two independent output channels (OSSD1 and OSSD2). Both must be ON for the machine to run. This dual-channel design means a single component failure cannot defeat the safety function. Standard single-channel sensors cannot be used for safety-rated applications.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Output Devices</h2>
+<ul>
+<li>Light towers, motors, drives, relays, solenoid valves, and VFDs</li>
+</ul></section>
+<section class="slide">
+<h2>Output Devices (content)</h2>
+<ul>
+<li>→ Light Tower (Stack Light)</li>
+<li>[Figure] Stack (tower) light — each color segment is typically a separate PLC output</li>
+<li>Stack lights indicate machine status: Green = running, Red = fault/stopped, Amber = warning/attention needed, Blue = operator call. Each color is driven by a separate PLC digital output.</li>
+<li>→ Servo Motors &amp; Drives</li>
+<li>[Figure] Servomotor — closed-loop position, speed, and torque control with feedback</li>
+<li>Servo motors provide precise position, speed, and torque control. The servo drive receives commands from the PLC (typically via EtherCAT or EtherNet/IP) and controls the motor accordingly. Used for CNC positioning, robotic joints, and precise material handling.</li>
+<li>[Figure] Servo drive (amplifier) — executes motion commands from the PLC over the fieldbus</li>
+<li>→ Stepper Motors</li>
+<li>Stepper motors provide open-loop position control using discrete step pulses. Simpler and less expensive than servos but limited in torque and speed. Used for lower-precision positioning applications.</li>
+<li>[Figure] Stepper motor — moved in discrete steps under pulse command from the PLC or indexer</li>
+</ul></section>
+<section class="slide">
+<h2>Output Devices (content)</h2>
+<ul>
+<li>→ Relays</li>
+<li>Relays are electrically-operated switches that isolate PLC outputs from high-voltage or high-current loads. The PLC energizes the relay coil (24VDC), and the relay contacts switch the load circuit (which may be 120VAC, 240VAC, or higher).</li>
+<li>[Figure] Contactor on DIN rail — common style of relay/contactor switched by a PLC output</li>
+<li>→ Solenoid Valves</li>
+<li>Solenoid valves control pneumatic or hydraulic flow. The PLC digital output energizes the solenoid coil, which shifts a spool to direct air or fluid to cylinders, actuators, or clamps.</li>
+<li>[Figure] Solenoid coil (example: 24 V DC) — PLC output energizes the coil to shift the valve spool</li>
+<li>Table: Type | Action | Application</li>
+<li>• 5/2 single-solenoid | Spring return — de-energize returns to home | Single-acting cylinders, simple extend/retract</li>
+<li>• 5/2 double-solenoid | Detented — stays in last position | Double-acting cylinders where position must hold on power loss</li>
+<li>• 5/3 center-closed | Center position blocks all ports | Holding position under load with no air flow</li>
+</ul></section>
+<section class="slide">
+<h2>Output Devices (content)</h2>
+<ul>
+<li>→ Variable Frequency Drives (VFDs)</li>
+<li>VFDs control AC motor speed by varying output frequency and voltage. Found on conveyors, pumps, fans, and mixers. Control methods:</li>
+<li>• Hardwired: PLC digital output for run/stop, analog output (4–20mA) for speed reference</li>
+<li>• Network: PLC sends commands and reads feedback over EtherNet/IP, EtherCAT, or Modbus — start/stop, speed setpoint, actual speed, current draw, and fault codes all in one connection</li>
+<li>[Figure] Variable-frequency drive — varies output frequency and voltage to the motor</li>
+<li>[WARNING] VFD Safety Note: VFD DC bus capacitors retain dangerous voltage (up to 800VDC) after the drive is powered off. Wait for the DC bus voltage to decay to zero (check the drive display or measure with a meter) before working on VFD wiring.</li>
+<li>→ Motor Contactors &amp; Starters</li>
+<li>For motors without VFDs, contactors switch motor power on/off. A motor starter = contactor + overload relay. The PLC energizes the contactor coil (usually through an interposing relay), and the overload relay's auxiliary contacts feed back to a PLC input for trip monitoring.</li>
+<li>[Figure] DOL (direct-on-line) motor starter — contactor, overload, and control in one assembly (example)</li>
+<li>→ Encoders</li>
+</ul></section>
+<section class="slide">
+<h2>Output Devices (content)</h2>
+<ul>
+<li>Encoders provide position and speed feedback. Incremental encoders output A/B pulses proportional to rotation (connect to PLC high-speed counter inputs). Absolute encoders output a unique position value even after power loss (connect via SSI, BiSS, or EtherCAT).</li>
+<li>[Figure] Incremental rotary encoder — shaft rotation produces A/B quadrature pulses for position and speed</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Input Device Activation</h2>
+<ul>
+<li>After: Input Devices — Sensors &amp; Switches</li>
+<li>Duration: 10 min</li>
+<li>At the bench, activate each input device: trigger the proximity sensor with a metal target, actuate the limit switch, press push buttons.</li>
+<li>Each student activates each input device and observes both the device's own LED and the I/O module channel LED light up. First time seeing the full input signal chain.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Output Device Observation</h2>
+<ul>
+<li>After: Output Devices</li>
+<li>Duration: 10 min</li>
+<li>Force outputs to energize the light tower (cycle colors), click the relay, and command a servo motor move. Point out I/O module output LEDs.</li>
+<li>Students observe outputs and match each physical action to its module LED. Listen for the relay click, watch the servo shaft move, see the light tower cycle.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Area Scanner OSSD Demo</h2>
+<ul>
+<li>After: Safety Devices</li>
+<li>Duration: 10 min</li>
+<li>Show the OS32C area scanner. Have someone walk into the detection zone. Show the scanner LED change, OSSD drop, and downstream effect.</li>
+<li>Students observe the full safety chain: intrusion → scanner response → OSSD state change → device de-energization. Ask: 'What just stopped and why?'</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What are the three types of photoelectric sensors?</li>
+<li>Inductive, capacitive, ultrasonic | Through-beam, retroreflective, diffuse | NPN, PNP, relay output | Analog, digital, safety</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>A proximity sensor has its LED lit but the PLC doesn't see the signal. The I/O module channel LED is also dark. What is the most likely cause?</li>
+<li>The sensor is broken | Bad wiring between the sensor and the I/O module | The PLC program has a bug | The HMI is misconfigured</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>Why do safety devices use two OSSD channels instead of one?</li>
+<li>To double the signal strength | To provide redundancy — a single component failure cannot defeat the safety function | To allow two machines to share one sensor | To reduce wiring costs</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>A VFD has been powered off. Is it immediately safe to touch the wiring?</li>
+<li>Yes — power is off | No — DC bus capacitors can retain dangerous voltage | Only if you wait 30 seconds | Only if the motor has stopped spinning</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What controls the speed of an AC motor connected to a VFD?</li>
+<li>The PLC changes the motor's winding configuration | The VFD varies the output frequency and voltage to the motor | A mechanical gearbox inside the VFD | The power supply voltage is adjusted</li>
+</ul></section>
+</body></html>

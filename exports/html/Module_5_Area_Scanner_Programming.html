@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PLC Tabletop Training Program · Module 5: Area Scanner Programming</title>
+<style>
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:1.5rem;color:#1e293b;line-height:1.45;}
+h1{font-size:0.95rem;color:#64748b;font-weight:600;margin:0 0 1rem 0;}
+.slide{page-break-after:always;margin-bottom:2rem;}
+.slide:last-child{page-break-after:auto;}
+.slide h2{color:#1e3a5f;font-size:1.05rem;margin:0 0 0.6rem 0;}
+.slide ul{margin:0;padding-left:1.2rem;}
+.slide li{margin:0.3rem 0;}
+@media print{.slide{page-break-after:always;}body{margin:1rem;}}
+</style>
+</head>
+<body>
+<h1>PLC Tabletop Training Program · Module 5: Area Scanner Programming</h1>
+<section class="slide">
+<h2>Module 5: Area Scanner Programming</h2>
+<ul>
+<li>PLC Tabletop Training Program · Hands-on Lab · 2.5 h</li>
+<li>v1.0 (April 2026)</li>
+</ul></section>
+<section class="slide">
+<h2>Learning objectives</h2>
+<ul>
+<li>Program or verify the configuration of an Omron OS32C area scanner</li>
+<li>Define protective and warning zones using the OS32C Configuration Tool</li>
+<li>Confirm OSSD outputs are functioning correctly via PLC monitoring</li>
+<li>Physically verify zone boundaries with measurement</li>
+</ul></section>
+<section class="slide">
+<h2>Overview</h2>
+<ul>
+<li>Programming and verifying the Omron OS32C area scanner — defining safety zones, configuring OSSD outputs, and physical verification.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: OS32C Configuration Tool Setup</h2>
+<ul>
+<li>Installing the tool, connecting via USB, and reading existing configurations</li>
+</ul></section>
+<section class="slide">
+<h2>OS32C Configuration Tool Setup (content)</h2>
+<ul>
+<li>→ Install the Configuration Tool</li>
+<li>Download the OS32C Configuration Tool from Omron's website. Requires Windows 10/11.</li>
+<li>→ Connect to the Scanner</li>
+<li>• Connect a USB cable from your laptop to the mini-USB port on the OS32C</li>
+<li>• Open the Configuration Tool and select the correct COM port</li>
+<li>• Click Connect</li>
+<li>• Click Read from Device to load the current zone configuration</li>
+<li>The configuration tool shows the scanner's detection field as a top-down polar view. Existing zones appear as colored overlays.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Defining Safety Zones</h2>
+<ul>
+<li>Creating protective and warning zones, configuring detection parameters</li>
+</ul></section>
+<section class="slide">
+<h2>Defining Safety Zones (content)</h2>
+<ul>
+<li>→ Zone Types</li>
+<li>Table: Zone | Purpose | Response</li>
+<li>• Protective Zone | Immediate danger area around the machine | OSSD outputs drop immediately — machine stops</li>
+<li>• Warning Zone | Approach area outside the protective zone | Warning output activates (alarm, slow-down) but OSSD stays active</li>
+<li>→ Defining Zone Boundaries</li>
+<li>• Select the zone type to edit (protective or warning)</li>
+<li>• Draw the zone boundary using the polygon or radius tool in the configuration software</li>
+<li>• Set the detection sensitivity (minimum object size) — typically 30–70mm for personnel detection</li>
+<li>• Configure multiple zone sets if the machine requires different safety zones for different operating modes</li>
+<li>• Download the configuration to the scanner and verify the new zones are active</li>
+</ul></section>
+<section class="slide">
+<h2>Defining Safety Zones (content)</h2>
+<ul>
+<li>[WARNING] Zone Validation Required: After any zone change, you must physically verify the boundaries. Walk toward the scanner from multiple angles and confirm the protective zone triggers at the correct distance. Measure with a tape measure and compare to the configured boundary.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: OSSD Testing &amp; Verification</h2>
+<ul>
+<li>Confirming safety outputs are properly wired and functioning</li>
+</ul></section>
+<section class="slide">
+<h2>OSSD Testing &amp; Verification (content)</h2>
+<ul>
+<li>→ OSSD Verification Procedure</li>
+<li>• With the scanner configuration active, confirm both OSSD1 and OSSD2 outputs are wired to the PLC safety input or safety relay</li>
+<li>• Open the PLC software and go online — monitor the safety input tags mapped to the OSSD outputs</li>
+<li>• With the zone clear, verify both OSSD tags show TRUE (both channels active)</li>
+<li>• Have a person enter the protective zone — verify both OSSD tags drop to FALSE simultaneously</li>
+<li>• Remove the person from the zone — verify both OSSD tags return to TRUE</li>
+<li>• Confirm the downstream safety circuit responds correctly (machine enabled/disabled)</li>
+<li>[DANGER] Single-Channel Failure Test: If your safety system allows it, test single-channel failure: temporarily disconnect one OSSD wire. The safety relay should detect the channel disagreement and lock out. If the machine continues to run on one channel only, the safety wiring is incorrect and must be fixed immediately.</li>
+<li>→ Scanner LED Status</li>
+<li>Table: LED State | Meaning</li>
+</ul></section>
+<section class="slide">
+<h2>OSSD Testing &amp; Verification (content)</h2>
+<ul>
+<li>• Green steady | Normal operation — zone clear</li>
+<li>• Yellow steady | Warning zone intrusion detected</li>
+<li>• Red steady | Protective zone intrusion — OSSD dropped</li>
+<li>• Red flashing | Scanner fault or configuration error</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: USB Connection &amp; Live Scan View</h2>
+<ul>
+<li>After: OS32C Configuration Tool Setup</li>
+<li>Duration: 10 min</li>
+<li>Connect USB to the OS32C on the bench. Open the configuration tool and show the live scan view. Have students walk at various distances to see themselves in the scan display.</li>
+<li>Students walk toward and away from the scanner, watching the detection point move in real time. Makes the concept of detection zones tangible.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Zone Programming &amp; Physical Verification</h2>
+<ul>
+<li>After: OSSD Testing &amp; Verification</li>
+<li>Duration: 15 min</li>
+<li>Modify a warning zone boundary, download to the scanner, then physically verify with a student approaching. Show the OSSD output state change on the PLC dashboard simultaneously.</li>
+<li>Students measure actual trigger distance with a tape measure and compare to configured distance. Verify both scanner LED and PLC input state change.</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What happens when an object enters the protective zone of an area scanner?</li>
+<li>A warning alarm sounds but the machine continues | The OSSD outputs drop and the machine stops | The scanner displays an error message | Nothing — the operator must press E-stop</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>After changing zone boundaries in the configuration tool, what must you do?</li>
+<li>Just click Save and the scanner updates automatically | Download to the scanner AND physically verify the new boundaries with measurement | Reboot the PLC | Replace the scanner batteries</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>The area scanner's LED is flashing red. What does this mean?</li>
+<li>Normal operation — zone is clear | Warning zone intrusion | Scanner fault or configuration error | Low battery</li>
+</ul></section>
+</body></html>

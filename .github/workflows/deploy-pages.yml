@@ -22,9 +22,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - uses: actions/configure-pages@v5
+      # When this succeeds, images/ is populated for fast offline-friendly loads.
+      # If it fails, the site still shows photos via js/commonsImageUrls.js (Wikimedia fallback on img error).
+      - name: Download Commons slide images (upload.wikimedia.org)
+        continue-on-error: true
+        run: python3 scripts/download_slide_images.py
       - name: Prepare site bundle
         run: |
+          python3 scripts/emit_commons_image_urls_js.py
           mkdir -p _site
           cp -r css images js index.html _site/
       - uses: actions/upload-pages-artifact@v3

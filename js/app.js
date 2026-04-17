@@ -2,6 +2,11 @@ const App = (function () {
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
   const $$ = (sel, ctx) => [...(ctx || document).querySelectorAll(sel)];
 
+  /** Slide images use paths from js/data.js (Wikimedia Commons photos under images/).
+   *  If a local file is missing (404), renderSlideImageHtml falls back to the same photo on
+   *  upload.wikimedia.org via COMMONS_IMAGE_URLS (js/commonsImageUrls.js). Run
+   *  npm run download-images to cache files under images/; run gen-commons-urls after editing commons_images.py. */
+
   let currentRoute = '';
   let slideState = null; // { moduleId, lessonId, slides, currentSlide, direction }
 
@@ -245,8 +250,15 @@ const App = (function () {
         }
       };
 
-      if (slide.blocks) {
-        slide.blocks.forEach(pushBlockSpeech);
+      if (slide.blocks && slide.blocks.length) {
+        const bl = slide.blocks;
+        // Match on-screen layout (text left, image right): speak body before image caption
+        if (bl[0].type === 'image') {
+          bl.slice(1).forEach(pushBlockSpeech);
+          pushBlockSpeech(bl[0]);
+        } else {
+          bl.forEach(pushBlockSpeech);
+        }
       }
 
       return this.cleanForSpeech(parts.join('. ').replace(/\.\./g, '.'));
@@ -639,7 +651,39 @@ const App = (function () {
     if (rightArrow) rightArrow.classList.toggle('disabled', s.currentSlide >= s.slides.length - 1);
   }
 
+  /** One image block: figure + optional caption (used in column layout). */
+  function renderSlideImageHtml(b) {
+    let h = '';
+    if (b.src) {
+      const commons =
+        typeof COMMONS_IMAGE_URLS !== 'undefined' && COMMONS_IMAGE_URLS && COMMONS_IMAGE_URLS[b.src]
+          ? escapeAttr(COMMONS_IMAGE_URLS[b.src])
+          : '';
+      const fallbackAttr = commons ? ` data-commons-url="${commons}"` : '';
+      const fallbackHandler = commons
+        ? ' onerror="this.onerror=null;if(this.dataset.commonsUrl)this.src=this.dataset.commonsUrl"'
+        : '';
+      h += `<figure class="slide-image"><img src="${escapeAttr(b.src)}" alt="${escapeAttr(b.alt || '')}" loading="lazy" decoding="async" referrerpolicy="no-referrer"${fallbackAttr}${fallbackHandler}/></figure>`;
+    } else {
+      h += placeholderImage(b.alt, b.caption);
+    }
+    if (b.caption) h += `<p class="image-caption">${b.caption}</p>`;
+    return h;
+  }
+
   function renderSlideBlocks(blocks) {
+    if (!blocks || blocks.length === 0) return '';
+
+    const first = blocks[0];
+    // Text left, image right — matches lessons that start with a photo (CPU, power supply, Ethernet, etc.)
+    if (first.type === 'image' && first.src) {
+      const rest = blocks.slice(1);
+      return `<div class="slide-body-row slide-body-row--image-end" role="presentation">
+        <div class="slide-text-col">${renderSlideBlocks(rest)}</div>
+        <div class="slide-media-col">${renderSlideImageHtml(first)}</div>
+      </div>`;
+    }
+
     let html = '';
     for (const b of blocks) {
       switch (b.type) {
@@ -659,12 +703,7 @@ const App = (function () {
           html += `<ol class="steps-list">${b.items.map(i => `<li>${i}</li>`).join('')}</ol>`;
           break;
         case 'image':
-          if (b.src) {
-            html += `<figure class="slide-image"><img src="${escapeAttr(b.src)}" alt="${escapeAttr(b.alt || '')}" loading="lazy" decoding="async" referrerpolicy="no-referrer"/></figure>`;
-          } else {
-            html += placeholderImage(b.alt, b.caption);
-          }
-          if (b.caption) html += `<p class="image-caption">${b.caption}</p>`;
+          html += renderSlideImageHtml(b);
           break;
         case 'callout':
           html += `<div class="callout ${b.variant}">

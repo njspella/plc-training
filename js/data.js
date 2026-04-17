@@ -1,24 +1,37 @@
 /**
- * Module 2 device photos — Wikimedia Commons CDN (stable URLs).
- * Local copies: bash scripts/download_module2_images.sh (optional; for offline, replace with relative paths).
+ * Slide figures — Wikimedia Commons photos saved under images/ by:
+ *   python3 scripts/download_slide_images.py
+ * (or: npm run download-images)
+ * If a Commons file is missing locally, run the download script (needs internet).
  */
-const WikimediaModule2Images = {
-  inductiveProximity: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Inductive_proximity_sensor.jpg',
-  limitSwitchRoller: 'https://upload.wikimedia.org/wikipedia/commons/9/92/Mini_Microswitch_-_SPDT_%28Roller_Lever%29_%2812781884965%29.jpg',
-  operatorPanel: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/00-bma-automation-operator-panel-with-pushbuttons.JPG',
-  emergencyStop: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Emergency_stop_button.jpg',
-  photoelectric: 'https://upload.wikimedia.org/wikipedia/commons/9/9a/Photoelectric_sensor.jpg',
-  laserScanner3d: 'https://upload.wikimedia.org/wikipedia/commons/0/08/CrossingSafety_07g4838.jpg',
-  lightCurtain: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lightcurtain.svg/960px-Lightcurtain.svg.png',
-  contactorRelay: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Contactor_DIN_IEK.jpg',
-  stackLight: 'https://upload.wikimedia.org/wikipedia/commons/3/32/Signals%C3%A4ule_an_einer_grossen_selbstfahrenden_Baumaschine_%28rot_gelb_gr%C3%BCn%29.jpg',
-  servoMotor: 'https://upload.wikimedia.org/wikipedia/commons/d/d2/Servomotor_01.jpg',
-  servoDrive: 'https://upload.wikimedia.org/wikipedia/commons/9/9c/Ingenia_i127-01_Servo_Amplifier.jpg',
-  stepperMotor: 'https://upload.wikimedia.org/wikipedia/commons/8/83/Nema_17_Stepper_Motor.jpg',
-  vfd: 'https://upload.wikimedia.org/wikipedia/commons/7/7e/Variable-Frequency-Inverter.jpg',
-  solenoidValveCoil: 'https://upload.wikimedia.org/wikipedia/commons/5/51/Solenoid_coil_of_a_pneumatic_valve.jpg',
-  rotaryEncoder: 'https://upload.wikimedia.org/wikipedia/commons/c/cf/Rotary_encoder.jpg',
-  dolMotorStarter: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Dol_starter.jpg',
+/** Module 1 — PLC Cabinet Overview (lesson 1): Commons hardware photos */
+const LocalCabinetImages = {
+  plcCpu: "images/cabinet_plc_cpu.jpg",
+  powerSupply24v: "images/cabinet_power_supply_24v.jpg",
+  industrialEthernet: "images/cabinet_industrial_ethernet.jpg",
+};
+
+/** Module 2 — I/O & safety: Commons hardware photos */
+const LocalModule2DeviceImages = {
+  inductiveProximity: "images/io_inductive_proximity.jpg",
+  limitSwitchRoller: "images/io_limit_switch_roller.jpg",
+  operatorPanel: "images/io_operator_panel_pushbuttons.JPG",
+  emergencyStop: "images/io_emergency_stop.jpg",
+  photoelectric: "images/io_photoelectric.jpg",
+  laserScanner3d: "images/safety_laser_scanner_3d.jpg",
+  lightCurtain: "images/safety_light_curtain.jpg",
+  /** DIN-rail safety relay style module (distinct from motor contactor / interposing relay photos). */
+  safetyRelayModule: "images/safety_relay_module.jpg",
+  /** Smaller coil / impulse relay typical of PLC-driven interposing — not a motor contactor. */
+  plcInterposingRelay: "images/io_interposing_relay.jpg",
+  stackLight: "images/io_stack_light.jpg",
+  servoMotor: "images/io_servo_motor.jpg",
+  servoDrive: "images/io_servo_drive.jpg",
+  stepperMotor: "images/io_stepper_motor.jpg",
+  vfd: "images/io_vfd.jpg",
+  solenoidValveCoil: "images/solenoid_valve_coil.jpg",
+  rotaryEncoder: "images/rotary_encoder.jpg",
+  dolMotorStarter: "images/dol_motor_starter.jpg",
 };
 
 const TrainingData = {
@@ -148,7 +161,13 @@ const TrainingData = {
             { type: "paragraph", text: "A PLC (Programmable Logic Controller) checks signals from sensors or switches (inputs), runs through a set of programmed instructions based on those inputs and logic, and controls motors, lights, valves, or conveyors (the outputs)." },
             { type: "paragraph", text: "The PLC cabinet houses all the core control components. Understanding what's inside — and what each component does — is the foundation of every troubleshooting task." },
             { type: "heading", text: "PLC CPU Controller" },
-            { type: "image", src: "images/ps_cpu_module.png", alt: "PLC CPU Module", caption: "PLC CPU Controller Module — the brain of the system" },
+            {
+              type: "image",
+              src: LocalCabinetImages.plcCpu,
+              alt: "Siemens SIMATIC S7-1200 PLC CPU",
+              caption:
+                "PLC CPU (example: Siemens SIMATIC S7-1200) — the brain of the system; your site may use Omron, Allen-Bradley, or AutomationDirect processors",
+            },
             { type: "paragraph", text: "The CPU is the brain of the PLC. It executes the ladder logic program in a continuous scan cycle: read all inputs → execute program logic → update all outputs → repeat. The scan time (typically 1–20ms) determines how fast the PLC responds to changes." },
             { type: "list", items: [
               "<strong>RUN LED:</strong> Solid green = program is executing normally",
@@ -157,10 +176,21 @@ const TrainingData = {
             ]},
             { type: "callout", variant: "info", title: "PLC Operating Modes", text: "<strong>RUN:</strong> Normal operation — program executes, outputs are active.<br><strong>PROGRAM:</strong> Program is halted — outputs are de-energized. Used for downloading programs.<br><strong>REMOTE:</strong> Mode can be changed from software. Most common setting for production machines." },
             { type: "heading", text: "Power Supply" },
-            { type: "image", src: "images/ps_plc_power_supply.png", alt: "PLC Power Supply", caption: "Power Supply Module — converts AC to 24VDC" },
+            {
+              type: "image",
+              src: LocalCabinetImages.powerSupply24v,
+              alt: "DIN-rail 24 V DC power supply",
+              caption: "DIN-rail 24 V DC power supply — converts facility AC to 24 VDC for the PLC and field I/O",
+            },
             { type: "paragraph", text: "The power supply converts facility AC voltage (120VAC or 240VAC) to 24VDC for the PLC modules and field devices. Key specs to note: input voltage range, output current capacity, and whether it has redundancy or short-circuit protection." },
             { type: "heading", text: "Ethernet Communication Board" },
-            { type: "image", src: "images/ps_ethernet_board.png", alt: "Ethernet Communication Board", caption: "Ethernet Communication Board — network connectivity" },
+            {
+              type: "image",
+              src: LocalCabinetImages.industrialEthernet,
+              alt: "Industrial Ethernet switch with RJ45 ports",
+              caption:
+                "Industrial Ethernet hardware (example: Siemens ESM, 8× RJ45) — EtherNet/IP, Modbus TCP, and EtherCAT use similar Ethernet ports and link/activity LEDs",
+            },
             { type: "paragraph", text: "Enables EtherNet/IP or EtherCAT communication between the PLC, HMI screens, other PLCs, and engineering workstations. Check the link and activity LEDs to verify connectivity." },
             { type: "heading", text: "PLC Families On Site" },
             { type: "table", headers: ["Platform", "CPU Model", "Protocol", "Software"],
@@ -295,11 +325,11 @@ const TrainingData = {
           summary: "Proximity sensors, limit switches, photoelectric sensors, push buttons",
           content: [
             { type: "heading", text: "Proximity Sensors" },
-            { type: "image", src: WikimediaModule2Images.inductiveProximity, alt: "Cylindrical inductive proximity sensor", caption: "Inductive proximity sensor — detects metal without contact" },
+            { type: "image", src: LocalModule2DeviceImages.inductiveProximity, alt: "Cylindrical inductive proximity sensor", caption: "Inductive proximity sensor — detects metal without contact" },
             { type: "paragraph", text: "An inductive proximity sensor detects metal objects without physical contact. It sends a 24VDC signal to the PLC digital input when a metal target enters its sensing range. Available in NPN (sinking) and PNP (sourcing) output types." },
             { type: "heading", text: "Limit Switches" },
             { type: "paragraph", text: "A limit switch is a mechanical contact sensor that triggers when an actuator (lever, roller, plunger) reaches its end-of-travel position. Provides either Normally Open (N/O) or Normally Closed (N/C) dry contacts." },
-            { type: "image", src: WikimediaModule2Images.limitSwitchRoller, alt: "Miniature microswitch with roller lever actuator", caption: "Roller-lever limit / microswitch — typical end-of-travel sensing" },
+            { type: "image", src: LocalModule2DeviceImages.limitSwitchRoller, alt: "Miniature microswitch with roller lever actuator", caption: "Roller-lever limit / microswitch — typical end-of-travel sensing" },
             { type: "heading", text: "Photoelectric Sensors" },
             { type: "paragraph", text: "Photoelectric sensors use light beams for detection. Three main types are used in manufacturing:" },
             { type: "table", headers: ["Type", "Configuration", "Range", "Best For"],
@@ -311,16 +341,16 @@ const TrainingData = {
             },
             { type: "sideBySide",
               left: [
-                { type: "image", src: WikimediaModule2Images.photoelectric, alt: "Photoelectric sensor device", caption: "Photoelectric sensor — through-beam, retroreflective, and diffuse types use similar hardware" }
+                { type: "image", src: LocalModule2DeviceImages.photoelectric, alt: "Photoelectric sensor device", caption: "Photoelectric sensor — through-beam, retroreflective, and diffuse types use similar hardware" }
               ],
               right: [
                 { type: "callout", variant: "tip", title: "Maintenance Tip", text: "Dirty lenses are the #1 cause of photoelectric sensor failures. Regular cleaning with a lint-free cloth can prevent most false triggers and missed detections." }
               ]
             },
             { type: "heading", text: "Push Buttons" },
-            { type: "image", src: WikimediaModule2Images.operatorPanel, alt: "Industrial operator panel with pushbuttons", caption: "Operator panel with pushbuttons — typical start/stop and mode selection" },
+            { type: "image", src: LocalModule2DeviceImages.operatorPanel, alt: "Industrial operator panel with pushbuttons", caption: "Operator panel with pushbuttons — typical start/stop and mode selection" },
             { type: "paragraph", text: "Push buttons provide operator input to the PLC. Can be N/O (closes when pressed) or N/C (opens when pressed), momentary (spring-return) or maintained (latching). E-stop buttons are always N/C — they open the safety circuit when pressed and must be physically reset." },
-            { type: "image", src: WikimediaModule2Images.emergencyStop, alt: "Red emergency stop pushbutton", caption: "Emergency stop — wired as normally closed (N/C) in the safety circuit" }
+            { type: "image", src: LocalModule2DeviceImages.emergencyStop, alt: "Red emergency stop pushbutton", caption: "Emergency stop — wired as normally closed (N/C) in the safety circuit" }
           ]
         },
         {
@@ -329,7 +359,7 @@ const TrainingData = {
           summary: "Area scanners, light curtains, safety relays, and OSSD concepts",
           content: [
             { type: "heading", text: "Area Scanners" },
-            { type: "image", src: WikimediaModule2Images.laserScanner3d, alt: "3D laser radar obstacle detection installation", caption: "3D laser scanning for obstacle detection (example: level-crossing system — illustrates zone scanning, not a specific OS32C model)" },
+            { type: "image", src: LocalModule2DeviceImages.laserScanner3d, alt: "SICK 2D laser scanner for industrial area sensing", caption: "2D laser scanner (SICK) — industrial area / zone sensing; safety certification and programming depend on the exact model" },
             { type: "paragraph", text: "An area scanner uses a rotating laser to scan a defined area of space. If it detects a person or obstruction within its configured safety zone, it sends a signal to the PLC to stop or de-energize connected equipment." },
             { type: "list", items: [
               "Configurable warning and protective fields",
@@ -339,9 +369,9 @@ const TrainingData = {
             ]},
             { type: "heading", text: "Light Curtains" },
             { type: "paragraph", text: "A light curtain is an infrared safety barrier consisting of an emitter and receiver pair. If any beam is broken (e.g., a hand reaches through), the OSSD outputs drop and the machine stops. Used to guard press brakes, palletizers, and robotic cells." },
-            { type: "image", src: WikimediaModule2Images.lightCurtain, alt: "Diagram of a light curtain guarding a machine opening", caption: "Light curtain concept — interrupted beams drop OSSD outputs (diagram)" },
+            { type: "image", src: LocalModule2DeviceImages.lightCurtain, alt: "Photoelectric light-section sensor hardware", caption: "Light-section / photoelectric barrier hardware — illustrates interrupted-beam style sensing; classic paired light curtains use similar OSSD concepts" },
             { type: "heading", text: "Safety Relays" },
-            { type: "image", src: WikimediaModule2Images.contactorRelay, alt: "Industrial contactor on DIN rail", caption: "DIN-rail power switching device — safety relays are often similar rail-mounted modules with dual-channel inputs" },
+            { type: "image", src: LocalModule2DeviceImages.safetyRelayModule, alt: "Electromechanical relay module on a circuit board", caption: "Safety relays use forced-guided / dual-channel designs; they are often compact rail modules rather than large motor contactors" },
             { type: "paragraph", text: "Safety relays monitor safety circuits using dual-channel inputs with forced-guided contacts. They verify that both OSSD channels from a safety device agree before allowing machine operation. If the channels disagree (indicating a fault), the relay locks out and requires manual reset." },
             { type: "heading", text: "What is OSSD?" },
             { type: "callout", variant: "info", title: "OSSD — Output Signal Switching Device", text: "Safety-rated devices use two independent output channels (OSSD1 and OSSD2). Both must be ON for the machine to run. This dual-channel design means a single component failure cannot defeat the safety function. Standard single-channel sensors cannot be used for safety-rated applications." }
@@ -353,21 +383,21 @@ const TrainingData = {
           summary: "Light towers, motors, drives, relays, solenoid valves, and VFDs",
           content: [
             { type: "heading", text: "Light Tower (Stack Light)" },
-            { type: "image", src: WikimediaModule2Images.stackLight, alt: "Red amber green stack light on machinery", caption: "Stack (tower) light — each color segment is typically a separate PLC output" },
+            { type: "image", src: LocalModule2DeviceImages.stackLight, alt: "Red amber green stack light on machinery", caption: "Stack (tower) light — each color segment is typically a separate PLC output" },
             { type: "paragraph", text: "Stack lights indicate machine status: <strong>Green</strong> = running, <strong>Red</strong> = fault/stopped, <strong>Amber</strong> = warning/attention needed, <strong>Blue</strong> = operator call. Each color is driven by a separate PLC digital output." },
             { type: "heading", text: "Servo Motors & Drives" },
-            { type: "image", src: WikimediaModule2Images.servoMotor, alt: "Industrial servomotor", caption: "Servomotor — closed-loop position, speed, and torque control with feedback" },
+            { type: "image", src: LocalModule2DeviceImages.servoMotor, alt: "Industrial servomotor", caption: "Servomotor — closed-loop position, speed, and torque control with feedback" },
             { type: "paragraph", text: "Servo motors provide precise position, speed, and torque control. The servo drive receives commands from the PLC (typically via EtherCAT or EtherNet/IP) and controls the motor accordingly. Used for CNC positioning, robotic joints, and precise material handling." },
-            { type: "image", src: WikimediaModule2Images.servoDrive, alt: "Servo amplifier drive unit", caption: "Servo drive (amplifier) — executes motion commands from the PLC over the fieldbus" },
+            { type: "image", src: LocalModule2DeviceImages.servoDrive, alt: "Servo amplifier drive unit", caption: "Servo drive (amplifier) — executes motion commands from the PLC over the fieldbus" },
             { type: "heading", text: "Stepper Motors" },
             { type: "paragraph", text: "Stepper motors provide open-loop position control using discrete step pulses. Simpler and less expensive than servos but limited in torque and speed. Used for lower-precision positioning applications." },
-            { type: "image", src: WikimediaModule2Images.stepperMotor, alt: "NEMA 17 stepper motor", caption: "Stepper motor — moved in discrete steps under pulse command from the PLC or indexer" },
+            { type: "image", src: LocalModule2DeviceImages.stepperMotor, alt: "NEMA 17 stepper motor", caption: "Stepper motor — moved in discrete steps under pulse command from the PLC or indexer" },
             { type: "heading", text: "Relays" },
             { type: "paragraph", text: "Relays are electrically-operated switches that isolate PLC outputs from high-voltage or high-current loads. The PLC energizes the relay coil (24VDC), and the relay contacts switch the load circuit (which may be 120VAC, 240VAC, or higher)." },
-            { type: "image", src: WikimediaModule2Images.contactorRelay, alt: "Contactor mounted on DIN rail", caption: "Contactor on DIN rail — common style of relay/contactor switched by a PLC output" },
+            { type: "image", src: LocalModule2DeviceImages.plcInterposingRelay, alt: "DIN-rail impulse / auxiliary relay module", caption: "Interposing relay on DIN rail — PLC output energizes a small relay coil; relay contacts switch the load circuit" },
             { type: "heading", text: "Solenoid Valves" },
             { type: "paragraph", text: "Solenoid valves control pneumatic or hydraulic flow. The PLC digital output energizes the solenoid coil, which shifts a spool to direct air or fluid to cylinders, actuators, or clamps." },
-            { type: "image", src: WikimediaModule2Images.solenoidValveCoil, alt: "Solenoid coil on a pneumatic valve", caption: "Solenoid coil (example: 24 V DC) — PLC output energizes the coil to shift the valve spool" },
+            { type: "image", src: LocalModule2DeviceImages.solenoidValveCoil, alt: "Solenoid coil on a pneumatic valve", caption: "Solenoid coil (example: 24 V DC) — PLC output energizes the coil to shift the valve spool" },
             { type: "table", headers: ["Type", "Action", "Application"],
               rows: [
                 ["5/2 single-solenoid", "Spring return — de-energize returns to home", "Single-acting cylinders, simple extend/retract"],
@@ -381,14 +411,14 @@ const TrainingData = {
               "<strong>Hardwired:</strong> PLC digital output for run/stop, analog output (4–20mA) for speed reference",
               "<strong>Network:</strong> PLC sends commands and reads feedback over EtherNet/IP, EtherCAT, or Modbus — start/stop, speed setpoint, actual speed, current draw, and fault codes all in one connection"
             ]},
-            { type: "image", src: WikimediaModule2Images.vfd, alt: "Variable frequency drive inverter unit", caption: "Variable-frequency drive — varies output frequency and voltage to the motor" },
+            { type: "image", src: LocalModule2DeviceImages.vfd, alt: "Variable frequency drive inverter unit", caption: "Variable-frequency drive — varies output frequency and voltage to the motor" },
             { type: "callout", variant: "warning", title: "VFD Safety Note", text: "VFD DC bus capacitors retain dangerous voltage (up to 800VDC) after the drive is powered off. Wait for the DC bus voltage to decay to zero (check the drive display or measure with a meter) before working on VFD wiring." },
             { type: "heading", text: "Motor Contactors & Starters" },
             { type: "paragraph", text: "For motors without VFDs, contactors switch motor power on/off. A motor starter = contactor + overload relay. The PLC energizes the contactor coil (usually through an interposing relay), and the overload relay's auxiliary contacts feed back to a PLC input for trip monitoring." },
-            { type: "image", src: WikimediaModule2Images.dolMotorStarter, alt: "DOL motor starter enclosure", caption: "DOL (direct-on-line) motor starter — contactor, overload, and control in one assembly (example)" },
+            { type: "image", src: LocalModule2DeviceImages.dolMotorStarter, alt: "DOL motor starter enclosure", caption: "DOL (direct-on-line) motor starter — contactor, overload, and control in one assembly (example)" },
             { type: "heading", text: "Encoders" },
             { type: "paragraph", text: "Encoders provide position and speed feedback. <strong>Incremental encoders</strong> output A/B pulses proportional to rotation (connect to PLC high-speed counter inputs). <strong>Absolute encoders</strong> output a unique position value even after power loss (connect via SSI, BiSS, or EtherCAT)." },
-            { type: "image", src: WikimediaModule2Images.rotaryEncoder, alt: "Rotary incremental encoder", caption: "Incremental rotary encoder — shaft rotation produces A/B quadrature pulses for position and speed" }
+            { type: "image", src: LocalModule2DeviceImages.rotaryEncoder, alt: "Rotary incremental encoder", caption: "Incremental rotary encoder — shaft rotation produces A/B quadrature pulses for position and speed" }
           ]
         }
       ],
@@ -785,7 +815,7 @@ const TrainingData = {
           summary: "What an HMI is, screen navigation, and user access levels",
           content: [
             { type: "heading", text: "What is an HMI?" },
-            { type: "image", src: "images/hmi_screen.png", alt: "HMI Screen", caption: "HMI screen — the operator's window into the PLC system" },
+            { type: "image", src: "images/hmi_screen.jpg", alt: "Siemens SIMATIC Multi Panel HMI", caption: "Industrial HMI panel — the operator's physical interface to the PLC system" },
             { type: "paragraph", text: "HMI stands for Human-Machine Interface. It's a touchscreen panel that lets the operator monitor and control the PLC system in real time. Common brands on site: Omron NB/NA series, Allen Bradley PanelView, AutomationDirect C-more." },
             { type: "heading", text: "Logging In" },
             { type: "steps", items: [

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PLC Tabletop Training Program · Module 4: Reading &amp; Troubleshooting Logic</title>
+<style>
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:1.5rem;color:#1e293b;line-height:1.45;}
+h1{font-size:0.95rem;color:#64748b;font-weight:600;margin:0 0 1rem 0;}
+.slide{page-break-after:always;margin-bottom:2rem;}
+.slide:last-child{page-break-after:auto;}
+.slide h2{color:#1e3a5f;font-size:1.05rem;margin:0 0 0.6rem 0;}
+.slide ul{margin:0;padding-left:1.2rem;}
+.slide li{margin:0.3rem 0;}
+@media print{.slide{page-break-after:always;}body{margin:1rem;}}
+</style>
+</head>
+<body>
+<h1>PLC Tabletop Training Program · Module 4: Reading &amp; Troubleshooting Logic</h1>
+<section class="slide">
+<h2>Module 4: Reading &amp; Troubleshooting Logic</h2>
+<ul>
+<li>PLC Tabletop Training Program · Hands-on Lab · 3.5 h</li>
+<li>v1.0 (April 2026)</li>
+</ul></section>
+<section class="slide">
+<h2>Learning objectives</h2>
+<ul>
+<li>Apply the 5-layer fault isolation model to systematically troubleshoot PLC issues</li>
+<li>Navigate the I/O dashboard to view real-time signal status</li>
+<li>Trace a signal from physical input through ladder logic to physical output</li>
+<li>Use forcing and monitoring tools safely and effectively</li>
+<li>Understand data types, tag structure, and variable scoping</li>
+</ul></section>
+<section class="slide">
+<h2>Overview</h2>
+<ul>
+<li>Using I/O dashboards, tag browsers, and ladder logic editors to trace signals and diagnose faults across all three platforms.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Structured Troubleshooting Methodology</h2>
+<ul>
+<li>The 5-layer fault isolation model — a repeatable framework for diagnosis</li>
+</ul></section>
+<section class="slide">
+<h2>Structured Troubleshooting Methodology (content)</h2>
+<ul>
+<li>Before diving into software tools, you need a systematic troubleshooting method. Random poking at the PLC wastes time. The 5-layer model isolates the fault location before you start fixing.</li>
+<li>→ The 5-Layer Fault Isolation Model</li>
+<li>When something isn't working, the fault exists in one of five layers. Work through them in order:</li>
+<li>• Physical Device — Is the field device itself working? Check sensor LEDs, listen for relay clicks, verify mechanical operation.</li>
+<li>• Wiring — Is the signal getting from the device to the PLC? Check terminal block connections, measure voltage with a multimeter, verify wire continuity.</li>
+<li>• I/O Module — Is the PLC module receiving/sending the signal? Check channel LEDs on the I/O card. A lit LED means the module sees the signal.</li>
+<li>• PLC Logic — Is the program processing the signal correctly? Go online and trace the ladder rung. Is a contact preventing power flow? Is a timer stuck?</li>
+<li>• Network/HMI — Is the information reaching the operator? Check HMI communication, verify tag mappings, confirm alarm configuration.</li>
+<li>[INFO] Key Principle: Software tells you what the PLC thinks it sees. A multimeter tells you what's actually there. Always verify physical reality against software status. If they disagree, the truth is in the physical measurement.</li>
+<li>→ Half-Split Troubleshooting</li>
+</ul></section>
+<section class="slide">
+<h2>Structured Troubleshooting Methodology (content)</h2>
+<ul>
+<li>Start at the midpoint of the signal path to halve your search space. If the I/O module LED is lit (layer 3 is good), the problem is either in logic (layer 4) or HMI (layer 5) — you've eliminated layers 1–3 in one check.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Data Types &amp; Tag Structure</h2>
+<ul>
+<li>Understanding BOOL, INT, REAL, and tag naming conventions</li>
+</ul></section>
+<section class="slide">
+<h2>Data Types &amp; Tag Structure (content)</h2>
+<ul>
+<li>Before reading tags in the I/O dashboard, you need to understand what you're looking at.</li>
+<li>Table: Data Type | Description | Example</li>
+<li>• BOOL | True/False, ON/OFF, 1/0 | Proximity sensor state, push button state</li>
+<li>• INT (16-bit) | Whole number -32,768 to 32,767 | Counter values, small setpoints</li>
+<li>• DINT (32-bit) | Whole number ±2.1 billion | High-speed counter values, encoder counts</li>
+<li>• REAL (floating point) | Decimal numbers | Temperature (72.5°F), pressure (45.3 PSI)</li>
+<li>• STRING | Text | HMI messages, recipe names</li>
+<li>→ Tag Naming Conventions</li>
+<li>Good tag names follow a prefix-based convention that tells you the function area at a glance:</li>
+<li>• SAFETY_EStop — safety function, E-stop circuit</li>
+</ul></section>
+<section class="slide">
+<h2>Data Types &amp; Tag Structure (content)</h2>
+<ul>
+<li>• MOTION_AxisHome — motion control, axis home position</li>
+<li>• HMI_CycleStart — HMI-triggered, cycle start command</li>
+<li>• CONV_ProxSensor1 — conveyor area, proximity sensor 1</li>
+<li>→ Global vs. Local Variables</li>
+<li>A global variable is accessible from any program block in the PLC project. A local (program-scoped) variable is only visible within its own routine. Most I/O tags and inter-program signals should be global. Temporary calculation variables can be local.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Reviewing Signals — Omron</h2>
+<ul>
+<li>I/O dashboard, variable monitoring, and live logic viewing in Sysmac Studio</li>
+</ul></section>
+<section class="slide">
+<h2>Reviewing Signals — Omron (content)</h2>
+<ul>
+<li>→ The I/O Dashboard</li>
+<li>Open the I/O dashboard to see all input and output signals in a single view. Key columns:</li>
+<li>• Node column: Which I/O node/module the signal is connected to. If blank, it's a global variable defined in logic.</li>
+<li>• Variable name: The tag name used in the ladder logic</li>
+<li>• Current value: Live value — TRUE/FALSE for BOOL, numeric for INT/REAL</li>
+<li>→ Live Logic Viewing</li>
+<li>• Go to the Programs tab and expand it</li>
+<li>• Double-click a program/routine to open the ladder logic editor</li>
+<li>• Click the Monitor button (or toggle to online view) to see live values</li>
+<li>• Contacts that are passing power show as highlighted/colored</li>
+</ul></section>
+<section class="slide">
+<h2>Reviewing Signals — Omron (content)</h2>
+<ul>
+<li>• Contacts that are blocking power show as not highlighted</li>
+<li>• Find the rung that is not working and identify which contact is blocking power flow</li>
+<li>[TIP] Cross-Reference: Right-click any tag in Sysmac Studio and select Cross Reference to see every rung where that tag is used. Essential for understanding complex programs.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Reviewing Signals — Allen Bradley</h2>
+<ul>
+<li>Monitor Tags, Tag Browser, and ladder logic tracing in Studio 5000</li>
+</ul></section>
+<section class="slide">
+<h2>Reviewing Signals — Allen Bradley (content)</h2>
+<ul>
+<li>→ I/O Configuration</li>
+<li>In the Controller Organizer (left panel), expand I/O Configuration. Click any I/O module to view tag values mapped to that module. This shows you the physical layer — what the module is actually receiving.</li>
+<li>→ Monitor Tags</li>
+<li>Go to Logic &gt; Monitor Tags (or press Ctrl+W while online). The Tag Browser shows all tags with live values. Filter by name, data type, or scope.</li>
+<li>→ Tracing Ladder Logic</li>
+<li>Open a routine and go online. Studio 5000 highlights the power flow through each rung in green. Work left to right on a rung to find which contact is blocking power (not highlighted). That contact's input condition is the one preventing the output from energizing.</li>
+<li>→ Forcing I/O</li>
+<li>Right-click a tag in Monitor Tags and select Force ON or Force OFF. Forces override the physical signal — use with extreme caution.</li>
+<li>[DANGER] Force Safety: Forcing an output ON bypasses all safety logic. Only force I/O for diagnostic purposes on a locked-out/safe machine. Always remove all forces when done — check the force indicator in the status bar. A forgotten force on a production machine can cause serious injury.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Reviewing Signals — Productivity Suite</h2>
+<ul>
+<li>Data View, live monitoring, and signal tracing in Productivity Suite</li>
+</ul></section>
+<section class="slide">
+<h2>Reviewing Signals — Productivity Suite (content)</h2>
+<ul>
+<li>→ Data View</li>
+<li>Go to View &gt; Data View (or click the Data View tab at the bottom). This shows a live table of all tag values: I/O points, internal memory bits, timers, and counters. The "Current Value" column updates in real time — discrete inputs show 0 (off) or 1 (on).</li>
+<li>→ Signal Tracing</li>
+<li>Open the ladder program and go online. Like the other platforms, power flow is visually highlighted. Identify blocked rungs by finding contacts that are not passing power, then investigate the associated physical device or upstream logic.</li>
+<li>Toggle a physical device and confirm the value changes in Data View to verify signal continuity from the field through to the PLC.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Physical Input → Software Response</h2>
+<ul>
+<li>After: Structured Troubleshooting Methodology</li>
+<li>Duration: 10 min</li>
+<li>With the I/O dashboard open on the projected screen and the bench visible, have a student activate the proximity sensor. The class watches the tag change in real time.</li>
+<li>Students take turns activating inputs while the class calls out which tag changed. Repeat with limit switch and push button. Then reverse — show an output tag and watch the physical device.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Force I/O — See It, Respect It</h2>
+<ul>
+<li>After: Reviewing Signals — Allen Bradley</li>
+<li>Duration: 10 min</li>
+<li>Force an output ON — students watch the light tower illuminate even though no logic commands it. Then force an input. Then remove forces and show normal operation.</li>
+<li>Students observe the physical result of forcing. Trainer asks: 'What could go wrong if you force an output ON and forget?' Students locate the force indicator in each platform.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Planted Fault — Full Signal Trace</h2>
+<ul>
+<li>After: Reviewing Signals — Productivity Suite</li>
+<li>Duration: 15 min</li>
+<li>Trainer pre-plants a fault (disconnected proximity sensor wire). Walk through the 5-layer model live: check output → check logic → check input tag → check module LED → check wiring → find disconnected wire.</li>
+<li>Students follow along and call out observations at each step. Guided walkthrough before independent scenarios in Module 7.</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>In the 5-layer fault isolation model, what is Layer 1?</li>
+<li>PLC Logic | Physical Device | Wiring | I/O Module</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>A PLC input tag shows 0, but you measure 24VDC at the I/O module terminal with a multimeter. What layer has the fault?</li>
+<li>Layer 1 — Physical Device | Layer 2 — Wiring | Layer 3 — I/O Module | Layer 4 — PLC Logic</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What does it mean when a contact is highlighted/colored in online ladder logic view?</li>
+<li>The contact has an error | The contact is forcing the output OFF | The contact is passing power (its condition is TRUE) | The contact has been modified recently</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What is the danger of forgetting to remove a forced output?</li>
+<li>It wastes PLC memory | It slows down the scan cycle | The output will stay ON regardless of safety logic, potentially causing injury | It corrupts the program file</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>A REAL data type tag reads 72.5. What kind of value could this represent?</li>
+<li>A Boolean state (ON/OFF) | A counter value | A temperature, pressure, or other continuous measurement | An error code</li>
+</ul></section>
+</body></html>

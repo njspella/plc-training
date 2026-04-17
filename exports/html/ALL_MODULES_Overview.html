@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PLC Tabletop Training Program — Overview</title>
+<style>
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:1.5rem;color:#1e293b;line-height:1.45;}
+h1{font-size:0.95rem;color:#64748b;font-weight:600;margin:0 0 1rem 0;}
+.slide{page-break-after:always;margin-bottom:2rem;}
+.slide:last-child{page-break-after:auto;}
+.slide h2{color:#1e3a5f;font-size:1.05rem;margin:0 0 0.6rem 0;}
+.slide ul{margin:0;padding-left:1.2rem;}
+.slide li{margin:0.3rem 0;}
+@media print{.slide{page-break-after:always;}body{margin:1rem;}}
+</style>
+</head>
+<body>
+<h1>PLC Tabletop Training Program — Overview</h1>
+<section class="slide">
+<h2>PLC Tabletop Training Program</h2>
+<ul>
+<li>Detailed Training Guide &amp; Technical Reference</li>
+<li>April 2026</li>
+</ul></section>
+<section class="slide">
+<h2>Module 0: Electrical Safety &amp; LOTO</h2>
+<ul>
+<li>Personnel safety fundamentals required before any hands-on work. Covers lockout/tagout, arc flash awareness, and safe work practices.</li>
+<li>Describe LOTO procedures (OSHA 29 CFR 1910.147) for PLC cabinets</li>
+<li>Identify when energized troubleshooting is permitted vs. when LOTO is required</li>
+<li>Understand arc flash PPE categories for PLC cabinet voltages</li>
+<li>Demonstrate safe multimeter use and proper CAT-rated equipment</li>
+</ul></section>
+<section class="slide">
+<h2>Module 1: PLC Hardware &amp; Components</h2>
+<ul>
+<li>Comprehensive walkthrough of PLC cabinet components, I/O modules, power distribution, and cabinet infrastructure.</li>
+<li>Identify every major component inside a PLC control cabinet from physical inspection</li>
+<li>Explain the function of the CPU, power supply, Ethernet board, I/O modules, and terminal blocks</li>
+<li>Distinguish between digital I/O and analog I/O modules and their applications</li>
+<li>Read a basic PLC wiring diagram and match terminal labels to physical wiring</li>
+<li>Understand cabinet infrastructure: fuses, DIN rail, grounding, and wire labeling</li>
+</ul></section>
+<section class="slide">
+<h2>Module 2: Safety &amp; Input/Output Devices</h2>
+<ul>
+<li>Input devices (sensors, switches, safety devices) and output devices (motors, relays, valves) — how they work and how they connect to the PLC.</li>
+<li>Identify the main input device types and describe the signal each sends to the PLC</li>
+<li>Identify the main output device types and describe how the PLC drives each</li>
+<li>Understand the difference between standard I/O and safety I/O (dual-channel, OSSD)</li>
+<li>Recognize additional field devices: photoelectric sensors, encoders, solenoid valves, VFDs</li>
+</ul></section>
+<section class="slide">
+<h2>Module 3: Software Setup &amp; PLC Connectivity</h2>
+<ul>
+<li>Installing PLC software, configuring IP addresses, and connecting to all three PLC platforms. Includes program backup/restore procedures.</li>
+<li>Configure a laptop IP address to communicate with a PLC on a given subnet</li>
+<li>Connect to an Omron NX1P2 using Sysmac Studio</li>
+<li>Connect to an Allen Bradley controller using Studio 5000</li>
+<li>Connect to a Productivity PLC using Productivity Suite</li>
+<li>Perform program upload (backup) and understand download procedures</li>
+</ul></section>
+<section class="slide">
+<h2>Module 4: Reading &amp; Troubleshooting Logic</h2>
+<ul>
+<li>Using I/O dashboards, tag browsers, and ladder logic editors to trace signals and diagnose faults across all three platforms.</li>
+<li>Apply the 5-layer fault isolation model to systematically troubleshoot PLC issues</li>
+<li>Navigate the I/O dashboard to view real-time signal status</li>
+<li>Trace a signal from physical input through ladder logic to physical output</li>
+<li>Use forcing and monitoring tools safely and effectively</li>
+<li>Understand data types, tag structure, and variable scoping</li>
+</ul></section>
+<section class="slide">
+<h2>Module 5: Area Scanner Programming</h2>
+<ul>
+<li>Programming and verifying the Omron OS32C area scanner — defining safety zones, configuring OSSD outputs, and physical verification.</li>
+<li>Program or verify the configuration of an Omron OS32C area scanner</li>
+<li>Define protective and warning zones using the OS32C Configuration Tool</li>
+<li>Confirm OSSD outputs are functioning correctly via PLC monitoring</li>
+<li>Physically verify zone boundaries with measurement</li>
+</ul></section>
+<section class="slide">
+<h2>Module 6: HMI Navigation &amp; Fault Clearing</h2>
+<ul>
+<li>Operating the HMI screen — login, alarm management, I/O status monitoring, and fault clearing procedures.</li>
+<li>Log into an HMI screen and navigate between key screens</li>
+<li>View and interpret active alarms and fault history</li>
+<li>Clear faults and reset the machine after a safe condition is restored</li>
+<li>Use the I/O status screen to verify field device communication</li>
+<li>Manually jog or operate outputs for maintenance testing</li>
+</ul></section>
+<section class="slide">
+<h2>Module 7: Scenario-Based Fault Exercises</h2>
+<ul>
+<li>Five realistic fault scenarios pre-staged on the bench. Diagnose and resolve each independently using the skills from Modules 1–6.</li>
+<li>Independently diagnose and resolve a tripped area scanner fault</li>
+<li>Identify and correct an IP connectivity failure</li>
+<li>Trace a missing sensor signal from PLC to field device</li>
+<li>Identify a logic fault (incorrect timer preset) by tracing the ladder rung</li>
+<li>Replace a faulty push button and verify proper operation</li>
+</ul></section>
+<section class="slide">
+<h2>Module 8: Advanced Manufacturing Specifics</h2>
+<ul>
+<li>Custom machine documentation, ladder logic building blocks, servo motor configuration, global variables, and adding I/O components to a PLC.</li>
+<li>Locate and use custom build documentation for Vermeer machines</li>
+<li>Understand core ladder logic instructions and their symbols</li>
+<li>Configure basic servo motor parameters in Sysmac Studio</li>
+<li>Create and use global variables with proper naming conventions</li>
+<li>Add I/O modules and devices to an existing PLC configuration</li>
+</ul></section>
+</body></html>

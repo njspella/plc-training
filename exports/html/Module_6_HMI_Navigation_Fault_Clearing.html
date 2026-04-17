@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PLC Tabletop Training Program · Module 6: HMI Navigation &amp; Fault Clearing</title>
+<style>
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:1.5rem;color:#1e293b;line-height:1.45;}
+h1{font-size:0.95rem;color:#64748b;font-weight:600;margin:0 0 1rem 0;}
+.slide{page-break-after:always;margin-bottom:2rem;}
+.slide:last-child{page-break-after:auto;}
+.slide h2{color:#1e3a5f;font-size:1.05rem;margin:0 0 0.6rem 0;}
+.slide ul{margin:0;padding-left:1.2rem;}
+.slide li{margin:0.3rem 0;}
+@media print{.slide{page-break-after:always;}body{margin:1rem;}}
+</style>
+</head>
+<body>
+<h1>PLC Tabletop Training Program · Module 6: HMI Navigation &amp; Fault Clearing</h1>
+<section class="slide">
+<h2>Module 6: HMI Navigation &amp; Fault Clearing</h2>
+<ul>
+<li>PLC Tabletop Training Program · Lecture + Lab · 2.5 h</li>
+<li>v1.0 (April 2026)</li>
+</ul></section>
+<section class="slide">
+<h2>Learning objectives</h2>
+<ul>
+<li>Log into an HMI screen and navigate between key screens</li>
+<li>View and interpret active alarms and fault history</li>
+<li>Clear faults and reset the machine after a safe condition is restored</li>
+<li>Use the I/O status screen to verify field device communication</li>
+<li>Manually jog or operate outputs for maintenance testing</li>
+</ul></section>
+<section class="slide">
+<h2>Overview</h2>
+<ul>
+<li>Operating the HMI screen — login, alarm management, I/O status monitoring, and fault clearing procedures.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: HMI Overview &amp; Login</h2>
+<ul>
+<li>What an HMI is, screen navigation, and user access levels</li>
+</ul></section>
+<section class="slide">
+<h2>HMI Overview &amp; Login (content)</h2>
+<ul>
+<li>→ What is an HMI?</li>
+<li>[Figure] HMI screen — the operator's window into the PLC system</li>
+<li>HMI stands for Human-Machine Interface. It's a touchscreen panel that lets the operator monitor and control the PLC system in real time. Common brands on site: Omron NB/NA series, Allen Bradley PanelView, AutomationDirect C-more.</li>
+<li>→ Logging In</li>
+<li>• Touch the screen to wake it — the home/overview screen will display</li>
+<li>• Look for a padlock icon, user icon, or "Login" button (typically upper-right corner)</li>
+<li>• Enter credentials using the on-screen keypad (check machine binder for default maintenance credentials)</li>
+<li>• Press Enter or OK to log in</li>
+<li>→ User Access Levels</li>
+<li>Table: Level | Typical Users | Permissions</li>
+</ul></section>
+<section class="slide">
+<h2>HMI Overview &amp; Login (content)</h2>
+<ul>
+<li>• Operator | Production operators | View status, clear minor alarms, start/stop cycles</li>
+<li>• Maintenance | Maintenance technicians | View I/O status, clear faults, manual jog, adjust setpoints</li>
+<li>• Engineering | Controls engineers, automation lead | Full access — modify screens, change configurations, adjust safety parameters</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Alarm Management &amp; Fault Clearing</h2>
+<ul>
+<li>Reading alarms, understanding fault codes, and restoring normal operation</li>
+</ul></section>
+<section class="slide">
+<h2>Alarm Management &amp; Fault Clearing (content)</h2>
+<ul>
+<li>→ Viewing Active Alarms</li>
+<li>Navigate to the Alarms screen (often a bell icon or dedicated Alarms button). Active alarms display the alarm code, description, timestamp, and associated tag name. Most recent alarms appear at the top.</li>
+<li>→ Fault Clearing Procedure</li>
+<li>• Read the alarm — note the alarm code, description, and timestamp. Take a photo for documentation.</li>
+<li>• Identify the root cause — use the alarm description and tag name to determine what triggered the fault. Open PLC software if needed to trace the associated logic.</li>
+<li>• Correct the physical condition — clear an obstruction, replace a sensor, reset a safety device, fix a wiring issue. Never clear an alarm without addressing the cause.</li>
+<li>• Clear the alarm on the HMI — select the alarm and press Clear/Reset. Some alarms require the fault condition to be gone before they can be cleared.</li>
+<li>• Verify normal operation — confirm the alarm doesn't immediately return and the machine enters Ready state.</li>
+<li>[DANGER] Never 'Clear and Hope': Clearing an alarm without fixing the underlying cause is a recipe for recurring faults, production downtime, and potential safety incidents. If the alarm comes back after clearing, the root cause hasn't been resolved.</li>
+<li>→ I/O Status Screen</li>
+</ul></section>
+<section class="slide">
+<h2>Alarm Management &amp; Fault Clearing (content)</h2>
+<ul>
+<li>The I/O status screen shows real-time states of all inputs and outputs. Use it to verify sensors are communicating, outputs are energizing, and the physical world matches what the PLC reports.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Manual Control &amp; Setpoint Adjustment</h2>
+<ul>
+<li>Jogging outputs, testing devices, and adjusting parameters from the HMI</li>
+</ul></section>
+<section class="slide">
+<h2>Manual Control &amp; Setpoint Adjustment (content)</h2>
+<ul>
+<li>→ Manual Jog/Output Control</li>
+<li>During maintenance, you may need to manually operate individual outputs — jog a motor, extend a cylinder, energize a solenoid — for testing or positioning. This is done from the HMI's Manual Control screen (maintenance access required).</li>
+<li>[WARNING] Safety First: Manual mode bypasses the normal automatic sequence. Ensure the area is clear, safety guards are functional, and all personnel are aware before jogging any output.</li>
+<li>→ Setpoint Adjustment</li>
+<li>Timers, counters, speed references, and recipe parameters can be adjusted from the HMI. Always note the original value before changing it. Changes take effect immediately on most systems.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Live HMI Walkthrough</h2>
+<ul>
+<li>After: HMI Overview &amp; Login</li>
+<li>Duration: 10 min</li>
+<li>At the bench HMI, log in, navigate to key screens: overview, I/O status, alarms, manual control. Activate a proximity sensor and show the I/O status screen reflect it.</li>
+<li>Each student navigates to a different screen on the HMI. Students confirm they can find the I/O status screen and identify physical device states.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Fault Injection → Alarm → Clearance</h2>
+<ul>
+<li>After: Alarm Management &amp; Fault Clearing</li>
+<li>Duration: 15 min</li>
+<li>Trainer creates a fault (blocks area scanner). Walk through: read alarm → identify cause → clear obstruction → clear alarm → verify normal operation.</li>
+<li>After trainer demo, each student performs the full cycle: trainer injects a fault → student reads alarm → fixes physical cause → clears alarm → verifies.</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What is the correct order for clearing a fault on the HMI?</li>
+<li>Clear the alarm first, then investigate the cause | Read the alarm → Identify and fix the root cause → Clear the alarm → Verify normal operation | Restart the PLC → Clear all alarms → Resume production | Call the supervisor and wait</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>The HMI shows three access levels. What can a Maintenance-level user do that an Operator cannot?</li>
+<li>View production statistics | Access I/O status, clear faults, manual jog, and adjust setpoints | Modify HMI screens | Nothing — they have the same access</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>An alarm appears on the HMI. You clear it, but it immediately returns. What does this mean?</li>
+<li>The HMI is malfunctioning | The root cause of the fault has not been resolved | You need to restart the PLC | The alarm has a 5-minute timeout</li>
+</ul></section>
+</body></html>

@@ -1,0 +1,4 @@
+# PowerPoint export (Word uses stdlib only). Prefer 1.x for best desktop PowerPoint compatibility.
+python-pptx>=1.0.0
+# Optional: slide PDFs in exports/pdf/ — Gmail-friendly if .pptx still fails after ZIP + timestamps.
+fpdf2>=2.7.0

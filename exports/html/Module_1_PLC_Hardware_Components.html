@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PLC Tabletop Training Program · Module 1: PLC Hardware &amp; Components</title>
+<style>
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:1.5rem;color:#1e293b;line-height:1.45;}
+h1{font-size:0.95rem;color:#64748b;font-weight:600;margin:0 0 1rem 0;}
+.slide{page-break-after:always;margin-bottom:2rem;}
+.slide:last-child{page-break-after:auto;}
+.slide h2{color:#1e3a5f;font-size:1.05rem;margin:0 0 0.6rem 0;}
+.slide ul{margin:0;padding-left:1.2rem;}
+.slide li{margin:0.3rem 0;}
+@media print{.slide{page-break-after:always;}body{margin:1rem;}}
+</style>
+</head>
+<body>
+<h1>PLC Tabletop Training Program · Module 1: PLC Hardware &amp; Components</h1>
+<section class="slide">
+<h2>Module 1: PLC Hardware &amp; Components</h2>
+<ul>
+<li>PLC Tabletop Training Program · Lecture + Lab · 2.5 h</li>
+<li>v1.0 (April 2026)</li>
+</ul></section>
+<section class="slide">
+<h2>Learning objectives</h2>
+<ul>
+<li>Identify every major component inside a PLC control cabinet from physical inspection</li>
+<li>Explain the function of the CPU, power supply, Ethernet board, I/O modules, and terminal blocks</li>
+<li>Distinguish between digital I/O and analog I/O modules and their applications</li>
+<li>Read a basic PLC wiring diagram and match terminal labels to physical wiring</li>
+<li>Understand cabinet infrastructure: fuses, DIN rail, grounding, and wire labeling</li>
+</ul></section>
+<section class="slide">
+<h2>Overview</h2>
+<ul>
+<li>Comprehensive walkthrough of PLC cabinet components, I/O modules, power distribution, and cabinet infrastructure.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: PLC Cabinet Overview</h2>
+<ul>
+<li>Major components and their functions inside a PLC control cabinet</li>
+</ul></section>
+<section class="slide">
+<h2>PLC Cabinet Overview (content)</h2>
+<ul>
+<li>A PLC (Programmable Logic Controller) checks signals from sensors or switches (inputs), runs through a set of programmed instructions based on those inputs and logic, and controls motors, lights, valves, or conveyors (the outputs).</li>
+<li>The PLC cabinet houses all the core control components. Understanding what's inside — and what each component does — is the foundation of every troubleshooting task.</li>
+<li>→ PLC CPU Controller</li>
+<li>[Figure] PLC CPU (example: Siemens SIMATIC S7-1200) — the brain of the system; your site may use Omron, Allen-Bradley, or AutomationDirect processors</li>
+<li>The CPU is the brain of the PLC. It executes the ladder logic program in a continuous scan cycle: read all inputs → execute program logic → update all outputs → repeat. The scan time (typically 1–20ms) determines how fast the PLC responds to changes.</li>
+<li>• RUN LED: Solid green = program is executing normally</li>
+<li>• ERR LED: Flashing red = minor fault, solid red = major fault (CPU halted)</li>
+<li>• Mode switch: Selects RUN, PROGRAM, or REMOTE mode</li>
+<li>[INFO] PLC Operating Modes: RUN: Normal operation — program executes, outputs are active.PROGRAM: Program is halted — outputs are de-energized. Used for downloading programs.REMOTE: Mode can be changed from software. Most common setting for production machines.</li>
+<li>→ Power Supply</li>
+</ul></section>
+<section class="slide">
+<h2>PLC Cabinet Overview (content)</h2>
+<ul>
+<li>[Figure] DIN-rail 24 V DC power supply — converts facility AC to 24 VDC for the PLC and field I/O</li>
+<li>The power supply converts facility AC voltage (120VAC or 240VAC) to 24VDC for the PLC modules and field devices. Key specs to note: input voltage range, output current capacity, and whether it has redundancy or short-circuit protection.</li>
+<li>→ Ethernet Communication Board</li>
+<li>[Figure] Industrial Ethernet hardware (example: Siemens ESM, 8× RJ45) — EtherNet/IP, Modbus TCP, and EtherCAT use similar Ethernet ports and link/activity LEDs</li>
+<li>Enables EtherNet/IP or EtherCAT communication between the PLC, HMI screens, other PLCs, and engineering workstations. Check the link and activity LEDs to verify connectivity.</li>
+<li>→ PLC Families On Site</li>
+<li>Table: Platform | CPU Model | Protocol | Software</li>
+<li>• Omron | NX1P2, CP1L | EtherCAT | Sysmac Studio</li>
+<li>• Allen Bradley | CompactLogix | EtherNet/IP | Studio 5000</li>
+<li>• AutomationDirect | Productivity P2000 | Modbus TCP | Productivity Suite</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Digital I/O Modules</h2>
+<ul>
+<li>Digital input and output cards — wiring, diagnostics, and replacement</li>
+</ul></section>
+<section class="slide">
+<h2>Digital I/O Modules (content)</h2>
+<ul>
+<li>→ Digital Input Modules (DI Cards)</li>
+<li>Digital input modules accept discrete on/off signals (typically 24VDC). Each channel reads a binary state — 1 (ON/TRUE) or 0 (OFF/FALSE). Field devices like sensors, switches, and push buttons wire to the module's screw terminals.</li>
+<li>• Sinking vs. Sourcing: Sinking inputs accept current (NPN sensors provide current path to ground). Sourcing inputs provide current (PNP sensors switch the positive supply). Most modern PLCs auto-detect, but wiring errors between NPN/PNP cause phantom signals.</li>
+<li>• Channel LEDs: Each input channel has an LED — green/lit means that input is seeing a signal (ON). This is your first diagnostic tool.</li>
+<li>• Common grouping: Inputs may share a common terminal in groups of 4, 8, or 16. If the common wire breaks, the entire group goes dead.</li>
+<li>[TIP] Quick Diagnostic: If a sensor's own LED is lit but the PLC input module LED is dark, the problem is between the sensor and the module — check wiring, terminal connections, and fuses.</li>
+<li>→ Digital Output Modules (DO Cards)</li>
+<li>Digital output modules drive discrete on/off loads. The PLC sets output bits to ON/OFF, and the module energizes or de-energizes the corresponding terminal.</li>
+<li>Table: Output Type | Characteristics | Best For</li>
+<li>• Relay | Mechanical contact, audible click, handles AC or DC, higher current (2A+) | Motor contactors, solenoid valves, mixed-voltage loads</li>
+</ul></section>
+<section class="slide">
+<h2>Digital I/O Modules (content)</h2>
+<ul>
+<li>• Transistor (sinking/sourcing) | Solid-state, silent, DC only, fast switching, lower current | High-speed applications, indicator lights, low-current solenoids</li>
+<li>• Triac | Solid-state, AC only, silent, moderate speed | AC-powered devices, heaters</li>
+<li>[WARNING] Common Failure Mode: Relay output contacts wear over time (especially with inductive loads). If an output module LED is lit but the connected device doesn't respond, measure voltage at the output terminal — a worn relay contact may show high resistance or no continuity.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Analog I/O Modules</h2>
+<ul>
+<li>Analog input and output modules — signal types, scaling, and calibration</li>
+</ul></section>
+<section class="slide">
+<h2>Analog I/O Modules (content)</h2>
+<ul>
+<li>→ Analog Input Modules (AI Cards)</li>
+<li>Analog input modules read continuous signals rather than simple on/off states. They convert real-world measurements (pressure, temperature, flow, position) into digital values the PLC can process.</li>
+<li>Table: Signal Type | Range | Common Use</li>
+<li>• 4–20mA | Current loop | Pressure transmitters, level sensors, flow meters — most common industrial standard</li>
+<li>• 0–10VDC | Voltage | Potentiometers, some sensor outputs, speed references</li>
+<li>• 0–5VDC | Voltage | Legacy sensors, some load cells</li>
+<li>• Thermocouple | mV (type-specific) | Temperature measurement (requires TC-specific module)</li>
+<li>• RTD | Resistance | Precision temperature measurement (requires RTD-specific module)</li>
+<li>[INFO] Why 4–20mA Instead of 0–20mA?: The 4mA "live zero" is intentional — if you read 0mA, it means a broken wire, not a zero reading. This is the single most useful diagnostic feature of the 4–20mA standard.</li>
+<li>→ Analog Output Modules (AO Cards)</li>
+</ul></section>
+<section class="slide">
+<h2>Analog I/O Modules (content)</h2>
+<ul>
+<li>Analog output modules generate continuous control signals. The PLC writes a value, and the module outputs a proportional voltage or current signal to control devices like VFDs, proportional valves, or chart recorders.</li>
+<li>• 4–20mA output: Used for driving valve positioners and remote setpoints. 2-wire vs. 4-wire configurations matter for wiring.</li>
+<li>• 0–10VDC output: Common for VFD speed references and dimmer controls.</li>
+<li>• Scaling: The PLC stores values as raw integers (e.g., 0–4095 for 12-bit, 0–65535 for 16-bit). The program scales this to engineering units.</li>
+<li>[TIP] Troubleshooting Analog Signals: Use a milliamp clamp meter or process calibrator to verify the actual signal at the terminal. If the PLC shows a good value but the field device isn't responding, the problem is downstream. If the PLC shows an out-of-range value, check the wiring and transmitter.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Cabinet Infrastructure</h2>
+<ul>
+<li>DIN rail, fuses, grounding, power distribution, and wire labeling</li>
+</ul></section>
+<section class="slide">
+<h2>Cabinet Infrastructure (content)</h2>
+<ul>
+<li>→ DIN Rail Mounting</li>
+<li>35mm top-hat DIN rail (EN 60715) is the universal standard for mounting PLC modules, terminal blocks, relays, circuit breakers, and power supplies. Every component in the cabinet sits on it.</li>
+<li>• Modules clip onto DIN rail via a spring-loaded tab at the bottom</li>
+<li>• To remove: insert a flat-blade screwdriver into the release tab and lever the module forward</li>
+<li>• Ensure proper spacing between components for heat dissipation per manufacturer specs</li>
+<li>→ Fuses &amp; Circuit Breakers</li>
+<li>Fuses and miniature circuit breakers (MCBs) protect the PLC power supply, output modules, and field devices from overcurrent. A blown fuse is one of the most common and easiest-to-fix causes of apparent PLC output failures.</li>
+<li>[DANGER] Check Fuses First!: Before chasing a software problem, always check physical fuses. A blown fuse on an output circuit makes the PLC output appear to fail — the PLC commands the output ON (LED is lit on the module), but the field device doesn't respond because the fuse is blown.</li>
+<li>→ 24VDC Power Distribution</li>
+<li>The 24VDC output from the PLC power supply must be distributed to input modules, sensors, and some output devices. This is done via power distribution terminal blocks or fused distribution blocks. A single shorted sensor can drag down the entire 24VDC bus if distribution is not fused — taking out dozens of inputs simultaneously.</li>
+</ul></section>
+<section class="slide">
+<h2>Cabinet Infrastructure (content)</h2>
+<ul>
+<li>→ Grounding &amp; Bonding</li>
+<li>Proper earth grounding prevents analog signal noise, intermittent communication faults, false input triggers, and ESD damage. Key practices:</li>
+<li>• Star-point grounding: All ground wires connect to a single ground bus bar, which connects to building ground</li>
+<li>• Cable shield grounding: Shield drain wires land on the ground bus at one end only to avoid ground loops</li>
+<li>• DIN rail grounding: DIN rail is bonded to the cabinet ground bus</li>
+<li>• Separate safety earth from signal/analog ground references</li>
+<li>→ Wire Labeling &amp; Cable Management</li>
+<li>Proper wire labeling using heat-shrink markers or wrap-around labels matched to the wiring diagram is critical for maintenance. When you open a cabinet at 2 AM during an emergency, labeled wires are the difference between a 15-minute fix and a 4-hour nightmare.</li>
+<li>• Wire duct (Panduit) keeps wires organized and accessible</li>
+<li>• Ferrules on stranded wire ends prevent fraying and loose connections</li>
+</ul></section>
+<section class="slide">
+<h2>Cabinet Infrastructure (content)</h2>
+<ul>
+<li>• Every wire should be labeled at both ends matching the wiring diagram</li>
+<li>→ Main Disconnect Switch</li>
+<li>The main power disconnect on the cabinet door is the primary LOTO point. It's required by NFPA 79 and NEC. Always verify zero energy after turning off the disconnect — some circuits (UPS-fed or external convenience outlets) may remain live.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Live Cabinet Identification</h2>
+<ul>
+<li>After: PLC Cabinet Overview</li>
+<li>Duration: 10 min</li>
+<li>Walk to the tabletop bench. Trainer points to each major component: power supply (show input voltage label, output 24VDC), CPU module (show RUN/ERR LEDs, mode switch), Ethernet port (show link/activity LEDs).</li>
+<li>Each student physically points to and names: the CPU on each of the three PLCs, the power supply, and at least one input and one output module.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Wiring Trace Exercise</h2>
+<ul>
+<li>After: Digital I/O Modules</li>
+<li>Duration: 15 min</li>
+<li>Pick one input device (e.g., proximity sensor). Starting at the sensor, physically trace the wire through cable duct to the terminal block, then to the I/O module terminal. Show the wiring diagram side-by-side.</li>
+<li>Students each select a different device and trace its wiring from device → terminal block → I/O module, then report which terminal block number, I/O slot, and channel.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Three-Platform Comparison</h2>
+<ul>
+<li>After: Cabinet Infrastructure</li>
+<li>Duration: 10 min</li>
+<li>Stand at the bench with all three PLCs visible. Point out physical differences: module form factor, how I/O attaches, Ethernet ports, DIP switches, and size differences.</li>
+<li>Students note one physical difference between platforms they find surprising. Brief group discussion.</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What does a solid red ERR LED on a PLC CPU indicate?</li>
+<li>Normal operation | Minor fault — program still running | Major fault — CPU halted, outputs de-energized | Communication error only</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>A digital input module channel LED is dark, but the proximity sensor's own LED is lit. Where is the most likely problem?</li>
+<li>The PLC program has a bug | The wiring between the sensor and the module | The sensor is faulty | The CPU is in PROGRAM mode</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>You read 0mA on a 4–20mA pressure transmitter circuit. What does this indicate?</li>
+<li>Zero pressure — everything is normal | A broken wire or disconnected transmitter | The transmitter is reading negative pressure | The analog module is faulty</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>Why should fuses be checked BEFORE troubleshooting in PLC software?</li>
+<li>Fuses are expensive and should be checked regularly | A blown fuse can make an output appear to fail even though the PLC is commanding it ON | PLC software cannot detect fuse status | It's an OSHA requirement</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What is the purpose of star-point grounding in a PLC cabinet?</li>
+<li>To provide backup power | To prevent ground loops and ensure all ground paths converge at a single reference point | To increase cable length capacity | To protect against lightning</li>
+</ul></section>
+</body></html>

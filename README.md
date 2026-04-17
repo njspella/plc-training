@@ -2,6 +2,38 @@
 
 Single-page training app: modules, slide-style lessons, quizzes, scenarios, and browser text-to-speech.
 
+## Slide hardware photos (HTML app)
+
+Lessons use real Wikimedia Commons photos under `images/` (see `scripts/commons_images.py` and paths in `js/data.js`). The HTML app **tries local files first**; if a file is missing (for example before you run the downloader), the same photo is loaded **from** `upload.wikimedia.org` using `js/commonsImageUrls.js` (generated from the Python manifest).
+
+**Download once** to cache photos under `images/` (faster, works offline, no hotlink):
+
+```bash
+npm run download-images
+# or: python3 scripts/download_slide_images.py
+```
+
+After editing `COMMONS_IMAGES` in `scripts/commons_images.py`, regenerate the JS map:
+
+```bash
+npm run gen-commons-urls
+# or: python3 scripts/emit_commons_image_urls_js.py
+```
+
+GitHub Actions **Deploy to GitHub Pages** runs the download script before copying the site, so deployed builds include the image files when the fetch succeeds.
+
+If downloads fail with **connection reset** or **proxy CONNECT** errors, try a **direct** connection to Wikimedia (bypasses `HTTPS_PROXY` for the `curl` step):
+
+```bash
+WIKIMEDIA_DIRECT=1 npm run download-images
+```
+
+Re-download everything (overwrites existing files):
+
+```bash
+DOWNLOAD_IMAGES_FORCE=1 npm run download-images
+```
+
 ## Publish on GitHub Pages (free, public URL)
 
 1. Create a **new public repository** on GitHub (e.g. `plc-training`).
@@ -36,7 +68,20 @@ Regenerate after editing `js/data.js`:
 npm run generate-offline
 ```
 
-(Requires **Node** and **Python 3** — no extra pip/npm packages.)
+The last step builds **`exports/PLC_Training_Offline_Exports.zip`** (even if optional PDFs are skipped). If you only run `generate_offline_ooxml.py` by hand, run `python3 scripts/generate_offline_pdf.py` afterward to create that ZIP.
+
+Requires **Node** and **Python 3** (stdlib only). **PowerPoint** `.pptx` files are always generated using a **stdlib OOXML** writer (valid DrawingML so desktop PowerPoint can open them). Optional **`python-pptx`** adds the same **Vermeer** look as the web app (navy header, gold accent, light gray content area). **Without it**, the stdlib exporter still **embeds lesson images** in `.pptx` when remote URLs download or `images/...` paths exist (cache: `exports/.offline_image_cache/`). One-liner when `pip` works: `npm run generate-offline:deps`.
+
+```bash
+pip install -r scripts/requirements-offline.txt
+# or: pip install python-pptx
+```
+
+**Word** `.docx` files use the same script and need no extra packages.
+
+**If PowerPoint or Outlook preview says the file is corrupt or unreadable:** regenerate with the latest `scripts/generate_offline_ooxml.py` (the stdlib `.pptx` writer now includes a full Office-style package: `notesSz`, slide master IDs, theme part, and layout links—older builds were too minimal for some Microsoft apps). Then copy fresh files from `exports/powerpoint/`. Installing **`python-pptx`** (`pip install -r scripts/requirements-offline.txt`) uses the library generator instead and is the most compatible option.
+
+**Sending by Gmail (or any mail):** After `npm run generate-offline`, attach **`exports/PLC_Training_Offline_Exports.zip`** (built automatically). Do not open `.pptx` from Gmail’s web preview—download the ZIP, extract it, then open files in **desktop** PowerPoint. The archive includes **`exports/pdf/`** — **PDF versions of each PowerPoint** when **LibreOffice** is installed (`soffice` on `PATH`; e.g. `apt install libreoffice`). Those PDFs match the `.pptx` layout. If LibreOffice is missing, the script falls back to **fpdf2** (pip) or printable **HTML**. PDFs usually survive email where raw Office files do not. For the most reliable handoff, upload the ZIP to **Google Drive** and share a link. Pass `--no-export-zip` to `scripts/generate_offline_pdf.py` if you need to skip creating the ZIP.
 
 Outputs:
 
@@ -48,8 +93,11 @@ Outputs:
 | `exports/word/Escalation_Procedures.docx` | Escalation levels + documentation checklist |
 | `exports/word/Knowledge_Check_Trainee.docx` | Written knowledge check for trainees to complete |
 | `exports/word/Knowledge_Check_Answer_Key.docx` | Instructor answer key |
+| `exports/pdf/*.pdf` | **PowerPoint decks as PDF** (LibreOffice `soffice` converts each `.pptx`); else **fpdf2** text PDFs if pip-installed |
+| `exports/html/*.html` | Printable slides (fallback if no LibreOffice and no fpdf2): browser → Print → Save as PDF |
+| `exports/PLC_Training_Offline_Exports.zip` | PowerPoint + Word + PDFs + `README-Email.txt` (best Gmail attachment) |
 
-Implementation: `scripts/export_training_data.js` → `scripts/training_data.json`, then `scripts/generate_offline_ooxml.py` builds OOXML (stdlib only).
+Implementation: `scripts/export_training_data.js` → `scripts/training_data.json`, then `scripts/generate_offline_ooxml.py` builds Word OOXML (stdlib) and PowerPoint (stdlib OOXML, or **python-pptx** when installed for themed bars), then `scripts/generate_offline_pdf.py` builds **`exports/pdf/`** from those `.pptx` files via **LibreOffice** when available, otherwise **fpdf2**, otherwise **HTML**.
 
 If PowerPoint offers to **repair** a file, accept it, or paste slides into your corporate template and apply the **Slide Master** from your official Vermeer deck for pixel-perfect branding.
 

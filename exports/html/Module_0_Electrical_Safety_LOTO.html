@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PLC Tabletop Training Program · Module 0: Electrical Safety &amp; LOTO</title>
+<style>
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:1.5rem;color:#1e293b;line-height:1.45;}
+h1{font-size:0.95rem;color:#64748b;font-weight:600;margin:0 0 1rem 0;}
+.slide{page-break-after:always;margin-bottom:2rem;}
+.slide:last-child{page-break-after:auto;}
+.slide h2{color:#1e3a5f;font-size:1.05rem;margin:0 0 0.6rem 0;}
+.slide ul{margin:0;padding-left:1.2rem;}
+.slide li{margin:0.3rem 0;}
+@media print{.slide{page-break-after:always;}body{margin:1rem;}}
+</style>
+</head>
+<body>
+<h1>PLC Tabletop Training Program · Module 0: Electrical Safety &amp; LOTO</h1>
+<section class="slide">
+<h2>Module 0: Electrical Safety &amp; LOTO</h2>
+<ul>
+<li>PLC Tabletop Training Program · Lecture · 0.5 h</li>
+<li>v1.0 (April 2026)</li>
+</ul></section>
+<section class="slide">
+<h2>Learning objectives</h2>
+<ul>
+<li>Describe LOTO procedures (OSHA 29 CFR 1910.147) for PLC cabinets</li>
+<li>Identify when energized troubleshooting is permitted vs. when LOTO is required</li>
+<li>Understand arc flash PPE categories for PLC cabinet voltages</li>
+<li>Demonstrate safe multimeter use and proper CAT-rated equipment</li>
+</ul></section>
+<section class="slide">
+<h2>Overview</h2>
+<ul>
+<li>Personnel safety fundamentals required before any hands-on work. Covers lockout/tagout, arc flash awareness, and safe work practices.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Lockout/Tagout for PLC Cabinets</h2>
+<ul>
+<li>When and how to lock out a PLC cabinet safely</li>
+</ul></section>
+<section class="slide">
+<h2>Lockout/Tagout for PLC Cabinets (content)</h2>
+<ul>
+<li>Before any hands-on work with PLC equipment, you must understand the difference between troubleshooting (which may be performed energized under specific conditions) and repair/maintenance (which requires full lockout/tagout).</li>
+<li>[DANGER] Critical Safety Rule: Never perform component replacement, wiring changes, or module swaps on an energized cabinet. LOTO is mandatory for all physical modifications.</li>
+<li>→ LOTO Procedure for PLC Cabinets</li>
+<li>• Notify all affected personnel that the equipment will be locked out</li>
+<li>• Identify the main disconnect switch on the PLC cabinet door (rotary disconnect or MCCB with door-interlock handle)</li>
+<li>• Shut down the controlled equipment through normal stopping procedures</li>
+<li>• Move the disconnect to the OFF position</li>
+<li>• Apply your personal lock and tag to the disconnect — each person working on the cabinet applies their own lock</li>
+<li>• Verify zero energy: use a CAT III or CAT IV rated multimeter to confirm no voltage is present at the PLC power supply input terminals and any auxiliary power feeds</li>
+<li>• Check for stored energy — capacitors in VFDs and servo drives may retain charge after disconnect</li>
+</ul></section>
+<section class="slide">
+<h2>Lockout/Tagout for PLC Cabinets (content)</h2>
+<ul>
+<li>[WARNING] Watch For: Some PLC cabinets have multiple power sources — a main 480VAC feed, a separate 120VAC convenience circuit, and possibly a UPS. All sources must be identified and locked out.</li>
+<li>→ Energized Troubleshooting — When Is It Permitted?</li>
+<li>Under NFPA 70E, live electrical work is permitted when de-energizing creates a greater hazard or when the task is infeasible without power. For PLC troubleshooting, this typically means:</li>
+<li>• Reading PLC status LEDs, HMI screens, and I/O module indicators (visual inspection only)</li>
+<li>• Connecting a laptop to the PLC's Ethernet port for software monitoring</li>
+<li>• Using a multimeter to measure voltages at terminal blocks (with appropriate PPE)</li>
+<li>• Temporarily forcing I/O in software for diagnostic purposes</li>
+<li>Any time you need to disconnect wires, swap modules, or replace components, you must lock out first.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Arc Flash Awareness &amp; Safe Practices</h2>
+<ul>
+<li>PPE requirements and safe work practices for electrical work</li>
+</ul></section>
+<section class="slide">
+<h2>Arc Flash Awareness &amp; Safe Practices (content)</h2>
+<ul>
+<li>Arc flash is an explosive release of energy caused by an electrical fault. While rare at 24VDC control voltages, PLC cabinets often contain 480VAC power feeds, 240VAC heater circuits, or 120VAC auxiliary power that pose real arc flash risk.</li>
+<li>→ Reading Arc Flash Labels</li>
+<li>Every electrical panel should have an arc flash label showing the incident energy level (in cal/cm²), the arc flash boundary, and the required PPE category. Before opening any cabinet, read this label.</li>
+<li>Table: PPE Category | Typical Energy | Required PPE | Typical Application</li>
+<li>• Cat 1 | 4 cal/cm² | Arc-rated shirt, safety glasses | 24VDC control panels only</li>
+<li>• Cat 2 | 8 cal/cm² | Arc-rated shirt/pants, face shield | 120/240VAC with limited fault current</li>
+<li>• Cat 3 | 25 cal/cm² | Arc flash suit, hood | 480VAC motor control centers</li>
+<li>• Cat 4 | 40 cal/cm² | Full arc flash suit, double-layer | High-energy 480VAC+ systems</li>
+<li>→ Safe Multimeter Practices</li>
+<li>• CAT Rating: Use a CAT III rated meter minimum for PLC cabinet work. CAT IV for work at or near the service entrance.</li>
+</ul></section>
+<section class="slide">
+<h2>Arc Flash Awareness &amp; Safe Practices (content)</h2>
+<ul>
+<li>• Test leads: Inspect leads for cracked insulation before every use. Replace damaged leads immediately.</li>
+<li>• Probe technique: Use one hand whenever possible. Hook one lead, then probe with the other.</li>
+<li>• Verify your meter: Test on a known live source before and after testing a de-energized circuit.</li>
+<li>[INFO] For This Training: The tabletop PLC bench operates at 24VDC and 120VAC. While the risk level is lower than production equipment, we will practice the same safe work habits here that you'll use on the plant floor.</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>When is LOTO required for PLC cabinet work?</li>
+<li>Only during a complete system shutdown | Any time you need to disconnect wires, swap modules, or replace components | Only when working above 480VAC | Only when the supervisor says so</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What should you do FIRST when approaching an unfamiliar PLC cabinet?</li>
+<li>Open the door and look inside | Read the arc flash label on the outside | Connect your laptop | Turn off the main disconnect</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>A PLC cabinet has both a 480VAC main feed and a separate 120VAC UPS. You lock out only the main disconnect. Is the cabinet safe to work on?</li>
+<li>Yes — the main disconnect covers everything | No — the UPS is a separate source and must also be locked out | Yes — 120VAC is not dangerous | It depends on the work being done</li>
+</ul></section>
+</body></html>

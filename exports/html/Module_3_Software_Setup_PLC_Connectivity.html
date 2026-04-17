@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>PLC Tabletop Training Program · Module 3: Software Setup &amp; PLC Connectivity</title>
+<style>
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:1.5rem;color:#1e293b;line-height:1.45;}
+h1{font-size:0.95rem;color:#64748b;font-weight:600;margin:0 0 1rem 0;}
+.slide{page-break-after:always;margin-bottom:2rem;}
+.slide:last-child{page-break-after:auto;}
+.slide h2{color:#1e3a5f;font-size:1.05rem;margin:0 0 0.6rem 0;}
+.slide ul{margin:0;padding-left:1.2rem;}
+.slide li{margin:0.3rem 0;}
+@media print{.slide{page-break-after:always;}body{margin:1rem;}}
+</style>
+</head>
+<body>
+<h1>PLC Tabletop Training Program · Module 3: Software Setup &amp; PLC Connectivity</h1>
+<section class="slide">
+<h2>Module 3: Software Setup &amp; PLC Connectivity</h2>
+<ul>
+<li>PLC Tabletop Training Program · Hands-on Lab · 3.5 h</li>
+<li>v1.0 (April 2026)</li>
+</ul></section>
+<section class="slide">
+<h2>Learning objectives</h2>
+<ul>
+<li>Configure a laptop IP address to communicate with a PLC on a given subnet</li>
+<li>Connect to an Omron NX1P2 using Sysmac Studio</li>
+<li>Connect to an Allen Bradley controller using Studio 5000</li>
+<li>Connect to a Productivity PLC using Productivity Suite</li>
+<li>Perform program upload (backup) and understand download procedures</li>
+</ul></section>
+<section class="slide">
+<h2>Overview</h2>
+<ul>
+<li>Installing PLC software, configuring IP addresses, and connecting to all three PLC platforms. Includes program backup/restore procedures.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: IP Address Configuration</h2>
+<ul>
+<li>Setting your laptop IP to communicate with PLCs on any subnet</li>
+</ul></section>
+<section class="slide">
+<h2>IP Address Configuration (content)</h2>
+<ul>
+<li>Every PLC connection starts with IP address configuration. Your laptop must be on the same subnet as the PLC to communicate.</li>
+<li>→ Step-by-Step: Setting Your IP Address</li>
+<li>• Open the Windows search bar and type Network Connections</li>
+<li>• Double-click the Ethernet adapter showing "Unidentified Network" (this is the one connected to the PLC)</li>
+<li>• Click Properties, enter your username and password if prompted</li>
+<li>• Scroll to Internet Protocol Version 4 (TCP/IPv4) and double-click</li>
+<li>• Select Use the following IP address</li>
+<li>• Set the first three octets to match the PLC's IP. Set the last octet to a unique number (not the PLC's address). Example: PLC is 192.168.1.100 → set laptop to 192.168.1.50</li>
+<li>• Set Subnet mask to 255.255.255.0</li>
+<li>• Click OK and close all dialogs</li>
+</ul></section>
+<section class="slide">
+<h2>IP Address Configuration (content)</h2>
+<ul>
+<li>[INFO] Subnet Explained Simply: With a subnet mask of 255.255.255.0, the first three number groups must match between your laptop and the PLC. Only the last number must be different. If the PLC is 192.168.5.20, your laptop could be 192.168.5.50 — but NOT 192.168.1.50 (different third octet).</li>
+<li>→ Verify Connectivity with Ping</li>
+<li>Open Command Prompt and type: ping 192.168.1.100 (replace with the PLC's actual IP). You should see replies. If you see "Request timed out" or "Destination host unreachable," check your IP settings, cable, and link lights.</li>
+<li>[TIP] IT Access Requirement: Changing your IP address requires permission. Reference SR-128857 in self-service. One approval covers all three PLC platforms.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Connecting to Omron (Sysmac Studio)</h2>
+<ul>
+<li>Direct Ethernet and remote connection procedures for Omron NX1P2</li>
+</ul></section>
+<section class="slide">
+<h2>Connecting to Omron (Sysmac Studio) (content)</h2>
+<ul>
+<li>Sysmac Studio is Omron's integrated development environment for the NX/NJ series controllers. Request it via self-service using references SR-124812 and SR-117625.</li>
+<li>→ Direct Ethernet Connection</li>
+<li>• Plug the Ethernet cable from your laptop directly into the PLC's Ethernet port</li>
+<li>• Open Sysmac Studio and open or create a project</li>
+<li>• Select Direct Connection via Ethernet in the connection dialog</li>
+<li>• Click Connect — the software will scan for controllers on the subnet</li>
+<li>• If prompted, select the correct controller from the discovered list</li>
+<li>→ Remote Connection</li>
+<li>• Select Remote Connection via Ethernet</li>
+<li>• Enter the PLC's IP address in the connection settings</li>
+</ul></section>
+<section class="slide">
+<h2>Connecting to Omron (Sysmac Studio) (content)</h2>
+<ul>
+<li>• Ensure your laptop's IP address has the same first three octets</li>
+<li>• Click Connect</li>
+<li>If Ethernet fails, try Direct Connection via USB as a backup — connect a USB cable from your laptop to the PLC's USB port.</li>
+<li>→ Verifying Online Status</li>
+<li>When connected, the Sysmac Studio toolbar shows a green 'Online' indicator. The project tree updates to show the live controller status. Verify the RUN LED on the physical PLC matches what software reports.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Connecting to Allen Bradley (Studio 5000)</h2>
+<ul>
+<li>Who Active, going online, and navigating Studio 5000</li>
+</ul></section>
+<section class="slide">
+<h2>Connecting to Allen Bradley (Studio 5000) (content)</h2>
+<ul>
+<li>Studio 5000 Logix Designer is the programming environment for Allen Bradley CompactLogix and ControlLogix controllers. Request via self-service (reference SR-124812). IT installs via BeyondTrust.</li>
+<li>→ Connection Steps</li>
+<li>• Set your IP address to the same subnet as the controller (e.g., PLC is 192.168.1.100, set laptop to 192.168.1.50)</li>
+<li>• Open Studio 5000 and open the project file (.ACD)</li>
+<li>• Go to Communications &gt; Who Active (or press Ctrl+W in RSLinx)</li>
+<li>• Expand the Ethernet driver to browse the network — the controller should appear</li>
+<li>• Right-click the controller and select Go Online</li>
+<li>• The software will compare the offline project to the online program — review any differences</li>
+<li>[WARNING] Online vs. Offline Mismatch: If the offline project doesn't match what's in the controller, Studio 5000 will warn you. Always upload from the controller first to get the current program before making changes.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Connecting to AutomationDirect (Productivity Suite)</h2>
+<ul>
+<li>Ethernet connection and program access for Productivity PLCs</li>
+</ul></section>
+<section class="slide">
+<h2>Connecting to AutomationDirect (Productivity Suite) (content)</h2>
+<ul>
+<li>Productivity Suite is free to download from AutomationDirect.com. Confirm the version matches the PLC firmware (P1000, P2000, or P3000 series).</li>
+<li>→ Connection Steps</li>
+<li>• Connect an Ethernet cable from your laptop to the PLC's Ethernet port (or a switch on the same network)</li>
+<li>• Set your IP to the same subnet as the PLC</li>
+<li>• Open Productivity Suite and select Connect from the toolbar</li>
+<li>• Enter the PLC's IP address when prompted</li>
+<li>• The software connects and shows the live program status</li>
+<li>→ Viewing Live Data</li>
+<li>Once online, go to View &gt; Data View to see a live table of all tag values — I/O points, memory bits, timers, and counters. Filter by name to find specific tags.</li>
+</ul></section>
+<section class="slide">
+<h2>Lesson: Program Backup &amp; Restore</h2>
+<ul>
+<li>How to upload (backup) and download programs — the most important habit you'll build</li>
+</ul></section>
+<section class="slide">
+<h2>Program Backup &amp; Restore (content)</h2>
+<ul>
+<li>[DANGER] The #1 Rule: ALWAYS upload (backup) the current program from the PLC to your laptop BEFORE making any changes. This is non-negotiable on production machines.</li>
+<li>→ Uploading (Backup) a Program</li>
+<li>Uploading reads the current program from the PLC to your laptop. Do this every time before you modify anything.</li>
+<li>Table: Platform | Steps</li>
+<li>• Omron Sysmac Studio | Go online → Transfer &gt; Upload from Controller → Save project with descriptive name</li>
+<li>• AB Studio 5000 | Go online → Upload → Save .ACD file with date and machine name</li>
+<li>• Productivity Suite | Connect → File &gt; Read Project from PLC → Save with descriptive name</li>
+<li>→ File Naming Convention</li>
+<li>Use a consistent naming format: [MachineName]_[PLCType]_[Date]_[Reason].ext</li>
+<li>Example: CobotReamer_NX1P2_20260407_PreMaintenance.smc2</li>
+</ul></section>
+<section class="slide">
+<h2>Program Backup &amp; Restore (content)</h2>
+<ul>
+<li>→ Downloading (Restore) a Program</li>
+<li>Downloading writes a program from your laptop to the PLC. This replaces the running program and is only done for intentional changes or restoration after a failure.</li>
+<li>[WARNING] Production Impact: Downloading to a production PLC will interrupt the running program. Coordinate with production before any download. On the training bench, downloads are safe to practice.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Physical Connection Walkthrough</h2>
+<ul>
+<li>After: IP Address Configuration</li>
+<li>Duration: 10 min</li>
+<li>Physically connect an Ethernet cable from laptop to the Omron NX1P2. Show link lights on both ends. Open Command Prompt, ping the PLC — show success. Change one octet to demonstrate a failed ping.</li>
+<li>Students take turns plugging in the cable, verifying link lights, and running a ping test. Each experiences at least one failed and one successful ping.</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Live Online — All Three Platforms</h2>
+<ul>
+<li>After: Connecting to AutomationDirect (Productivity Suite)</li>
+<li>Duration: 15 min</li>
+<li>With the laptop connected, go online with each platform in sequence: Sysmac Studio → NX1P2, Studio 5000 → CompactLogix, Productivity Suite → P2000. Show the online indicator and matching RUN LED.</li>
+<li>Students note the different workflows for each platform and observe visual confirmation (software indicator + physical LED).</li>
+</ul></section>
+<section class="slide">
+<h2>Lab: Program Upload (Backup)</h2>
+<ul>
+<li>After: Program Backup &amp; Restore</li>
+<li>Duration: 10 min</li>
+<li>Perform a full upload from PLC to laptop. Save with a proper filename. Show file location. Emphasize: do this EVERY TIME before changing anything on production equipment.</li>
+<li>Students perform the upload on at least one platform and verify the saved file exists.</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>A PLC has IP address 192.168.5.20 with subnet mask 255.255.255.0. Which laptop IP would allow communication?</li>
+<li>10.0.0.50 | 192.168.1.50 | 192.168.5.50 | 192.168.5.20</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>You try to ping the PLC but get 'Request timed out.' What should you check first?</li>
+<li>Reinstall the PLC software | Reboot the PLC | Verify your IP address, check the cable connection, and confirm link lights are on | Call IT</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>Before modifying a program on a production PLC, what must you ALWAYS do first?</li>
+<li>Get supervisor approval | Upload (backup) the current program | Switch the PLC to PROGRAM mode | Disconnect the HMI</li>
+</ul></section>
+<section class="slide">
+<h2>Quiz</h2>
+<ul>
+<li>What is the keyboard shortcut to browse the network in Studio 5000?</li>
+<li>Ctrl+W (Who Active via RSLinx) | Ctrl+B | F5 | Ctrl+Enter</li>
+</ul></section>
+</body></html>

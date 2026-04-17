@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Export TrainingData (+ WikimediaModule2Images) from js/data.js to JSON for offline generators.
+ * Export TrainingData (+ slide image maps) from js/data.js to JSON for offline generators.
  * Usage: node scripts/export_training_data.js [outfile]
  */
 const fs = require('fs');
@@ -16,7 +16,8 @@ const sandbox = { globalThis: {} };
 sandbox.globalThis = sandbox;
 vm.createContext(sandbox);
 vm.runInContext(
-  code + '\n;globalThis.__export = { TrainingData, WikimediaModule2Images };',
+  code +
+    '\n;globalThis.__export = { TrainingData, LocalCabinetImages, LocalModule2DeviceImages };',
   sandbox
 );
 
@@ -33,7 +34,8 @@ fs.writeFileSync(
       exportedAt: new Date().toISOString(),
       source: 'js/data.js',
       TrainingData: exp.TrainingData,
-      WikimediaModule2Images: exp.WikimediaModule2Images || {}
+      LocalCabinetImages: exp.LocalCabinetImages || {},
+      LocalModule2DeviceImages: exp.LocalModule2DeviceImages || {}
     },
     null,
     2

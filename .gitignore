@@ -3,3 +3,6 @@ Thumbs.db
 *.log
 # Generated from js/data.js — run `npm run generate-offline`
 scripts/training_data.json
+.venv/
+exports/.offline_image_cache/
+scripts/__pycache__/
