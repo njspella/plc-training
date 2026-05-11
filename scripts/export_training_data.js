@@ -9,15 +9,19 @@ const vm = require('vm');
 
 const root = path.join(__dirname, '..');
 const dataPath = path.join(root, 'js', 'data.js');
+const kcMcPath = path.join(root, 'js', 'knowledgeCheckMc.js');
 const outPath = process.argv[2] || path.join(root, 'scripts', 'training_data.json');
 
-const code = fs.readFileSync(dataPath, 'utf8');
+let code = fs.readFileSync(dataPath, 'utf8');
+if (fs.existsSync(kcMcPath)) {
+  code += '\n' + fs.readFileSync(kcMcPath, 'utf8');
+}
 const sandbox = { globalThis: {} };
 sandbox.globalThis = sandbox;
 vm.createContext(sandbox);
 vm.runInContext(
   code +
-    '\n;globalThis.__export = { TrainingData, LocalCabinetImages, LocalModule2DeviceImages };',
+    '\n;globalThis.__export = { TrainingData, LocalCabinetImages, LocalModule2DeviceImages, LocalSafetyControllerImages };',
   sandbox
 );
 
@@ -32,10 +36,11 @@ fs.writeFileSync(
   JSON.stringify(
     {
       exportedAt: new Date().toISOString(),
-      source: 'js/data.js',
+      source: 'js/data.js + js/knowledgeCheckMc.js',
       TrainingData: exp.TrainingData,
       LocalCabinetImages: exp.LocalCabinetImages || {},
-      LocalModule2DeviceImages: exp.LocalModule2DeviceImages || {}
+      LocalModule2DeviceImages: exp.LocalModule2DeviceImages || {},
+      LocalSafetyControllerImages: exp.LocalSafetyControllerImages || {}
     },
     null,
     2

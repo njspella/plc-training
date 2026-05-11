@@ -22,4 +22,5 @@ window.COMMONS_IMAGE_URLS = {
   "images/rotary_encoder.jpg": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Rotary_encoder.jpg",
   "images/dol_motor_starter.jpg": "https://upload.wikimedia.org/wikipedia/commons/0/01/Dol_starter.jpg",
   "images/hmi_screen.jpg": "https://upload.wikimedia.org/wikipedia/commons/1/18/Siemens_Simatic_Multi_Panel.JPG",
+  "images/safety_plc_rack_example.jpg": "https://upload.wikimedia.org/wikipedia/commons/1/1f/S7300.JPG",
 };

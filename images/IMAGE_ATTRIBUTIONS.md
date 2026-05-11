@@ -2,7 +2,7 @@
 
 ## Slide deck — primary assets (`js/data.js`)
 
-**Default:** `LocalCabinetImages` and `LocalModule2DeviceImages` reference **Wikimedia Commons filenames** under `images/`. Fetch them once:
+**Default:** `LocalCabinetImages`, `LocalModule2DeviceImages`, and `LocalSafetyControllerImages` reference **Wikimedia Commons filenames** under `images/`. Fetch them once:
 
 ```bash
 npm run download-images
@@ -18,6 +18,7 @@ npm run download-images
 | Module 1 — cabinet | `cabinet_plc_cpu.jpg`, `cabinet_power_supply_24v.jpg`, `cabinet_industrial_ethernet.jpg` | `ps_*.png` |
 | Module 2 — I/O | `io_*.jpg`, `safety_*.jpg`, `safety_relay_module.jpg`, `io_interposing_relay.jpg`, `solenoid_*.jpg`, `rotary_encoder.jpg`, `dol_motor_starter.jpg` | `inputs_*.png`, `outputs_*.png`, `area_scanner.png` |
 | Module 6 — HMI | `hmi_screen.jpg` (from [Siemens Simatic Multi Panel.JPG](https://commons.wikimedia.org/wiki/File:Siemens_Simatic_Multi_Panel.JPG)); if missing, `image6.jpeg` via fallback |
+| Module 9 — safety controllers | `safety_plc_rack_example.jpg` ([S7300.JPG](https://commons.wikimedia.org/wiki/File:S7300.JPG)); illustrative Siemens S7‑300 rack | `ps_cpu_module.png` |
 
 ---
 
@@ -58,5 +59,11 @@ npm run download-images
 | Local file | Commons file | Author / credit | License |
 |------------|----------------|-----------------|--------|
 | `hmi_screen.jpg` | [Siemens Simatic Multi Panel.JPG](https://commons.wikimedia.org/wiki/File:Siemens_Simatic_Multi_Panel.JPG) | Alf van Beem | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
+
+### Module 9 — Safety controllers (illustrative rack)
+
+| Local file | Commons file | Author / credit | License |
+|------------|----------------|-----------------|--------|
+| `safety_plc_rack_example.jpg` | [S7300.JPG](https://commons.wikimedia.org/wiki/File:S7300.JPG) (Siemens Simatic S7‑300) | Ulli1105 / Palatinatian (Commons history) | [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/deed.en) |
 
 When redistributing or publishing this training package, keep this file with the images and comply with each license (attribution and share-alike where required).

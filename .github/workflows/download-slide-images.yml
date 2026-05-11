@@ -1,0 +1,27 @@
+# Run manually: Actions → Download slide images → Run workflow
+# Downloads Wikimedia files into images/, uploads folder as an artifact (zip).
+# On your machine: download the artifact, extract into the repo root, then commit.
+name: Download slide images
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch Commons photos into images/
+        run: python3 scripts/download_slide_images.py
+      - name: Upload images folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: plc-training-images
+          path: images/
+          if-no-files-found: error

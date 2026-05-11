@@ -37,12 +37,15 @@ const App = (function () {
       const parts = hash.split('/');
       const moduleId = parseInt(parts[2]);
       const lessonId = parseInt(parts[4]);
+      document.body.classList.remove('wallet-handout-print');
       openSlideShow(moduleId, lessonId);
       return;
     }
 
     // Close slide deck if navigating away from lesson
     if (slideState) closeSlideShow(true);
+
+    document.body.classList.remove('wallet-handout-print');
 
     if (hash === '/') {
       renderDashboard(main);
@@ -69,8 +72,9 @@ const App = (function () {
       renderScenarioDetail(main, scenarioId);
       sidebar.classList.add('hidden');
       main.classList.add('full-width');
-    } else if (hash === '/handouts') {
-      renderHandouts(main);
+    } else if (hash === '/handouts' || hash.startsWith('/handouts/')) {
+      renderHandouts(main, hash);
+      if (hash === '/handouts/escalation-card') document.body.classList.add('wallet-handout-print');
       sidebar.classList.add('hidden');
       main.classList.add('full-width');
     } else if (hash === '/escalation') {
@@ -79,6 +83,10 @@ const App = (function () {
       main.classList.add('full-width');
     } else if (hash === '/knowledge-check') {
       renderKnowledgeCheck(main);
+      sidebar.classList.add('hidden');
+      main.classList.add('full-width');
+    } else if (hash === '/knowledge-check/key') {
+      renderKnowledgeCheckKey(main);
       sidebar.classList.add('hidden');
       main.classList.add('full-width');
     } else {
@@ -193,6 +201,10 @@ const App = (function () {
       let t = text;
       // SR ticket references: "SR-124812" -> "S R dash 124812"
       t = t.replace(/SR[-–](\d+)/g, 'S R dash $1');
+      // "e.g." / "e.g.," -> spoken "example"
+      t = t.replace(/\be\.g\.\s*,?\s*/gi, 'example ');
+      // "24VDC", "24 VDC", "24V DC" -> "24 volt D. C." (any voltage number)
+      t = t.replace(/\b(\d+)\s*V\s*DC\b/gi, '$1 volt D. C.');
       // Remove arrow characters and symbols
       t = t.replace(/[→←↑↓►▶◀▸▹▷▻►]/g, '');
       t = t.replace(/--\[.*?\]--/g, ''); // ladder logic symbols like --[ ]--
@@ -240,6 +252,7 @@ const App = (function () {
             break;
           case 'image':
             if (b.caption) parts.push(b.caption);
+            if (b.narration) parts.push(b.narration);
             break;
           case 'table':
             parts.push('Table columns: ' + b.headers.join(', ') + '.');
@@ -762,15 +775,15 @@ const App = (function () {
         </div>
         <div class="info-card" style="cursor:pointer" onclick="location.hash='#/handouts'">
           <h4>${icon('fileText')} Handouts & Reference Cards</h4>
-          <p style="font-size:13px;color:var(--color-text-secondary)">Printable materials: ladder logic reference, wiring diagrams, IP cheat sheet, escalation card.</p>
+          <p style="font-size:13px;color:var(--color-text-secondary)">Printable materials: ladder quick reference, troubleshooting flowchart, wiring diagrams, IP cheat sheet, escalation wallet pack.</p>
         </div>
         <div class="info-card" style="cursor:pointer" onclick="location.hash='#/knowledge-check'">
           <h4>${icon('search')} Written Knowledge Check</h4>
-          <p style="font-size:13px;color:var(--color-text-secondary)">20-question written assessment. 80% passing score required.</p>
+          <p style="font-size:13px;color:var(--color-text-secondary)">50-question multiple-choice bank. 80% (40/50) to pass. Trainer answer key opens on a separate tab in the Knowledge Check screens.</p>
         </div>
         <div class="info-card" style="cursor:pointer" onclick="location.hash='#/escalation'">
           <h4>${icon('alertTriangle')} Escalation Procedures</h4>
-          <p style="font-size:13px;color:var(--color-text-secondary)">3-level escalation decision tree and documentation requirements.</p>
+          <p style="font-size:13px;color:var(--color-text-secondary)">Thrive → MET ~1 hr after maint troubleshoots → vendor same day if MET+MRO stuck.</p>
         </div>
       </div>`;
 
@@ -823,6 +836,11 @@ const App = (function () {
       html += `<div class="objectives-box"><h3>${icon('check')} Learning Objectives</h3><ul>`;
       for (const obj of mod.objectives) html += `<li>${obj}</li>`;
       html += `</ul></div>`;
+    }
+
+    if (mod.id === 8 && TrainingData.ladderQuickReference) {
+      html += `<div class="callout info" style="margin-top:16px"><div class="callout-title">${icon('fileText')} Ladder quick reference</div>
+        <div>Printable tables for contacts, timers, counters, compare, and math: <a href="#/handouts/quick-ref" style="color:var(--color-primary);font-weight:600">open the handout</a>.</div></div>`;
     }
 
     // Auto-play entire module button
@@ -1089,15 +1107,428 @@ const App = (function () {
   function completeScenario(id) { Progress.setScenarioComplete(id); route(); }
 
   // ============ HANDOUTS ============
-  function renderHandouts(el) {
+  /** Escape plain text for table cells (ladder handout). */
+  function escapeHandoutCell(text) {
+    if (text == null) return '';
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /**
+   * Logix-style ladder SVGs (contacts, coils, timer/counter blocks) for quick reference handout.
+   * Uses currentColor so theme / print CSS can control stroke.
+   */
+  const LADDER_SYM_SVG = (function () {
+    const rail = (x1, x2, y = 18) =>
+      `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>`;
+    const box = (label, w = 52, h = 26, x0 = 34) => {
+      const y0 = (36 - h) / 2;
+      return (
+        `${rail(2, x0)}` +
+        `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="3" fill="#f1f5f9" stroke="currentColor" stroke-width="2"/>` +
+        `<text x="${x0 + w / 2}" y="${y0 + h / 2 + 4}" text-anchor="middle" font-size="11" font-family="system-ui,Segoe UI,sans-serif" font-weight="700" fill="currentColor">${label}</text>` +
+        `${rail(x0 + w, 118)}`
+      );
+    };
+    const wrap = (inner) =>
+      `<svg class="ladder-sym-rung" viewBox="0 0 120 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
+
+    const xic = wrap(
+      `${rail(2, 32)}` +
+        `<line x1="36" y1="9" x2="36" y2="27" stroke="currentColor" stroke-width="2.25"/>` +
+        `<line x1="52" y1="9" x2="52" y2="27" stroke="currentColor" stroke-width="2.25"/>` +
+        `${rail(56, 118)}`
+    );
+
+    const xio = wrap(
+      `${rail(2, 30)}` +
+        `<line x1="36" y1="9" x2="36" y2="27" stroke="currentColor" stroke-width="2.25"/>` +
+        `<line x1="52" y1="9" x2="52" y2="27" stroke="currentColor" stroke-width="2.25"/>` +
+        `<line x1="30" y1="11" x2="58" y2="25" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>` +
+        `${rail(56, 118)}`
+    );
+
+    const ote = wrap(
+      `${rail(2, 34)}` +
+        `<path d="M 38 8 C 30 12 30 24 38 28" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>` +
+        `<path d="M 62 8 C 70 12 70 24 62 28" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>` +
+        `${rail(66, 118)}`
+    );
+
+    const coilLU = (letter) =>
+      wrap(
+        `${rail(2, 32)}` +
+          `<path d="M 40 8 C 32 12 32 24 40 28" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>` +
+          `<path d="M 60 8 C 68 12 68 24 60 28" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>` +
+          `<text x="50" y="22" text-anchor="middle" font-size="12" font-weight="700" font-family="system-ui,Segoe UI,sans-serif" fill="currentColor">${letter}</text>` +
+          `${rail(64, 118)}`
+      );
+
+    const otlOtu = `<div class="ladder-sym-stack ladder-sym-stack--duo" title="OTL / OTU">
+      <span class="ladder-sym-label">Latch</span>${coilLU('L')}
+      <span class="ladder-sym-label">Unlatch</span>${coilLU('U')}
+    </div>`;
+
+    const ons = wrap(box('ONS', 44, 24, 38));
+
+    const ton = wrap(box('TON', 50, 26, 35));
+    const tof = wrap(box('TOF', 50, 26, 35));
+    const rto = wrap(box('RTO', 50, 26, 35));
+    const ctu = wrap(box('CTU', 50, 26, 35));
+    const ctd = wrap(box('CTD', 50, 26, 35));
+    const equ = wrap(box('EQU', 46, 26, 37));
+    const neq = wrap(box('NEQ', 46, 26, 37));
+    const cmp = wrap(box('GRT', 46, 26, 37));
+    const cmp2 = wrap(box('GEQ', 46, 26, 37));
+    const mov = wrap(box('MOV', 46, 26, 37));
+    const math = wrap(box('ADD', 46, 26, 37));
+    const cpt = wrap(box('CPT', 46, 26, 37));
+
+    return {
+      __SYM_XIC__: xic,
+      __SYM_XIO__: xio,
+      __SYM_OTE__: ote,
+      __SYM_OTL_OTU__: otlOtu,
+      __SYM_ONS__: ons,
+      __SYM_TON__: ton,
+      __SYM_TOF__: tof,
+      __SYM_RTO__: rto,
+      __SYM_CTU__: ctu,
+      __SYM_CTD__: ctd,
+      __SYM_EQU__: equ,
+      __SYM_NEQ__: neq,
+      __SYM_CMP__: cmp,
+      __SYM_CMP2__: cmp2,
+      __SYM_MOV__: mov,
+      __SYM_MATH__: math,
+      __SYM_CPT__: cpt
+    };
+  })();
+
+  function formatLadderQuickRefCell(cell) {
+    if (typeof cell !== 'string') return escapeHandoutCell(cell);
+    const svg = LADDER_SYM_SVG[cell];
+    if (svg) return `<div class="ladder-rung-cell">${svg}</div>`;
+    return escapeHandoutCell(cell);
+  }
+
+  /** Levels block — identical markup for escalation tab and wallet duplication. */
+  function renderEscLevelsStandardHtml(esc) {
+    if (!esc.levels || !esc.levels.length) return '';
+    let h = '';
+    for (const level of esc.levels) {
+      h += `<div class="escalation-level level-${level.level}"><h4>Level ${level.level}: ${level.title}</h4>
+        <ul style="margin-top:8px;padding-left:20px">${level.items.map((i) => `<li style="font-size:14px;margin-bottom:4px">${i}</li>`).join('')}</ul></div>`;
+    }
+    return h;
+  }
+
+  function renderEscDocumentationChecklistHtml(esc) {
+    const docs = esc.documentation || [];
+    return `<ul class="checklist">${docs.map((item) => `<li><span class="checklist-check"></span><span>${item}</span></li>`).join('')}</ul>`;
+  }
+
+  function renderEscImportantCalloutHtml(esc) {
+    const msg = escapeHandoutCell(
+      esc.importantNotice ||
+        'No ladder edits, firmware, bypasses, or rogue vendor downloads. Automation Engineering + Purchasing sign-off per change control — vendors included.'
+    );
+    return `<div class="callout danger esc-important-callout" style="margin-top:24px"><div class="callout-title">${icon('alertTriangle')} Important</div>
+      <div>${msg}</div></div>`;
+  }
+
+  function renderEscalationWalletHandout(el) {
+    const esc = TrainingData.escalation;
+    if (!esc || !esc.levels || !esc.levels.length) {
+      renderHandouts(el, '/handouts');
+      return;
+    }
+
+    /** Pack as much as fits per ISO slip to minimize page count (same text as #/escalation). */
+    const MAX_BULLETS_PER_MID_SHEET = 12;
+    const w = esc.walletCard || {};
+    const bannerTitle = w.bannerTitle || 'Escalation';
+    const bannerSub = w.bannerSubtitle || 'PLC · controls';
+    const docHeading = esc.documentationHeading || 'Document Before Escalating';
+
+    function levelBlockHtml(level) {
+      const head = `<h4 class="wallet-esc-sheet-h">Level ${level.level}: ${level.title}</h4>`;
+      const lis = (level.items || []).map((i) => `<li>${i}</li>`).join('');
+      return `<div class="wallet-esc-level-block">${head}<ul class="wallet-esc-li">${lis}</ul></div>`;
+    }
+
+    const innerHtmlPlates = [];
+    const levels = esc.levels;
+
+    const first = levels[0];
+    let slipIntro = `<div class="wallet-esc-intro-wrap">${esc.pageIntro || ''}</div>`;
+    slipIntro += levelBlockHtml(first);
+    innerHtmlPlates.push(`<div class="wallet-esc-slip-one">${slipIntro}</div>`);
+
+    let li = 1;
+    while (li < levels.length) {
+      let batch = '';
+      let count = 0;
+      while (li < levels.length) {
+        const lvl = levels[li];
+        const n = (lvl.items || []).length;
+        const slot = n < 1 ? 1 : n;
+        if (count > 0 && count + slot > MAX_BULLETS_PER_MID_SHEET) break;
+        batch += levelBlockHtml(lvl);
+        count += slot;
+        li += 1;
+      }
+      innerHtmlPlates.push(`<div class="wallet-esc-mid-sheet">${batch}</div>`);
+    }
+
+    const importantDup = renderEscImportantCalloutHtml(esc).replace(
+      'esc-important-callout',
+      'esc-important-callout wallet-esc-callout-tight'
+    );
+    const docs = esc.documentation || [];
+    let docSlip = '';
+    if (docs.length) {
+      const part = docs.map((item) => `<li><span class="checklist-check"></span><span>${item}</span></li>`).join('');
+      docSlip = `<div class="wallet-esc-doc-sheet"><h5 class="wallet-esc-doc-h">${escapeHandoutCell(docHeading)}</h5><ul class="checklist wallet-esc-checklist wallet-esc-checklist-dense">${part}</ul></div>`;
+    }
+    docSlip += importantDup;
+    innerHtmlPlates.push(docSlip);
+
+    const total = innerHtmlPlates.length;
+    const faces = innerHtmlPlates
+      .map((body, i) => {
+        const num = i + 1;
+        return `
+        <article class="wallet-card-face wallet-card-sheet" aria-label="Escalation procedure sheet ${num} of ${total}">
+          <header class="wallet-card-banner wallet-card-banner-print">
+            <span class="wallet-card-title">${escapeHandoutCell(bannerTitle)}</span>
+            <span class="wallet-card-sub">${escapeHandoutCell(bannerSub)}</span>
+            <span class="wallet-card-num">${num}/${total}</span>
+          </header>
+          <div class="wallet-card-sheet-inner">${body}</div>
+        </article>`;
+      })
+      .join('');
+
+    el.innerHTML = `<div class="animate-in wallet-card-page">
+      <div class="module-header wallet-card-doc-header no-print">
+        <div class="breadcrumb"><a href="#/">Dashboard</a> / <a href="#/handouts">Handouts</a> / ${escapeHandoutCell(bannerTitle)} wallet pack</div>
+        <div class="ladder-ref-actions">
+          <button type="button" class="btn-primary ladder-ref-print" onclick="window.print()">${icon('fileText')} Print wallet pack</button>
+        </div>
+        <h1>${icon('layers')} Escalation wallet pack (${total})</h1>
+        <p class="module-description">
+          Same content as <a href="#/escalation">Escalation procedures</a>, packed into the <strong>minimum</strong> number of <strong>ISO ID‑1</strong> slips that still fit the text. Margins none / minimum; disable headers if they clip.
+        </p>
+      </div>
+      <div class="wallet-card-stage wallet-card-multi-stack">${faces}</div>
+      <p class="no-print" style="max-width:42rem;margin:20px auto 0;font-size:13px;color:var(--color-text-secondary);text-align:center">
+        <a href="#/escalation">Escalation tab</a> · <a href="#/handouts">Handouts</a>
+      </p>
+    </div>`;
+  }
+
+  function renderTroubleshootingFlowchartHandout(el) {
+    const fc = TrainingData.troubleshootingFlowchart;
+    if (!fc) {
+      renderHandouts(el, '/handouts');
+      return;
+    }
+
+    const conn = `<div class="ts-flow-arrow" aria-hidden="true"><span></span></div>`;
+
+    const li = (arr) => (arr || []).map((item) => `<li>${item}</li>`).join('');
+
+    const tactics = (fc.entryPoints.tactics || [])
+      .map(
+        (t) =>
+          `<div class="ts-flow-tactic"><div class="ts-flow-tactic-name">${escapeHandoutCell(t.name)}</div><p>${t.body}</p></div>`
+      )
+      .join('');
+
+    const layersHtml = (fc.layers || [])
+      .map((L) => {
+        if (L.layer === 5 && L.commsChecks && L.hmiScadaChecks) {
+          return `
+        <article class="ts-flow-layer ts-flow-layer-split" id="ts-layer-${L.layer}">
+          <header class="ts-flow-layer-head">
+            <span class="ts-flow-layer-num">Layer ${L.layer}</span>
+            <h3 class="ts-flow-layer-title">${escapeHandoutCell(L.title)}</h3>
+            <p class="ts-flow-layer-summary">${escapeHandoutCell(L.summary)}</p>
+          </header>
+          <div class="ts-flow-split-grid">
+            <div class="ts-flow-split-card">
+              <h4>${icon('layers')} Communications & fieldbus</h4>
+              <ul class="ts-flow-checks">${li(L.commsChecks)}</ul>
+            </div>
+            <div class="ts-flow-split-card">
+              <h4>${icon('monitor')} HMI & SCADA / records</h4>
+              <ul class="ts-flow-checks">${li(L.hmiScadaChecks)}</ul>
+            </div>
+          </div>
+        </article>`;
+        }
+        return `
+        <article class="ts-flow-layer" id="ts-layer-${L.layer}">
+          <header class="ts-flow-layer-head">
+            <span class="ts-flow-layer-num">Layer ${L.layer}</span>
+            <h3 class="ts-flow-layer-title">${escapeHandoutCell(L.title)}</h3>
+            <p class="ts-flow-layer-summary">${escapeHandoutCell(L.summary)}</p>
+          </header>
+          <ul class="ts-flow-checks">${li(L.checks)}</ul>
+        </article>`;
+      })
+      .join(conn);
+
+    el.innerHTML = `<div class="animate-in ts-flow-page">
+      <div class="module-header ts-flow-header no-print">
+        <div class="breadcrumb"><a href="#/">Dashboard</a> / <a href="#/handouts">Handouts</a> / ${escapeHandoutCell(fc.title)}</div>
+        <div class="ladder-ref-actions">
+          <button type="button" class="btn-primary ladder-ref-print" onclick="window.print()">${icon('fileText')} Print / Save as PDF</button>
+        </div>
+        <h1>${icon('radar')} ${escapeHandoutCell(fc.title)}</h1>
+        <p class="module-description">${fc.tagline || ''}</p>
+      </div>
+      <div class="ts-flow-print-banner print-only">
+        <h1>${escapeHandoutCell(fc.title)}</h1>
+        <p>${fc.tagline || ''}</p>
+      </div>
+
+      <div class="callout info ts-flow-principle"><div class="callout-title">${icon('info')} Key principle</div>
+        <div>${fc.keyPrinciple || ''}</div></div>
+
+      <section class="ts-flow-phase" aria-labelledby="ts-precheck">
+        <h2 id="ts-precheck">${escapeHandoutCell(fc.preCheck.title)}</h2>
+        <ul class="ts-flow-list">${li(fc.preCheck.items)}</ul>
+      </section>
+      ${conn}
+
+      <section class="ts-flow-phase" aria-labelledby="ts-doc">
+        <h2 id="ts-doc">${escapeHandoutCell(fc.documentationGate.title)}</h2>
+        <ul class="ts-flow-list">${li(fc.documentationGate.items)}</ul>
+      </section>
+      ${conn}
+
+      <section class="ts-flow-phase" aria-labelledby="ts-entry">
+        <h2 id="ts-entry">${escapeHandoutCell(fc.entryPoints.title)}</h2>
+        <p class="ts-flow-lead">${fc.entryPoints.intro || ''}</p>
+        <div class="ts-flow-tactics">${tactics}</div>
+      </section>
+      ${conn}
+
+      <section class="ts-flow-phase ts-flow-phase-warn" aria-labelledby="ts-safe">
+        <h2 id="ts-safe">${icon('shield')} ${escapeHandoutCell(fc.safetyBranch.title)}</h2>
+        <p class="ts-flow-lead"><strong>When:</strong> ${fc.safetyBranch.trigger || ''}</p>
+        <ul class="ts-flow-list">${li(fc.safetyBranch.actions)}</ul>
+      </section>
+      ${conn}
+
+      <section class="ts-flow-phase" aria-labelledby="ts-nuis">
+        <h2 id="ts-nuis">${escapeHandoutCell(fc.intermittentBranch.title)}</h2>
+        <ul class="ts-flow-list">${li(fc.intermittentBranch.items)}</ul>
+      </section>
+      ${conn}
+
+      <div class="ts-flow-layers-head">
+        <h2 class="ts-flow-big-title">${icon('layout')} Five root-cause layers (signal chain)</h2>
+        <p class="ts-flow-halfsplit">${escapeHandoutCell(fc.halfSplitTip || '')}</p>
+      </div>
+
+      ${layersHtml}
+
+      ${conn}
+
+      <section class="ts-flow-phase ts-flow-closeout" aria-labelledby="ts-close">
+        <h2 id="ts-close">${escapeHandoutCell(fc.closeOut.title)}</h2>
+        <ul class="ts-flow-list">${li(fc.closeOut.items)}</ul>
+      </section>
+
+      <p class="ts-flow-related no-print">${fc.relatedModules || ''}</p>
+      <p class="ladder-ref-footer-note no-print" style="font-size:13px;color:var(--color-text-secondary);margin-top:20px">${icon('fileText')} Distribute printed or PDF. Pair with Hands-On Scenarios (<a href="#/scenarios">Scenarios</a>) and ladder <a href="#/handouts/quick-ref">quick reference</a>.</p>
+    </div>`;
+  }
+
+  function renderLadderQuickRefHandout(el) {
+    const ref = TrainingData.ladderQuickReference;
+    if (!ref) {
+      renderHandouts(el, '/handouts');
+      return;
+    }
+    let tables = '';
+    for (const sec of ref.sections || []) {
+      tables += `<section class="ladder-ref-section"><h2 class="ladder-ref-h2">${sec.title}</h2>`;
+      tables += '<table class="ladder-ref-table"><thead><tr>';
+      for (const c of sec.columns || []) tables += `<th>${escapeHandoutCell(c)}</th>`;
+      tables += '</tr></thead><tbody>';
+      for (const row of sec.rows || []) {
+        tables += '<tr>';
+        for (const cell of row) tables += `<td>${formatLadderQuickRefCell(cell)}</td>`;
+        tables += '</tr>';
+      }
+      tables += '</tbody></table></section>';
+    }
+    const tips = (ref.onlineTips || [])
+      .map((t) => `<li>${t}</li>`)
+      .join('');
+    el.innerHTML = `<div class="animate-in ladder-ref-page">
+      <div class="module-header ladder-ref-header no-print">
+        <div class="breadcrumb"><a href="#/">Dashboard</a> / <a href="#/handouts">Handouts</a> / ${ref.title}</div>
+        <div class="ladder-ref-actions">
+          <button type="button" class="btn-primary ladder-ref-print" onclick="window.print()">${icon('fileText')} Print / Save as PDF</button>
+        </div>
+        <h1>${icon('cpu')} ${ref.title}</h1>
+        <p class="module-description">${ref.tagline || ''}</p>
+      </div>
+      <div class="ladder-ref-print-header print-only"><h1>${ref.title}</h1><p>${ref.tagline || ''}</p></div>
+      <div class="ladder-ref-body">${tables}</div>
+      <section class="ladder-ref-section ladder-ref-tips"><h2 class="ladder-ref-h2">Online & troubleshooting reminders</h2><ul class="ladder-ref-tip-list">${tips}</ul></section>
+      <p class="ladder-ref-footer-note no-print" style="font-size:13px;color:var(--color-text-secondary);margin-top:24px">Also covered in <strong>Module 8</strong> — Ladder Logic Building Blocks. Other handouts (wiring, IP, escalation) are distributed by the trainer.</p>
+    </div>`;
+  }
+
+  function renderHandouts(el, hash) {
+    const path = hash || window.location.hash.slice(1) || '/handouts';
+    const segs = path.split('/').filter(Boolean);
+    if (segs[0] === 'handouts' && segs[1] === 'quick-ref') {
+      renderLadderQuickRefHandout(el);
+      return;
+    }
+    if (segs[0] === 'handouts' && segs[1] === 'escalation-card') {
+      renderEscalationWalletHandout(el);
+      return;
+    }
+    if (segs[0] === 'handouts' && segs[1] === 'troubleshooting-flowchart') {
+      renderTroubleshootingFlowchartHandout(el);
+      return;
+    }
+
     let html = `<div class="animate-in" style="max-width:900px;margin:0 auto">
       <div class="module-header">
         <div class="breadcrumb"><a href="#/">Dashboard</a> / Handouts</div>
         <h1>${icon('fileText')} Handouts & Reference Cards</h1>
-        <p class="module-description">Printable reference materials for distribution during training sessions.</p>
+        <p class="module-description">Printable reference materials: open the ladder quick reference or expanded troubleshooting flowchart; escalation wallet pack uses the Escalation tab wording.</p>
       </div><div class="info-cards">`;
     for (const h of TrainingData.handouts) {
-      html += `<div class="info-card"><h4>${h.title}</h4><p style="font-size:13px;color:var(--color-text-secondary);margin-top:8px">${h.description}</p></div>`;
+      const hashHandout =
+        h.id === 'quick-ref'
+          ? '#/handouts/quick-ref'
+          : h.id === 'escalation-card'
+          ? '#/handouts/escalation-card'
+          : h.id === 'troubleshooting-flowchart'
+          ? '#/handouts/troubleshooting-flowchart'
+          : '';
+      const isOpen = Boolean(hashHandout);
+      const click = isOpen ? ` style="cursor:pointer" onclick="location.hash='${hashHandout}'"` : '';
+      const hintLabel =
+        h.id === 'quick-ref' ? 'Open reference →'
+        : h.id === 'escalation-card' ? 'Wallet card →'
+        : h.id === 'troubleshooting-flowchart' ? 'Open flowchart →'
+        : '';
+      const hint = hintLabel ? `<p class="handout-open-hint no-print" style="font-size:12px;color:var(--color-accent);margin-top:10px;font-weight:600">${hintLabel}</p>` : '';
+      html += `<div class="info-card"${click}><h4>${h.title}</h4><p style="font-size:13px;color:var(--color-text-secondary);margin-top:8px">${h.description}</p>${hint}</div>`;
     }
     html += `</div></div>`;
     el.innerHTML = html;
@@ -1110,37 +1541,130 @@ const App = (function () {
       <div class="module-header">
         <div class="breadcrumb"><a href="#/">Dashboard</a> / Escalation</div>
         <h1>${icon('alertTriangle')} Escalation Procedures</h1>
-        <p class="module-description">When a fault exceeds your trained skills, prompt and accurate escalation prevents extended downtime and ensures safety.</p>
-      </div>`;
-    for (const level of esc.levels) {
-      html += `<div class="escalation-level level-${level.level}"><h4>Level ${level.level}: ${level.title}</h4>
-        <ul style="margin-top:8px;padding-left:20px">${level.items.map(i => `<li style="font-size:14px;margin-bottom:4px">${i}</li>`).join('')}</ul></div>`;
-    }
-    html += `<div class="callout danger" style="margin-top:24px"><div class="callout-title">${icon('alertTriangle')} Important</div>
-      <div>Do not modify ladder logic or PLC program files on production machines without written authorization from Automation Engineering.</div></div>
-      <h2 style="margin-top:32px">What to Document Before Escalating</h2>
-      <ul class="checklist">${esc.documentation.map(item => `<li><span class="checklist-check"></span><span>${item}</span></li>`).join('')}</ul></div>`;
+        <p class="module-description">${esc.pageIntro || 'Prompt, documented escalation minimizes downtime while keeping Procurement and vendors aligned.'}</p>
+      </div>${renderEscLevelsStandardHtml(esc)}${renderEscImportantCalloutHtml(esc)}
+      <h2 style="margin-top:32px">${escapeHandoutCell(esc.documentationHeading || 'Document Before Escalating')}</h2>
+      ${renderEscDocumentationChecklistHtml(esc)}</div>`;
     el.innerHTML = html;
   }
 
-  // ============ KNOWLEDGE CHECK ============
+  /** Active multiple-choice exam + metadata (filled by js/knowledgeCheckMc.js after data.js). */
+  function getKnowledgeCheckSpec() {
+    const kc = TrainingData.knowledgeCheck;
+    if (kc && kc.format === 'multipleChoice' && kc.questions && kc.questions.length) return kc;
+    return null;
+  }
+
+  function knowledgeCheckTabs(active) {
+    const studentOn = active === 'student';
+    return `<nav class="kc-tabs no-print" role="tablist" aria-label="Knowledge check">
+      <a role="tab" class="kc-tab${studentOn ? ' kc-tab-active' : ''}" href="#/knowledge-check" aria-selected="${studentOn}">Trainee (50 MC)</a>
+      <a role="tab" class="kc-tab${!studentOn ? ' kc-tab-active' : ''}" href="#/knowledge-check/key" aria-selected="${!studentOn}" data-trainer>Answer key — trainer ${icon('shield')}</a>
+    </nav>`;
+  }
+
   function renderKnowledgeCheck(el) {
-    let html = `<div class="animate-in" style="max-width:800px;margin:0 auto">
+    const kc = getKnowledgeCheckSpec();
+    if (!kc) {
+      el.innerHTML = `<div class="animate-in" style="max-width:700px;margin:0 auto;padding:48px 20px"><div class="callout danger">Knowledge check bank failed to load. Ensure <code>js/knowledgeCheckMc.js</code> is included after <code>data.js</code> in index.html.</div></div>`;
+      return;
+    }
+    const qs = kc.questions;
+    const pct = kc.passingScorePercent || 80;
+    const passAt = Math.ceil((qs.length * pct) / 100);
+    const letters = ['A', 'B', 'C', 'D'];
+    let blocks = qs
+      .map((q, i) => {
+        const opts = (q.choices || [])
+          .map((c, j) => {
+            const id = `kc-q-${i}-opt-${j}`;
+            return `<label class="kc-choice" for="${id}"><input type="radio" name="kc-q-${i}" id="${id}" value="${j}"><span class="kc-letter">${letters[j]}</span><span class="kc-text">${escapeHandoutCell(c)}</span></label>`;
+          })
+          .join('');
+        return `<div class="quiz-question kc-question" data-q="${i}"><div class="q-number">Question ${i + 1}</div><div class="q-text">${escapeHandoutCell(q.question)}</div><div class="kc-choices" role="group" aria-label="Choices for question ${i + 1}">${opts}</div></div>`;
+      })
+      .join('');
+
+    el.innerHTML = `<div class="animate-in kc-page" style="max-width:820px;margin:0 auto">
+      ${knowledgeCheckTabs('student')}
       <div class="module-header">
         <div class="breadcrumb"><a href="#/">Dashboard</a> / Knowledge Check</div>
-        <h1>${icon('search')} Written Knowledge Check</h1>
-        <p class="module-description">Representative questions from the 20-question written assessment. Passing score: 80% (16/20).</p>
+        <h1>${icon('search')} ${escapeHandoutCell(kc.title || 'Written Knowledge Check')}</h1>
+        <p class="module-description">${qs.length} multiple-choice questions · Pass at <strong>${pct}%</strong> (<strong>${passAt} / ${qs.length}</strong>) · Suggested time ca. <strong>${kc.timeSuggestedMinutes || 75} min</strong>. Closed book unless the trainer says otherwise.</p>
       </div>
-      <div class="callout info" style="margin-bottom:24px"><div class="callout-title">${icon('info')} For the Trainer</div>
-        <div>Administer as a written test. Students answer independently without software or reference materials. Allow 30 minutes.</div></div>`;
-    for (let i = 0; i < TrainingData.knowledgeCheck.length; i++) {
-      html += `<div class="quiz-question"><div class="q-number">Question ${i + 1}</div><div class="q-text">${TrainingData.knowledgeCheck[i].question}</div></div>`;
+      <div class="callout info" style="margin-bottom:24px"><div class="callout-title">${icon('info')} For the trainer</div>
+        <div>Print or project the trainee view only. Open the <a href="#/knowledge-check/key"><strong>Answer key</strong></a> on a separate device or after class. Answers are embedded in the site bundle for convenience — not a security boundary.</div></div>
+      ${blocks}
+      <div class="kc-actions no-print">
+        <button type="button" class="btn-primary" id="kc-grade-btn">${icon('check')} Score practice (browser only, not saved)</button>
+        <button type="button" class="btn-secondary" id="kc-clear-btn" style="margin-left:10px">Clear selections</button>
+        <p id="kc-grade-result" class="kc-grade-result" hidden></p>
+      </div>
+    </div>`;
+
+    const gradeBtn = $('#kc-grade-btn', el);
+    const clearBtn = $('#kc-clear-btn', el);
+    const resultEl = $('#kc-grade-result', el);
+    if (gradeBtn) {
+      gradeBtn.onclick = () => {
+        let correct = 0;
+        for (let i = 0; i < qs.length; i++) {
+          const sel = el.querySelector(`input[name="kc-q-${i}"]:checked`);
+          if (sel && parseInt(sel.value, 10) === qs[i].correctIndex) correct++;
+        }
+        const passed = correct >= passAt;
+        resultEl.hidden = false;
+        resultEl.className = 'kc-grade-result ' + (passed ? 'kc-pass' : 'kc-fail');
+        resultEl.innerHTML = `<strong>${correct} / ${qs.length}</strong> correct. Pass at ${passAt}+. ${passed ? 'Practice pass.' : 'Below practice pass — review weak areas.'}`;
+      };
     }
-    html += `</div>`;
-    el.innerHTML = html;
+    if (clearBtn) {
+      clearBtn.onclick = () => {
+        el.querySelectorAll('.kc-choices input[type="radio"]').forEach((r) => {
+          r.checked = false;
+        });
+        resultEl.hidden = true;
+        resultEl.textContent = '';
+      };
+    }
   }
 
-  // ============ PUBLIC API ============
+  function renderKnowledgeCheckKey(el) {
+    const kc = getKnowledgeCheckSpec();
+    if (!kc) {
+      renderKnowledgeCheck(el);
+      return;
+    }
+    const qs = kc.questions;
+    const letters = ['A', 'B', 'C', 'D'];
+    const quick = qs.map((q, i) => `<span class="kc-key-pill"><strong>${i + 1}</strong>${letters[q.correctIndex]}</span>`).join('');
+
+    const rows = qs
+      .map((q, i) => {
+        const ci = q.correctIndex;
+        const L = letters[ci] || '?';
+        const correctText = escapeHandoutCell((q.choices || [])[ci] || '');
+        return `<tr><td class="kc-td-n">${i + 1}</td><td class="kc-td-l"><strong>${L}</strong></td><td>${escapeHandoutCell(q.question)}</td><td>${correctText}</td></tr>`;
+      })
+      .join('');
+
+    el.innerHTML = `<div class="animate-in kc-page kc-key-page" style="max-width:960px;margin:0 auto">
+      ${knowledgeCheckTabs('key')}
+      <div class="module-header">
+        <div class="breadcrumb"><a href="#/">Dashboard</a> / <a href="#/knowledge-check">Knowledge Check</a> / Answer key</div>
+        <h1>${icon('shield')} Answer key — trainer</h1>
+        <p class="module-description">Correct choice for all ${qs.length} items. Keep off classroom displays.</p>
+      </div>
+      <div class="callout danger" style="margin-bottom:20px"><div class="callout-title">${icon('alertTriangle')} Distribution</div>
+        <div>Do not print this page for students. Use the <a href="#/knowledge-check">trainee view</a> for class handouts.</div></div>
+      <section class="kc-key-quick"><h2 class="kc-key-h2">At-a-glance</h2><div class="kc-key-pills">${quick}</div></section>
+      <section class="kc-key-table-wrap"><h2 class="kc-key-h2">Full key</h2>
+        <table class="kc-key-table"><thead><tr><th>#</th><th>OK</th><th>Question</th><th>Correct option</th></tr></thead><tbody>${rows}</tbody></table>
+      </section>
+      <p class="no-print" style="margin-top:20px;font-size:13px;color:var(--color-text-secondary)"><button type="button" class="btn-primary ladder-ref-print" onclick="window.print()">${icon('fileText')} Print key</button></p>
+    </div>`;
+  }
+
   return {
     init, navigate, route,
     openSlideShow, closeSlideShow, slideNext, slidePrev, slideGoTo,

@@ -53,25 +53,35 @@ def _env_for_direct() -> dict[str, str]:
     return e
 
 
-def fetch_urllib(url: str, dest: Path, retries: int = 3) -> None:
+def _urlopen_with_proxy_mode(url: str, timeout: int, *, direct: bool):
+    """If direct=True, ignore HTTP(S)_PROXY (fixes broken CONNECT to upload.wikimedia.org)."""
     req = urllib.request.Request(url, headers={"User-Agent": UA})
+    if direct:
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        return opener.open(req, timeout=timeout)
+    return urllib.request.urlopen(req, timeout=timeout)
+
+
+def fetch_urllib(url: str, dest: Path, retries: int = 3) -> None:
+    """Try with env proxy first, then direct (no proxy). Cursor/some proxies break CONNECT to Wikimedia."""
     last: Exception | None = None
-    for attempt in range(retries):
-        try:
-            with urllib.request.urlopen(req, timeout=90) as resp:
-                data = resp.read()
-            if not data:
-                raise RuntimeError("empty response")
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_bytes(data)
-            return
-        except (urllib.error.URLError, OSError, TimeoutError) as e:
-            last = e
-            time.sleep(1.5 * (attempt + 1))
+    for direct in (False, True):
+        for attempt in range(retries):
+            try:
+                with _urlopen_with_proxy_mode(url, 90, direct=direct) as resp:
+                    data = resp.read()
+                if not data:
+                    raise RuntimeError("empty response")
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                dest.write_bytes(data)
+                return
+            except (urllib.error.URLError, OSError, TimeoutError) as e:
+                last = e
+                time.sleep(1.5 * (attempt + 1))
     raise last  # type: ignore[misc]
 
 
-def fetch_curl(url: str, dest: Path) -> None:
+def fetch_curl(url: str, dest: Path, *, direct: bool) -> None:
     curl = shutil.which("curl")
     if not curl:
         raise RuntimeError("curl not found")
@@ -96,7 +106,12 @@ def fetch_curl(url: str, dest: Path) -> None:
         UA,
         url,
     ]
-    env = os.environ if not os.environ.get("WIKIMEDIA_DIRECT") else _env_for_direct()
+    if direct:
+        cmd.insert(1, "--noproxy")
+        cmd.insert(2, "*")
+        env = _env_for_direct()
+    else:
+        env = _env_for_direct() if os.environ.get("WIKIMEDIA_DIRECT") else os.environ
     try:
         subprocess.run(cmd, check=True, env=env, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
@@ -112,11 +127,12 @@ def fetch(url: str, dest: Path) -> None:
         return
     except Exception as e:
         errors.append(f"urllib: {e}")
-    try:
-        fetch_curl(url, dest)
-        return
-    except Exception as e:
-        errors.append(f"curl: {e}")
+    for direct in (False, True):
+        try:
+            fetch_curl(url, dest, direct=direct)
+            return
+        except Exception as e:
+            errors.append(f"curl(direct={direct}): {e}")
     raise RuntimeError("; ".join(errors))
 
 

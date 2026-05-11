@@ -47,19 +47,6 @@ TEXT_MAIN = "1E293B"
 TEXT_MUTED = "64748B"
 WHITE = "FFFFFF"
 
-KNOWLEDGE_ANSWERS = [
-    "The PLC power supply converts incoming AC to low-voltage DC for the backplane and I/O. Field I/O is typically supplied 24 VDC (per cabinet design).",
-    "N/O: open when de-energized, closes when true. N/C: closed when de-energized, opens when true.",
-    "Likely causes: wiring fault (open, loose terminal, fuse) or NPN/PNP/common mismatch so the input circuit does not complete.",
-    "OSSD = Output Signal Switching Device. Two independent channels so one fault cannot silently defeat the safety function.",
-    "Same subnet as the PLC (e.g. 192.168.5.x with mask 255.255.255.0 for a 192.168.5.20 PLC).",
-    "Communications → Who Active / Browse Chassis. Go online shortcut often Ctrl+D (confirm version).",
-    "DN is ON when accumulated time reaches/exceeds preset — at 5000/5000 ms, DN is ON.",
-    "Global tags are controller-wide; program-scoped tags are limited to their program unless exposed.",
-    "Typical HMI levels: Operator, Maintenance/Technician, Administrator/Engineer (names vary).",
-    "Level 2 — escalate servo/STO issues to Lead Technician / Noah Staudacher per policy.",
-]
-
 try:
     from pptx import Presentation
     from pptx.util import Inches, Pt
@@ -165,6 +152,7 @@ SLIDE_IMAGE_FALLBACK: dict[str, str] = {
     "images/rotary_encoder.jpg": "images/inputs_sensors.png",
     "images/dol_motor_starter.jpg": "images/outputs_motors.png",
     "images/hmi_screen.jpg": "images/image6.jpeg",
+    "images/safety_plc_rack_example.jpg": "images/ps_cpu_module.png",
 }
 
 
@@ -1148,38 +1136,82 @@ def write_escalation_docx(td: dict, path: Path):
     pack_docx(build_document_xml("".join(parts)), path)
 
 
+def knowledge_questions(td: dict) -> list:
+    """Normalize knowledgeCheck — either legacy list of dicts or MC object with questions[]."""
+    kc = td.get("knowledgeCheck")
+    if isinstance(kc, dict):
+        return list(kc.get("questions") or [])
+    if isinstance(kc, list):
+        return kc
+    return []
+
+
+def knowledge_spec(td: dict) -> dict:
+    kc = td.get("knowledgeCheck")
+    if isinstance(kc, dict) and kc.get("format") == "multipleChoice":
+        return kc
+    return {}
+
+
 def write_knowledge_trainee(td: dict, path: Path):
-    qs = td.get("knowledgeCheck") or []
+    qs = knowledge_questions(td)
+    spec = knowledge_spec(td)
+    is_mc = bool(spec) and spec.get("format") == "multipleChoice"
     parts = [
         w_hero_title("Written Knowledge Check"),
         w_hero_sub(f"Trainee copy · {len(qs)} questions · PLC Tabletop Training"),
         w_gold_rule(),
         w_muted("Name: _________________________   Date: ______________   Score: _____ / " + str(len(qs))),
-        w_body("Answer in complete sentences unless your instructor directs otherwise."),
+        w_body(
+            "Select the best answer (A–D) for each question. For class use, record answers on an answer sheet unless your instructor distributes this file only."
+            if is_mc
+            else "Answer in complete sentences unless your instructor directs otherwise."
+        ),
     ]
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     for i, q in enumerate(qs, 1):
         parts.append(w_h2(f"Question {i}"))
         parts.append(w_body(strip_html(q.get("question", ""))))
-        parts.append(w_body("_" * 72))
-        parts.append(w_body("_" * 72))
+        if is_mc:
+            for j, opt in enumerate(q.get("choices") or []):
+                if j < len(letters):
+                    parts.append(w_body(f"{letters[j]}. {strip_html(opt)}"))
+            parts.append(w_body("Circle / mark: _____"))
+        else:
+            parts.append(w_body("_" * 72))
+            parts.append(w_body("_" * 72))
         parts.append(w_body(""))
     pack_docx(build_document_xml("".join(parts)), path)
 
 
 def write_knowledge_key(td: dict, path: Path):
-    qs = td.get("knowledgeCheck") or []
+    qs = knowledge_questions(td)
+    spec = knowledge_spec(td)
+    is_mc = bool(spec) and spec.get("format") == "multipleChoice"
     parts = [
         w_hero_title("Knowledge Check — Answer Key"),
-        w_hero_sub("INSTRUCTOR ONLY — do not distribute to trainees"),
+        w_hero_sub("TRAINER ONLY — do not distribute to trainees"),
         w_gold_rule(),
-        w_callout("Remove or separate this file before printing class copies."),
+        w_callout("Trainee-facing site uses a separate print view; verify class copies omit this answer key."),
     ]
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     for i, q in enumerate(qs, 1):
-        ans = KNOWLEDGE_ANSWERS[i - 1] if i <= len(KNOWLEDGE_ANSWERS) else "(Draft from materials.)"
         parts.append(w_h2(f"Question {i}"))
         parts.append(w_body(strip_html(q.get("question", ""))))
-        parts.append(w_h3("Suggested answer"))
-        parts.append(w_body(ans))
+        if is_mc:
+            ci = int(q.get("correctIndex", 0))
+            ch = q.get("choices") or []
+            letter = letters[ci] if 0 <= ci < len(letters) and ci < len(ch) else "?"
+            correct_text = strip_html(ch[ci]) if 0 <= ci < len(ch) else ""
+            parts.append(w_h3("Correct answer"))
+            parts.append(w_body(f"{letter}. {correct_text}"))
+            parts.append(w_muted("Distractors (not correct):"))
+            for j, opt in enumerate(ch):
+                if j != ci:
+                    parts.append(w_body(f"{letters[j]}. {strip_html(opt)}"))
+        else:
+            parts.append(w_h3("Suggested answer"))
+            parts.append(w_body("(Develop rubric locally — structured written items without embedded key.)"))
         parts.append(w_body(""))
     pack_docx(build_document_xml("".join(parts)), path)
 

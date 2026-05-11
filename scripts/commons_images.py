@@ -6,24 +6,77 @@ Used by scripts/download_slide_images.py and scripts/generate_offline_ooxml.py
 """
 from __future__ import annotations
 
-import time
+import os
+import shutil
+import subprocess
 import urllib.error
 import urllib.request
 
 _COMMONS_UA = "plc-training/1.0 (educational; +https://commons.wikimedia.org/)"
 
 
-def fetch_commons_bytes(url: str, retries: int = 3) -> bytes | None:
-    """Download original file bytes from upload.wikimedia.org (with retries)."""
-    for attempt in range(retries):
+def _env_for_direct() -> dict[str, str]:
+    """Copy of env without proxy vars (use with curl when WIKIMEDIA_DIRECT=1)."""
+    e = dict(os.environ)
+    for k in (
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "ALL_PROXY",
+        "http_proxy",
+        "https_proxy",
+        "all_proxy",
+    ):
+        e.pop(k, None)
+    return e
+
+
+def _urlopen_commons(url: str, timeout: int, *, direct: bool):
+    req = urllib.request.Request(url, headers={"User-Agent": _COMMONS_UA})
+    if direct:
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        return opener.open(req, timeout=timeout)
+    return urllib.request.urlopen(req, timeout=timeout)
+
+
+def fetch_commons_bytes(url: str) -> bytes | None:
+    """Download bytes from upload.wikimedia.org: try proxy then direct (proxy often breaks CONNECT)."""
+    for direct in (False, True):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": _COMMONS_UA})
-            with urllib.request.urlopen(req, timeout=120) as resp:
+            with _urlopen_commons(url, 45, direct=direct) as resp:
                 data = resp.read()
             if data:
                 return data
         except (urllib.error.URLError, OSError, TimeoutError):
-            time.sleep(1.5 * (attempt + 1))
+            pass
+    curl = shutil.which("curl")
+    if not curl:
+        return None
+    for direct in (False, True):
+        cmd = [
+            curl,
+            "-fsSL",
+            "-L",
+            "-A",
+            _COMMONS_UA,
+            "--connect-timeout",
+            "15",
+            "--max-time",
+            "90",
+            "--retry",
+            "1",
+            url,
+        ]
+        if direct:
+            cmd[1:1] = ["--noproxy", "*"]
+            env = _env_for_direct()
+        else:
+            env = _env_for_direct() if os.environ.get("WIKIMEDIA_DIRECT") else os.environ
+        try:
+            r = subprocess.run(cmd, capture_output=True, env=env, timeout=100)
+            if r.returncode == 0 and r.stdout:
+                return r.stdout
+        except (OSError, subprocess.TimeoutExpired):
+            pass
     return None
 
 # (filename under images/, full URL to original on upload.wikimedia.org)
@@ -88,6 +141,8 @@ COMMONS_IMAGES: list[tuple[str, str]] = [
     ("dol_motor_starter.jpg", "https://upload.wikimedia.org/wikipedia/commons/0/01/Dol_starter.jpg"),
     # Module 6 — HMI
     ("hmi_screen.jpg", "https://upload.wikimedia.org/wikipedia/commons/1/18/Siemens_Simatic_Multi_Panel.JPG"),
+    # Module 9 — safety controllers (modular PLC rack illustrates typical F-CPU / safety I/O form factor)
+    ("safety_plc_rack_example.jpg", "https://upload.wikimedia.org/wikipedia/commons/1/1f/S7300.JPG"),
 ]
 
 

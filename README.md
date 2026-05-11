@@ -22,11 +22,13 @@ npm run gen-commons-urls
 
 GitHub Actions **Deploy to GitHub Pages** runs the download script before copying the site, so deployed builds include the image files when the fetch succeeds.
 
-If downloads fail with **connection reset** or **proxy CONNECT** errors, try a **direct** connection to Wikimedia (bypasses `HTTPS_PROXY` for the `curl` step):
+If downloads fail with **connection reset** or **proxy CONNECT** errors, the scripts already try a **direct** connection (no `HTTP(S)_PROXY`) after proxied attempts—many corporate proxies break `CONNECT` to `upload.wikimedia.org`. You can force direct-only with:
 
 ```bash
 WIKIMEDIA_DIRECT=1 npm run download-images
 ```
+
+**Cursor’s agent terminal** often injects a localhost proxy: Wikimedia may still fail there even with the fix. Run the same command in a **normal system terminal**, set **`NO_PROXY=upload.wikimedia.org,.wikimedia.org`** if your network allows direct access, or use **Actions → Download slide images** on GitHub and unpack the artifact into `images/`.
 
 Re-download everything (overwrites existing files):
 
@@ -66,6 +68,12 @@ Regenerate after editing `js/data.js`:
 
 ```bash
 npm run generate-offline
+```
+
+**PowerPoint + Word only** (no PDF / distribution ZIP): refreshes `exports/powerpoint/*.pptx` and `exports/word/*.docx` from current training data. Run **`npm run download-images` first** on a machine that can reach Wikimedia so slide photos are cached under `images/` and embedded as real photos (not diagram fallbacks).
+
+```bash
+npm run download-images && npm run regenerate-pptx
 ```
 
 The last step builds **`exports/PLC_Training_Offline_Exports.zip`** (even if optional PDFs are skipped). If you only run `generate_offline_ooxml.py` by hand, run `python3 scripts/generate_offline_pdf.py` afterward to create that ZIP.

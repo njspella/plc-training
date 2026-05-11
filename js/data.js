@@ -34,6 +34,11 @@ const LocalModule2DeviceImages = {
   dolMotorStarter: "images/dol_motor_starter.jpg",
 };
 
+/** Module 9 — Safety controllers (illustrative hardware; caption notes F-PLC / modular safety form factor). */
+const LocalSafetyControllerImages = {
+  modularPlcRackExample: "images/safety_plc_rack_example.jpg",
+};
+
 const TrainingData = {
   title: "PLC Tabletop Training Program",
   subtitle: "Detailed Training Guide & Technical Reference",
@@ -41,7 +46,7 @@ const TrainingData = {
   audience: "Maintenance Technicians & Automation Personnel",
   version: "1.0",
   revisionDate: "April 2026",
-  totalHours: 26.5,
+  totalHours: 28.5,
   passingScore: 80,
 
   prerequisites: {
@@ -325,11 +330,11 @@ const TrainingData = {
           summary: "Proximity sensors, limit switches, photoelectric sensors, push buttons",
           content: [
             { type: "heading", text: "Proximity Sensors" },
-            { type: "image", src: LocalModule2DeviceImages.inductiveProximity, alt: "Cylindrical inductive proximity sensor", caption: "Inductive proximity sensor — detects metal without contact" },
+            { type: "image", src: LocalModule2DeviceImages.inductiveProximity, alt: "Cylindrical inductive proximity sensor", caption: "Inductive proximity sensor — detects metal without contact", narration: "An inductive proximity sensor uses a coil to create a high frequency field at the sensing face. Eddy currents in a metal target weaken that field and flip the output. Sensing distance is usually a few millimeters up to about twenty, depending on sensor size and target material. Capacitive and ultrasonic sensors are other common proximity families for non metals or longer range. Match N P N or P N P output type to your input card wiring." },
             { type: "paragraph", text: "An inductive proximity sensor detects metal objects without physical contact. It sends a 24VDC signal to the PLC digital input when a metal target enters its sensing range. Available in NPN (sinking) and PNP (sourcing) output types." },
             { type: "heading", text: "Limit Switches" },
             { type: "paragraph", text: "A limit switch is a mechanical contact sensor that triggers when an actuator (lever, roller, plunger) reaches its end-of-travel position. Provides either Normally Open (N/O) or Normally Closed (N/C) dry contacts." },
-            { type: "image", src: LocalModule2DeviceImages.limitSwitchRoller, alt: "Miniature microswitch with roller lever actuator", caption: "Roller-lever limit / microswitch — typical end-of-travel sensing" },
+            { type: "image", src: LocalModule2DeviceImages.limitSwitchRoller, alt: "Miniature microswitch with roller lever actuator", caption: "Roller-lever limit / microswitch — typical end-of-travel sensing", narration: "A limit switch uses a mechanical actuator to open or close hard contacts at the end of travel or when a cam hits the roller. You wire normally open or normally closed depending on whether you want the P L C to see the circuit made or broken at the limit. They are simple and reliable but wear over time compared to non contact sensors." },
             { type: "heading", text: "Photoelectric Sensors" },
             { type: "paragraph", text: "Photoelectric sensors use light beams for detection. Three main types are used in manufacturing:" },
             { type: "table", headers: ["Type", "Configuration", "Range", "Best For"],
@@ -341,7 +346,7 @@ const TrainingData = {
             },
             { type: "sideBySide",
               left: [
-                { type: "image", src: LocalModule2DeviceImages.photoelectric, alt: "Photoelectric sensor device", caption: "Photoelectric sensor — through-beam, retroreflective, and diffuse types use similar hardware" }
+                { type: "image", src: LocalModule2DeviceImages.photoelectric, alt: "Photoelectric sensor device", caption: "Photoelectric sensor — through-beam, retroreflective, and diffuse types use similar hardware", narration: "Photoelectric sensors send a light beam and look for a change at the receiver. Through beam gives the longest range and best contrast because the beam must be fully blocked. Retroreflective uses a reflector and is easier to align on one side. Diffuse bounces light off the target and is sensitive to color, finish, and dirt on the lens." }
               ],
               right: [
                 { type: "callout", variant: "tip", title: "Maintenance Tip", text: "Dirty lenses are the #1 cause of photoelectric sensor failures. Regular cleaning with a lint-free cloth can prevent most false triggers and missed detections." }
@@ -359,7 +364,7 @@ const TrainingData = {
           summary: "Area scanners, light curtains, safety relays, and OSSD concepts",
           content: [
             { type: "heading", text: "Area Scanners" },
-            { type: "image", src: LocalModule2DeviceImages.laserScanner3d, alt: "SICK 2D laser scanner for industrial area sensing", caption: "2D laser scanner (SICK) — industrial area / zone sensing; safety certification and programming depend on the exact model" },
+            { type: "image", src: LocalModule2DeviceImages.laserScanner3d, alt: "SICK 2D laser scanner for industrial area sensing", caption: "2D laser scanner (SICK) — industrial area / zone sensing; safety certification and programming depend on the exact model", narration: "A safety area scanner sweeps a laser to build a two dimensional map of objects inside defined fields. You program warning zones and protective zones in vendor software; when something enters a protective field, the scanner drops its safety outputs. Those outputs are often dual channel O S S D signals that must agree before a safety relay allows motion." },
             { type: "paragraph", text: "An area scanner uses a rotating laser to scan a defined area of space. If it detects a person or obstruction within its configured safety zone, it sends a signal to the PLC to stop or de-energize connected equipment." },
             { type: "list", items: [
               "Configurable warning and protective fields",
@@ -369,9 +374,9 @@ const TrainingData = {
             ]},
             { type: "heading", text: "Light Curtains" },
             { type: "paragraph", text: "A light curtain is an infrared safety barrier consisting of an emitter and receiver pair. If any beam is broken (e.g., a hand reaches through), the OSSD outputs drop and the machine stops. Used to guard press brakes, palletizers, and robotic cells." },
-            { type: "image", src: LocalModule2DeviceImages.lightCurtain, alt: "Photoelectric light-section sensor hardware", caption: "Light-section / photoelectric barrier hardware — illustrates interrupted-beam style sensing; classic paired light curtains use similar OSSD concepts" },
+            { type: "image", src: LocalModule2DeviceImages.lightCurtain, alt: "Photoelectric light-section sensor hardware", caption: "Light-section / photoelectric barrier hardware — illustrates interrupted-beam style sensing; classic paired light curtains use similar OSSD concepts", narration: "A true light curtain is a tall emitter and receiver pair with many parallel infrared beams. Breaking any beam drops the safety outputs so a hand cannot reach the hazard. Resolution is measured in millimeters between beams; higher resolution detects smaller fingers but costs more. Always follow the manufacturer minimum distance to the point of operation." },
             { type: "heading", text: "Safety Relays" },
-            { type: "image", src: LocalModule2DeviceImages.safetyRelayModule, alt: "Electromechanical relay module on a circuit board", caption: "Safety relays use forced-guided / dual-channel designs; they are often compact rail modules rather than large motor contactors" },
+            { type: "image", src: LocalModule2DeviceImages.safetyRelayModule, alt: "Electromechanical relay module on a circuit board", caption: "Safety relays use forced-guided / dual-channel designs; they are often compact rail modules rather than large motor contactors", narration: "A safety relay monitors two input channels from safety devices and only energizes its output contacts when both channels are healthy and the reset sequence is valid. Forced guided or mechanically linked contacts help ensure a welded contact cannot silently defeat the stop circuit. Never substitute a standard relay where a certified safety relay is required by the risk assessment." },
             { type: "paragraph", text: "Safety relays monitor safety circuits using dual-channel inputs with forced-guided contacts. They verify that both OSSD channels from a safety device agree before allowing machine operation. If the channels disagree (indicating a fault), the relay locks out and requires manual reset." },
             { type: "heading", text: "What is OSSD?" },
             { type: "callout", variant: "info", title: "OSSD — Output Signal Switching Device", text: "Safety-rated devices use two independent output channels (OSSD1 and OSSD2). Both must be ON for the machine to run. This dual-channel design means a single component failure cannot defeat the safety function. Standard single-channel sensors cannot be used for safety-rated applications." }
@@ -383,21 +388,21 @@ const TrainingData = {
           summary: "Light towers, motors, drives, relays, solenoid valves, and VFDs",
           content: [
             { type: "heading", text: "Light Tower (Stack Light)" },
-            { type: "image", src: LocalModule2DeviceImages.stackLight, alt: "Red amber green stack light on machinery", caption: "Stack (tower) light — each color segment is typically a separate PLC output" },
+            { type: "image", src: LocalModule2DeviceImages.stackLight, alt: "Red amber green stack light on machinery", caption: "Stack (tower) light — each color segment is typically a separate PLC output", narration: "A stack or tower light stacks colored lenses, usually red, amber, green, and sometimes blue or a buzzer. Each segment is driven by its own P L C output so you can signal run, idle, fault, and call for help. Flashing patterns are often handled in the program or by a smart tower module. Keep meanings consistent across machines so operators read status at a glance." },
             { type: "paragraph", text: "Stack lights indicate machine status: <strong>Green</strong> = running, <strong>Red</strong> = fault/stopped, <strong>Amber</strong> = warning/attention needed, <strong>Blue</strong> = operator call. Each color is driven by a separate PLC digital output." },
             { type: "heading", text: "Servo Motors & Drives" },
-            { type: "image", src: LocalModule2DeviceImages.servoMotor, alt: "Industrial servomotor", caption: "Servomotor — closed-loop position, speed, and torque control with feedback" },
+            { type: "image", src: LocalModule2DeviceImages.servoMotor, alt: "Industrial servomotor", caption: "Servomotor — closed-loop position, speed, and torque control with feedback", narration: "A servo motor is built for dynamic motion with a feedback device such as an encoder or resolver on the shaft. The drive closes the loop: it compares commanded position or speed to feedback and adjusts current to the motor. That gives accurate moves, fast acceleration, and holding torque at standstill unlike a plain induction motor on line power." },
             { type: "paragraph", text: "Servo motors provide precise position, speed, and torque control. The servo drive receives commands from the PLC (typically via EtherCAT or EtherNet/IP) and controls the motor accordingly. Used for CNC positioning, robotic joints, and precise material handling." },
-            { type: "image", src: LocalModule2DeviceImages.servoDrive, alt: "Servo amplifier drive unit", caption: "Servo drive (amplifier) — executes motion commands from the PLC over the fieldbus" },
+            { type: "image", src: LocalModule2DeviceImages.servoDrive, alt: "Servo amplifier drive unit", caption: "Servo drive (amplifier) — executes motion commands from the PLC over the fieldbus", narration: "The servo drive or amplifier converts bus power into controlled current and frequency for the motor. The P L C typically sends motion commands over Ether Net I P, Ether C A T, or similar, while the drive handles the fast current loop. You will configure tuning, limits, and safe torque off or safe stop features according to the machine safety concept." },
             { type: "heading", text: "Stepper Motors" },
             { type: "paragraph", text: "Stepper motors provide open-loop position control using discrete step pulses. Simpler and less expensive than servos but limited in torque and speed. Used for lower-precision positioning applications." },
-            { type: "image", src: LocalModule2DeviceImages.stepperMotor, alt: "NEMA 17 stepper motor", caption: "Stepper motor — moved in discrete steps under pulse command from the PLC or indexer" },
+            { type: "image", src: LocalModule2DeviceImages.stepperMotor, alt: "NEMA 17 stepper motor", caption: "Stepper motor — moved in discrete steps under pulse command from the PLC or indexer", narration: "A stepper motor moves in fixed steps when its drive receives pulses. Counting pulses gives approximate position without feedback, but the motor can stall or lose steps if load exceeds torque at a given speed. Micro stepping smooths motion but does not add real closed loop performance; add an encoder if you need to detect slip." },
             { type: "heading", text: "Relays" },
             { type: "paragraph", text: "Relays are electrically-operated switches that isolate PLC outputs from high-voltage or high-current loads. The PLC energizes the relay coil (24VDC), and the relay contacts switch the load circuit (which may be 120VAC, 240VAC, or higher)." },
-            { type: "image", src: LocalModule2DeviceImages.plcInterposingRelay, alt: "DIN-rail impulse / auxiliary relay module", caption: "Interposing relay on DIN rail — PLC output energizes a small relay coil; relay contacts switch the load circuit" },
+            { type: "image", src: LocalModule2DeviceImages.plcInterposingRelay, alt: "DIN-rail impulse / auxiliary relay module", caption: "Interposing relay on DIN rail — PLC output energizes a small relay coil; relay contacts switch the load circuit", narration: "An interposing relay lets a low current twenty four volt P L C output switch a separate load circuit, for example a hundred twenty volt contactor coil or a larger contact rating. The P L C only sees the relay coil current, not the load inrush. Pick contact voltage and current rating for the load, and consider surge suppression on inductive coils." },
             { type: "heading", text: "Solenoid Valves" },
             { type: "paragraph", text: "Solenoid valves control pneumatic or hydraulic flow. The PLC digital output energizes the solenoid coil, which shifts a spool to direct air or fluid to cylinders, actuators, or clamps." },
-            { type: "image", src: LocalModule2DeviceImages.solenoidValveCoil, alt: "Solenoid coil on a pneumatic valve", caption: "Solenoid coil (example: 24 V DC) — PLC output energizes the coil to shift the valve spool" },
+            { type: "image", src: LocalModule2DeviceImages.solenoidValveCoil, alt: "Solenoid coil on a pneumatic valve", caption: "Solenoid coil (example: 24 V DC) — PLC output energizes the coil to shift the valve spool", narration: "A solenoid valve uses an electric coil to shift a spool or poppet and route compressed air. Single solenoid valves often spring return; double solenoid valves latch in each position. Coil current and inrush matter for output card selection. Always exhaust safely and verify valve state matches the cylinder motion you expect before enabling automatic motion." },
             { type: "table", headers: ["Type", "Action", "Application"],
               rows: [
                 ["5/2 single-solenoid", "Spring return — de-energize returns to home", "Single-acting cylinders, simple extend/retract"],
@@ -411,7 +416,7 @@ const TrainingData = {
               "<strong>Hardwired:</strong> PLC digital output for run/stop, analog output (4–20mA) for speed reference",
               "<strong>Network:</strong> PLC sends commands and reads feedback over EtherNet/IP, EtherCAT, or Modbus — start/stop, speed setpoint, actual speed, current draw, and fault codes all in one connection"
             ]},
-            { type: "image", src: LocalModule2DeviceImages.vfd, alt: "Variable frequency drive inverter unit", caption: "Variable-frequency drive — varies output frequency and voltage to the motor" },
+            { type: "image", src: LocalModule2DeviceImages.vfd, alt: "Variable frequency drive inverter unit", caption: "Variable-frequency drive — varies output frequency and voltage to the motor", narration: "A variable frequency drive rectifies incoming A C to D C, then synthesizes variable frequency A C for the motor. Motor speed roughly tracks frequency when the drive maintains proper volts per hertz. Beyond basic start stop, drives expose analog or network speed references, ramp times, braking, and diagnostic faults. Remember the internal D C bus stays hazardous after power off until it bleeds down." },
             { type: "callout", variant: "warning", title: "VFD Safety Note", text: "VFD DC bus capacitors retain dangerous voltage (up to 800VDC) after the drive is powered off. Wait for the DC bus voltage to decay to zero (check the drive display or measure with a meter) before working on VFD wiring." },
             { type: "heading", text: "Motor Contactors & Starters" },
             { type: "paragraph", text: "For motors without VFDs, contactors switch motor power on/off. A motor starter = contactor + overload relay. The PLC energizes the contactor coil (usually through an interposing relay), and the overload relay's auxiliary contacts feed back to a PLC input for trip monitoring." },
@@ -1071,6 +1076,123 @@ const TrainingData = {
         { after: "Servo Motor Configuration", title: "Servo Parameters — Live Adjustment", duration: "15 min", description: "On the EtherCAT servo drive, show current parameters. Make a safe change (reduce velocity by 50%), command a move, observe the difference. Restore original.", activity: "Students read parameters, predict what a change will do, observe the result, then restore. Reinforces the read → predict → verify → restore cycle." },
         { after: "Global Variables & Adding Components", title: "Add I/O Component End-to-End", duration: "15 min", description: "Walk through adding a new tag for an unused I/O point: create tag, map to physical channel, write a simple rung, download, test with physical device.", activity: "Students follow along on laptops, replicating the tag and rung. Each pair tests their logic on the bench — the capstone integrative activity." }
       ]
+    },
+    {
+      id: 9,
+      title: "Safety Controllers",
+      hours: 2,
+      format: "Lecture + Lab",
+      icon: "shield",
+      description: "Dedicated safety PLC / safety CPU systems: why plants use them, how they differ from standard PLCs, what goes wrong during replacement, and a guided bench troubleshooting exercise.",
+      objectives: [
+        "Explain why a safety-rated controller (or equivalent subsystem) is used instead of relying on standard PLC logic alone for high-risk machine functions",
+        "Describe dual-channel diagnostics, safe states, and how a safety controller talks to sensors, drives, and the standard PLC",
+        "List common installation and commissioning mistakes when swapping a safety controller module or downloading a safety project",
+        "Follow a structured procedure to localize a fault to inputs, wiring, configuration, or safe output state — without defeating interlocks"
+      ],
+      lessons: [
+        {
+          id: 1,
+          title: "Why Safety Controllers Are Necessary",
+          summary: "Risk reduction, PL / SIL concepts, separation from general automation",
+          content: [
+            { type: "paragraph", text: "A <strong>safety controller</strong> (safety PLC, safety CPU slice, networked safety hub, etc.) evaluates safety functions for machinery: E-stops, light curtains, area scanners, safe motion (STO/SBC), gates, enabling switches. Regulations and standards push critical functions into equipment that is <strong>certified</strong>, <strong>tested</strong>, and <strong>limited in what it can be configured to do</strong> compared to a general-purpose PLC program." },
+            { type: "heading", text: "Standards & terminology (trainer level)" },
+            { type: "list", items: [
+              "<strong>ISO 13849-1:</strong> Safety of machinery — relates to Performance Level (PL) and Category architecture (e.g. dual channel with monitoring).",
+              "<strong>IEC 61508 / IEC 62061:</strong> Functional safety root standards; SIL (Safety Integrity Level) is common in documents for process and machine integration.",
+              "<strong>IEC 60204-1 / NFPA 79:</strong> Electrical equipment of machines — stop categories, emergency stop behavior, isolation."
+            ]},
+            { type: "callout", variant: "info", title: "Why not only a standard PLC?", text: "A standard PLC can still run guarding logic — but proving it meets PL e / SIL 3 expectations usually requires lifecycle documentation, redundancy, predictable scan behavior, diagnostics, and third-party certification. Safety controllers package that into approved architectures and toolchains so faults (stuck contacts, mismatched OSSD signals, watchdog failures) generate a deterministic safe reaction." },
+            { type: "heading", text: "Typical architectures" },
+            { type: "table", headers: ["Pattern", "What you see on the bench / plant"],
+              rows: [
+                ["Dedicated safety PLC + standard PLC", "Safety CPU handles OSSD chains and STO; standard PLC sequences motion, recipes, HMIs"],
+                ["Integrated failsafe CPU slices", "One rack with F-modules (Failsafe DI/DO) and diagnostics to software"],
+                ["Safety fieldbus gateways", "CIP Safety over EtherNet/IP, PROFIsafe, FSoE, etc. bridging safe devices into a certified subsystem"]
+              ]
+            },
+            { type: "callout", variant: "warning", title: "Unauthorized changes", text: "Do not bypass safety circuits, jumper OSSD terminals, defeat door switches, or load unapproved safety projects. Follow plant change control — safety validation may be invalidated by a seemingly small edit." }
+          ]
+        },
+        {
+          id: 2,
+          title: "How Safety Controllers Work",
+          summary: "Inputs, diagnostics, safe outputs, watchdogs, coordination with drives",
+          content: [
+            { type: "paragraph", text: "At a high level, a safety controller <strong>continually verifies</strong> that every safety input behaves within defined rules (dual channels agree, discrepancy limits, pulse tests where applicable). If a rule breaks, outputs drop to the <strong>safe state</strong> (normally de-energized motor contactors off, STO asserted, pneumatic dump, etc.)." },
+            { type: "heading", text: "Core ideas" },
+            { type: "list", items: [
+              "<strong>Dual channel & discrepancy time:</strong> OSSD pairs from light curtains/scanners must match within timing windows; disagreement is a detected fault.",
+              "<strong>Diagnosis & watchdog:</strong> Onboard tests and communication timeouts force a safe shutdown if the controller detects internal inconsistencies.",
+              "<strong>Type of safe output:</strong> Some systems use mechanically guided relays; others pulse-test outputs to detect welded contacts or shorts.",
+              "<strong>Safe communication:</strong> Sil3-rated links use CRCs, sequence numbers, and dedicated safety protocol stacks so corrupted frames cannot imitate a permissive.",
+              "<strong>Reset / acknowledge:</strong> Many applications require deliberate reset sequences after intrusion — avoids automatic restart behind an operator." 
+            ]},
+            { type: "heading", text: "Relation to servo / VFD safety" },
+            { type: "paragraph", text: "Drives expose <strong>STO/SBC</strong> (Safe Torque Off / safe brake control) terminals or network safety functions. The safety controller issues STO when the guarding chain opens. Clearing the guarding condition alone is often insufficient — faults may latch until acknowledged in software or cleared at the device LED." },
+            { type: "callout", variant: "tip", title: "Teaching tip", text: "Map this lesson to whichever hardware your site uses (Guard PMC, Sirius Safety, NX-SL/NX-ID, Sick Flexi Soft, Pilz PLC, Allen-Bradley GuardLogix®, etc.). The vocabulary changes; the diagnostics philosophy does not." }
+          ]
+        },
+        {
+          id: 3,
+          title: "Hardware Example & Replacement Pitfalls",
+          summary: "Modular rack photo, swapping hardware, versioning, commissioning errors",
+          content: [
+            { type: "heading", text: "Illustrative hardware" },
+            { type: "image", src: LocalSafetyControllerImages.modularPlcRackExample, alt: "SIMATIC S7-300 PLC modules in a rack", caption: "Siemens SIMATIC S7-300 PLC rack — <strong>illustrative modular PLC hardware</strong> (Commons photo). Integrated safety CPUs and F-modules often share this \"rack / slot / bus\" mentality even when the SKU differs from your site's controller." },
+            { type: "paragraph", text: "On your tabletop or plant floor you may instead see DIN-rail standalone safety relays, networked safety hubs, slices on EtherCAT/IP, or a combined motion+safety PLC. Teach students to locate the manufacturer's nameplate, firmware/revision sticker, wiring legend, and the safety project file revision that matches hardware." },
+            { type: "heading", text: "Common issues when replacing a safety controller module" },
+            { type: "table", headers: ["Failure mode", "Typical symptom", "Prevent / fix"],
+              rows: [
+                ["Wrong firmware / incompatible hardware revision", "Project will not compile, download rejects, flashing fault LED pattern", "Order exact replacement catalog + revision approved by OEM; archive firmware notes with the validated safety project"],
+                ["Missing or mismatched wiring / terminal swap", "One OSSD reads low while partner reads high permanently", "Use photos, ferrule numbering, schematic channel→terminal map; continuity-check before energizing outputs"],
+                ["Safety project mismatch with standard PLC tags", "HMI alarm shows safe fault but ladder shows inputs healthy", "Re-download both halves after validating network tag export; resolve duplicate tag names"],
+                ["Address / node duplication after swap", "Intermittent CIP Safety / EtherCAT drops", "Set unique IDs per device; reboot fieldbus cleanly; validate switch port configuration"],
+                ["Proof-test / commissioning step skipped", "Device runs in degraded mode until timeout", "Run vendor proof-test wizard and document timestamp per policy"],
+                ["Operator defeat or bypass jumper left installed", "\"Everything works\" but chain is ineffective", "Visual inspection checklist; keyed bypass only per written LOTO+MOC procedure"]
+              ]
+            },
+            { type: "callout", variant: "danger", title: "Replacement rule", text: "With cabinet LOTO verified, swap like-for-like catalog hardware, reconnect exactly per torque and shielding specs, reload the <strong>approved</strong> safety project, execute vendor-specific validation checklist, run a supervised jog test — then turnover with documentation signed per site policy." }
+          ]
+        },
+        {
+          id: 4,
+          title: "Hands-On — Troubleshooting a Safety Fault (Bench)",
+          summary: "Student procedure with detailed trainer choreography",
+          content: [
+            { type: "paragraph", text: "<strong>Student objective:</strong> A machine area is flagged \"safety circuit not ready.\" Locate whether the fault is from a device, wiring mimic, logical reset requirement, or network issue — without defeating interlocks." },
+            { type: "callout", variant: "info", title: "Trainer — prerequisites (before learners arrive)", text: "<strong>Set up ONE</strong> of the following repeatable faults on the tabletop bench — pick what matches available hardware:<br/><br/>① <strong>Simulated OSSD disparity:</strong> Use a keyed selector or trainer-only terminal block jumper so OSSD-A is forced low while OSSD-B is high (simulate mis-wiring during prior repair). Restore to known-good after drill.<br/>② <strong>Unresolved reset latch:</strong> Safety input chain is healthy but programmatic reset latch was never acknowledged after intentional stop — clear fault in trainer software beforehand or leave latched intentionally per script below.<br/>③ <strong>Network drop:</strong> Disable one Ethernet port / wrong VLAN tagging on demonstration switch showing safe link timeout on HMI.<br/><br/><strong>Mandatory:</strong> All disconnects guarded; trainees stay on meters & software traces first; no screwdriver on live terminals unless under site energized-work policy." },
+            { type: "callout", variant: "info", title: "Trainer — facilitation script (say / do aloud)", text: "<strong>Minute 0–5:</strong> \"Treat any safety fault like a STOP — acknowledge nothing until you verify no one can be hurt. Where does the indicator say the fault is? Pull the tag name onto the projector.\"<br/><strong>Minute 5–15:</strong> Walk the safety input table in software with students: show dual bits; ask \"Do they agree within spec? Which one mismatched first?\"<br/><strong>Minute 15–25:</strong> Move to bench: correlate tag → terminal → device LED. Explain pulse-test LED patterns only at high level.<br/><strong>Minute 25–35:</strong> After students propose a fix <em>hypothesis</em>, demonstrate corrective action (restore parity wiring, pulse reset permitted by vendor docs, reconnect network cable). Stress <strong>cold verify</strong> with meter before trusting green LEDs.<br/><strong>Wrap-up:</strong> Have each trainee state one takeaway and one escalation trigger (servo STO, SIL device internal fault)." },
+            { type: "heading", text: "Learner troubleshooting checklist (lab)" },
+            { type: "steps", items: [
+              "Read HMI / stack light wording and locate the referenced safety tag or network device name.",
+              "In safety software view (or guarded tag monitor), inspect dual OSSD pairs or STO status — screenshot or note discrepancy.",
+              "Confirm physical device LEDs match software (present vs absent target, obstruction, OSSD polarity).",
+              "If discrepancy persists, power down per LOTO, ring out pairs from device to terminals to module input pins.",
+              "After repair with qualified approval, reload / verify project parity, acknowledge fault per vendor sequence, supervise a slow jog proving stopping still works.",
+              "Document symptom, probable cause, corrective action — attach to escalation if fault repeats."
+            ]},
+            { type: "callout", variant: "warning", title: "Trainer — debrief questions", text: "\"What would happen if someone defeated only one OSSD wire? Why do we care about discrepancy timers? Who must sign off before production restart after a controller swap?\"" },
+            { type: "callout", variant: "success", title: "Success criteria (for competency sign-off)", text: "Each participant verbally ties <strong>HMI wording → PLC tag pair → terminal → device LED</strong> and proposes a next test that does <strong>not</strong> violate guarding. Trainer verifies no unsafe shortcuts used during drill." }
+          ]
+        }
+      ],
+      quiz: [
+        { question: "Which reason best explains why a dedicated safety-rated controller subsystem is commonly used?", options: ["It programs faster ladder than a standard PLC", "It bundles certified architectures, diagnostics, and lifecycle evidence that are difficult to prove on a generic PLC alone", "It replaces the need for wired E-stops", "It eliminates LOTO"], correct: 1, explanation: "Safety controllers integrate certified hardware/software patterns and diagnostics so foreseeable faults lead to deterministic safe reactions — aligning with machinery functional-safety concepts." },
+        { question: "What is a cardinal symptom that dual-channel OSSD wiring was swapped?", options: ["Both channels toggle together correctly", "One OSSD permanently disagrees while the device LED shows healthy pulses", "HMI freezes", "Standard PLC watchdog trips"], correct: 1, explanation: "Mis-wiring or channel swap often freezes one OSSD HIGH or LOW incorrectly while the complementary channel follows the optical interface — discrepancy fault." },
+        { question: "After replacing a safety controller module, what MUST be validated before handing the line back?", options: ["Desktop wallpaper refreshed", "Only HMI alarms cleared", "Matching catalog/firmware revision, approved project download & documented functional check or validation per policy", "Nothing if LED is green"], correct: 2, explanation: "Hardware revision parity and approved-compiled configuration must match the validated safety lifecycle record; undocumented downloads invalidate assurances." },
+        { question: "Why might STO asserted on a drive still persist after guarding input bits return OK?", options: ["Because servo encoder resolution changed", "Because safe motion subsystems latch faults until acknowledgement / drive reset clearing chain per vendor safety state machine", "Because ethernet cable is CAT5 vs CAT6", "Because PLC scan time improved"], correct: 1, explanation: "Many safety motion paths require deliberate reset steps even after OSSD clears — guarding OK is necessary but may not suffice." }
+      ],
+      demoBreaks: [
+        {
+          after: "Hands-On — Troubleshooting a Safety Fault (Bench)",
+          title: "Safety Fault Trace — Guided Lab",
+          duration: "35–40 min",
+          description: "Run the scripted hands-on scenario from lesson 4. Trainer rotates students through \"scribe / pointer / jumper-check\" roles. Use real meters, screenshots, or written trace tables — no improvised bypasses.",
+          activity: "Each pair completes Learner Troubleshooting checklist; trainer signs station completion when OSSD discrepancy or chosen fault scenario is traced to root cause and restored under policy."
+        }
+      ]
     }
   ],
 
@@ -1163,78 +1285,303 @@ const TrainingData = {
   ],
 
   escalation: {
+    pageIntro:
+      "Factory path: <strong>operations opens a Thrive</strong> first. Still open <strong>~1 hr after maintenance troubleshoots</strong> → involve <strong>MET</strong>. Still open <strong>same day</strong> → evaluate <strong>certified vendor</strong>. At each handoff, <strong>notate on the Thrive what has already been checked</strong> (verified, ruled out, or inconclusive) so the next team does not repeat work.",
     levels: [
       {
         level: 1,
-        title: "Technician Resolves Independently",
+        title: "Operations & maintenance — Thrive",
         color: "success",
         items: [
-          "Sensor replacement (proximity, photoelectric, limit switch)",
-          "Push button swap",
-          "IP configuration and PLC connectivity",
-          "HMI fault clear and alarm management",
-          "Safety circuit reset (area scanner, light curtain, E-stop)",
-          "Area scanner zone verification",
-          "I/O signal trace via PLC software",
-          "Fuse replacement (after identifying root cause of blown fuse)"
+          "<strong>Operations:</strong> Open a Thrive when the machine is down, out of tol, risky, or abnormally repeatable. Include asset, symptom, urgency, who/when discovered, alarms — and <strong>operator-side checks already done</strong> (mode, resets, obvious interlocks) so maintenance does not repeat them blind.",
+          "<strong>Maintenance:</strong> Own triage — acknowledge, arrive, verify LOTO/permits, first-line troubleshooting (mech/elec, I/O, basic signals). Timestamped notes.",
+          "<strong>Between steps (Thrive):</strong> After each check or swap, log <strong>what</strong> was examined, <strong>result</strong> (passed / failed / unchanged symptom / N/A), <strong>when</strong>, and <strong>who</strong> — especially before asking for MET.",
+          "<strong>In scope:</strong> Sensors/switches, pushbuttons, cable/fuse sanity, resets per procedure (no bypass), HMI ack when allowed, IP/PLC check if trained.",
+          "<strong>Stop sooner</strong> for life-safety or regulatory risk — emergency protocol plus current Thrive notes."
         ]
       },
       {
         level: 2,
-        title: "Escalate to Lead Technician / Noah Staudacher",
+        title: "MET (~+1 hr after maintenance troubleshoots)",
         color: "warning",
         items: [
-          "Ladder logic modification required",
-          "Servo drive fault (E-series codes, STO errors)",
-          "New I/O module addition or configuration",
-          "Area scanner zone reprogramming on production equipment",
-          "VFD parameter changes or fault diagnosis",
-          "Any fault that persists after Level 1 troubleshooting"
+          "<strong>When:</strong> ~1 hr after maintenance started active troubleshooting OR sooner if ops/maint/supervisors agree (scrap, cascading loss, safety nuisance). Update Thrive/channel so MET visibility is obvious.",
+          "<strong>Before acting:</strong> Read Thrive end-to-end — treat prior lines as <strong>already checked</strong>; do not rerun those tests unless disproven. Add new MET trials with the same notation (what / result / when / who).",
+          "<strong>MET:</strong> Production impact, tooling/swaps, deeper diagnosis (PLC trends with maint, sequencing, containment). Trials only inside approved limits.",
+          "<strong>Before vendor dollars:</strong> Current packet — timeline, tags/screens tried, metering, substitution tests — with every prior check labeled <strong>ruled out</strong> vs <strong>still open</strong>.",
+          "<strong>If fixed:</strong> Root cause / corrective action, run-at-rate check, then release."
         ]
       },
       {
         level: 3,
-        title: "Escalate to Automation Engineering",
+        title: "Certified vendor — same calendar day",
         color: "danger",
         items: [
-          "PLC program structural changes",
-          "EtherCAT/EtherNet/IP configuration changes",
-          "New machine integration",
-          "Firmware updates on any controller or drive",
-          "Any unresolvable communication fault after Level 2 troubleshooting",
-          "Safety system design changes"
+          "<strong>When:</strong> By end of affected shift if policy allows · MET+MRO haven't localized or fixed · vendor go/no-go using <strong>matrix only</strong> (OEM, certified integrators, specialists).",
+          "<strong>Handoff pack:</strong> Vendor sees one narrative: <strong>checks already completed</strong> through operations, maintenance, and MET (with outcomes) plus the remaining gap — not a blank slate.",
+          "<strong>Governance:</strong> Quote, outage window, remote-access/cyber packet, OEM licenses, spares wording — Procurement + Engineering policy.",
+          "<strong>Data:</strong> PLC archive / traces / historian strips BEFORE remote work when policy allows downloads on running rules.",
+          "<strong>Ladder/firmware/production:</strong> Automation Engineering authorization + whoever touches logic follows change control.",
+          "<strong>Overnight:</strong> Hand-off narrative; deferred vendor rationale logged."
         ]
       }
     ],
     documentation: [
-      "Machine name and asset number",
-      "PLC platform and software version",
-      "HMI alarm code and alarm text (take a photo)",
-      "Tag name(s) involved, current vs. expected values",
-      "Steps already taken and results",
-      "Time of fault occurrence and production impact"
+      "Thrive # + times (opened, MET on, shift-end)",
+      "Between-step log: each check · outcome (OK / ruled out / no change) · time · initials",
+      "Asset / PLC revision",
+      "HMI alarms verbatim + traced tags",
+      "What was tried vs unchanged symptom (include repeats explicitly marked \"re-verified\")",
+      "Production impact",
+      "Vendor: none · named vendor · defer + why",
+      "L2–L3 approver name/role"
+    ],
+    /** Used by escalation page callout and wallet footer. */
+    importantNotice:
+      "No ladder edits, firmware flashes, bypasses, or rogue vendor downloads on production. Automation Engineering + Purchasing sign-off per change control — vendors included.",
+
+    documentationHeading: "Document Before Escalating",
+
+    /** Printed banner labels only — body text comes from escalation (above). */
+    walletCard: {
+      bannerTitle: "Escalation",
+      bannerSubtitle: "PLC · controls"
+    }
+  },
+
+  /**
+   * Printable / on-screen quick reference (Handouts → Ladder Logic Quick Reference).
+   * Supplements Module 8 ladder lessons; dense tables for bench troubleshooting.
+   */
+  ladderQuickReference: {
+    title: "Ladder Logic Quick Reference",
+    tagline: "Scan: read inputs → execute logic → write outputs. Power flows left to right. Sysmac Studio uses IEC-style ladder with similar rung graphics; names below are typical Omron labels in the tool.",
+    sections: [
+      {
+        title: "Contacts, coils, latch",
+        columns: ["Role", "Symbol (Logix-style)", "Rockwell Logix", "Sysmac Studio (samples)", "When it passes power / what it does"],
+        rows: [
+          ["Normally open contact", "__SYM_XIC__", "XIC (examine if closed)", "NO serial contact (same | | graphic). Maps to a BOOL variable in Sysmac.", "Passes power when the bit is ON (1)."],
+          ["Normally closed contact", "__SYM_XIO__", "XIO (examine if open)", "NC serial contact (|/|). Inverted sense vs NO.", "Passes power when the bit is OFF (0)."],
+          ["Output energize", "__SYM_OTE__", "OTE (output energize)", "OUT coil when rung is true. (ST equivalent: assign BOOL from rung condition.)", "Sets the bit ON when the rung is true; bit turns OFF when rung goes false."],
+          ["Output latch / unlatch", "__SYM_OTL_OTU__", "OTL / OTU", "SET / RSET: SET holds bit ON until RSET on another rung.", "OTL sets bit and it stays ON; OTU clears it. Use as a pair for start/stop memory."],
+          ["One-shot (rising)", "__SYM_ONS__", "ONS / OSR-style", "DIFU (differentiate up): one-scan pulse on FALSE→TRUE. Toolbox also offers ↑ on a contact.", "Produces a single scan pulse when the input goes false→true. Used to edge-trigger counters, moves, or messages."]
+        ]
+      },
+      {
+        title: "Timers (Rockwell names + Sysmac FB samples)",
+        columns: ["Type", "Block", "Sysmac Studio (samples)", "Behavior", "Bits to know"],
+        rows: [
+          ["TON — on-delay", "__SYM_TON__", "Ton FB: IN, PT (e.g. T#5s), Q done, ET elapsed. Insert from Timers in the toolbox.", "Input true: accumulator counts up to preset; DN turns ON when ACC ≥ PRE.", "EN rung enabled, TT timing, DN done"],
+          ["TOF — off-delay", "__SYM_TOF__", "Tof FB: times after IN goes false; Q holds until PT expires.", "Input false: timer counts; output stays ON until time expires.", "EN, DN, TT"],
+          ["RTO — retentive", "__SYM_RTO__", "TonR (retentive on-delay) FB: ET holds if IN drops; use reset to clear.", "Like TON but holds ACC if input drops; needs RES (reset) to clear.", "EN, TT, DN"]
+        ]
+      },
+      {
+        title: "Counters",
+        columns: ["Type", "Block", "Sysmac Studio (samples)", "Behavior", "Bits / notes"],
+        rows: [
+          ["CTU — count up", "__SYM_CTU__", "CTU FB: CU, R reset, PV preset, Q done. Often pulse CU with DIFU or a cycle bit.", "CU bit on false→true transition adds 1; DN when ACC ≥ PRE.", "CU, DN; RES clears ACC and DN"],
+          ["CTD — count down", "__SYM_CTD__", "CTD FB: CD, R reset, PV start value, Q at zero.", "CD transition subtracts 1; DN often when ACC ≤ 0 (check instruction help).", "CD, DN; RES"]
+        ]
+      },
+      {
+        title: "Compare (examples)",
+        columns: ["Mnemonic", "Block", "Sysmac Studio (samples)", "Meaning", "Typical use"],
+        rows: [
+          ["EQU", "__SYM_EQU__", "Eq ladder instruction or IF a = b in ST; works on INT, DINT, LREAL, etc.", "A equals B", "Match setpoint, recipe step"],
+          ["NEQ", "__SYM_NEQ__", "Ne (not equal) compare.", "A not equal B", "Detect change / mode mismatch"],
+          ["GRT / LES", "__SYM_CMP__", "Gt / Lt compare instructions.", "Greater / less than", "Limits, interlocks"],
+          ["GEQ / LEQ", "__SYM_CMP2__", "Ge / Le compare instructions.", "Greater-or-equal / less-or-equal", "Range tests with inclusive bounds"]
+        ]
+      },
+      {
+        title: "Move & math",
+        columns: ["Instruction", "Block", "Sysmac Studio (samples)", "Purpose"],
+        rows: [
+          ["MOV", "__SYM_MOV__", "Move instruction (ladder box or Move(Source, Dest) in ST).", "Copy source value to destination (setpoints, HMI writes, defaults)."],
+          ["ADD / SUB / MUL / DIV", "__SYM_MATH__", "Add, Sub, Mul, Div function blocks; or + − * / in Structured Text.", "Arithmetic on tags (scaling, totals). Watch for overflow on integers."],
+          ["CPT (compute)", "__SYM_CPT__", "Chain Add/Mul/Div or put the formula in a Structured Text section or POU.", "Single expression for combined math; easier to document than many ADD/MUL rungs."]
+        ]
+      }
+    ],
+    onlineTips: [
+      "Highlighted / green contacts are TRUE and passing power; open contacts are FALSE and block the rung.",
+      "If an output never turns ON, trace backward: find the first contact blocking power, then verify the real input, tag, or forcing.",
+      "Timers stuck with DN off: check EN/TT; preset units (ms vs s); and whether a RES or parallel branch clears logic.",
+      "Never edit ladder on production without Automation Engineering authorization and a verified backup."
     ]
   },
 
-  knowledgeCheck: [
-    { question: "What is the function of the PLC power supply, and what voltage does it typically output to the I/O modules?", type: "written" },
-    { question: "Describe the difference between a Normally Open (N/O) and Normally Closed (N/C) contact in ladder logic.", type: "written" },
-    { question: "A proximity sensor's LED is lit (indicating it is detecting a target), but the PLC input tag shows 0. What are two likely causes?", type: "written" },
-    { question: "What does OSSD stand for, and why do safety devices use two OSSD channels instead of one?", type: "written" },
-    { question: "You need to connect your laptop to an Omron PLC with IP address 192.168.5.20. What should you set your laptop's IP and subnet mask to?", type: "written" },
-    { question: "In Studio 5000, what menu option do you use to browse the network and find controllers? What is the keyboard shortcut to go online?", type: "written" },
-    { question: "A TON timer has a preset of 5000ms and an accumulator of 5000ms. Is the DN bit ON or OFF?", type: "written" },
-    { question: "What is a global variable, and how does it differ from a program-scoped tag?", type: "written" },
-    { question: "List the three access levels on a typical HMI and describe what each level allows.", type: "written" },
-    { question: "At what escalation level should a technician address a servo drive STO (Safe Torque Off) fault?", type: "written" }
-  ],
+  /**
+   * Handouts → 5-Layer Troubleshooting Flowchart (expanded: pre-checks, entry tactics, branches, richer layers).
+   */
+  troubleshootingFlowchart: {
+    title: "5-Layer Troubleshooting Flowchart — Expanded Field Guide",
+    tagline:
+      "Use this as both a worksheet and poster: the layers name where faults live · your symptom often tells you where to start · always verify physics before trusting software indications.",
+    keyPrinciple:
+      "<strong>Software tells you what the PLC thinks.</strong> A multimeter / loop calibrator / device LEDs usually tell you what is actually happening. Where they disagree, treat the discrepancy as intentional evidence until proven otherwise.",
+
+    preCheck: {
+      title: "0 — Precheck before you chase layers",
+      items: [
+        "Safe state · are personnel clear · E-stop/interlocks respected · LOTO or permit discipline per site rules before opening panels or rewiring?",
+        "<strong>Narrow scope:</strong> one machine versus line versus plant-wide? One station versus whole recipe? What else is still working?",
+        "<strong>Symptom packet:</strong> operator words, HMI alarm text + code, tag name, timestamp, mode (auto/manual), what changed first (cycle start, tool change, shift change).",
+        "Photo or copy fault screens and note whether the fault is <strong>solid</strong> vs <strong>intermittent</strong> (sets route below).",
+        "If intermittent or repeating, plan to <strong>capture trends / historian / trace</strong> before cycling power or clearing buffers so you do not erase evidence."
+      ]
+    },
+
+    documentationGate: {
+      title: "Doc & configuration gate (top of every serious ticket)",
+      items: [
+        "Latest <strong>approved</strong> electrical prints, I/O sheets, device layout, and PLC/HMI project revision on the controller match what is running.",
+        "Recent changes: programs, parameters, recipes, mechanical tooling, network drops, firmware or module swaps — log who / when / what.",
+        "Verify <strong>power distribution</strong> that feeds the island: main control power, 24 VDC branch fuses, transformer tap, ground reference — many faults look like \"random logic\" but are power or common related.",
+        "Analog / motion / safety: confirm correct <strong>scaling, units, safe states, STO/drive enable</strong> per OEM doc before blaming generic ladder."
+      ]
+    },
+
+    entryPoints: {
+      title: "How you choose your path (entry point vs root-cause layer)",
+      intro:
+        "The five layers list <strong>where the root cause might live</strong>. You do not have to always start at Layer 1 if the symptom already points elsewhere — but you must still <strong>prove</strong> each relevant layer before closing the ticket.",
+      tactics: [
+        {
+          name: "Symptom-first (typical plant)",
+          body: "Start from HMI alarm, historian event, or operator report → map to tag/circuit → jump to the most likely layer and work outward. Common for nuisance and comms faults."
+        },
+        {
+          name: "Half-split / bisection",
+          body: "Pick a midpoint (often I/O module terminal or field junction) and measure both directions to cut the search space in half. Fast for long cable runs and distributed I/O."
+        },
+        {
+          name: "Strict outside-in (bench teaching)",
+          body: "Walk layers 1→5 in order when you have no reliable alarm context or you are training muscle memory on discrete IO benches."
+        },
+        {
+          name: "Output / sequence walk-back",
+          body: "For \"output never energizes\" walk backward on the ladder from the coil to the first failed permissive, then verify the physical input/device that permissive expects."
+        }
+      ]
+    },
+
+    safetyBranch: {
+      title: "Safety / STO / guarding branch",
+      trigger:
+        "If the symptom involves <strong>safety STO, OSSD disagreement, gate interlock latch, redundant channel mismatch</strong>, or any category that disables motion under safety firmware — pause generic layer-only thinking.",
+      actions: [
+        "Stay on plant safety fault procedure · no bypasses · dual-channel parity and reset rules per OEM.",
+        "Compare PLC safety diagnostics vs field device LEDs/terminals · treat network drops on safety networks as first-class suspects.",
+        "Any wiring or program change on safety paths requires approved engineering + validation per site policy — log it like any other change."
+      ]
+    },
+
+    intermittentBranch: {
+      title: "Intermittent & nuisance faults",
+      items: [
+        "Capture <strong>time correlation</strong>: shift, temperature, vibration, specific product, specific speed, specific network load.",
+        "Historian / trend / PLC trace / drive scope — export buffers before clearing if policy allows.",
+        "Suspect <strong>ground loops, shield termination, EMI, loose crimps, flex fatigue, borderline analog levels</strong> when timing or environment tracks the fault.",
+        "If you must power-cycle to recover, still log what was observed and what was cleared — note that root cause may remain."
+      ]
+    },
+
+    layers: [
+      {
+        layer: 1,
+        title: "Physical device / field",
+        summary: "Does the actuator or sensor do the right thing mechanically and electrically?",
+        checks: [
+          "Device energized at correct voltage class · LED / display / audible behavior matches datasheet expectations.",
+          "Mechanical stroke, damping, backlash, clogged filters, tooling clearance, damaged reflectors/targets.",
+          "Smart devices / VFD / servo — local panel alarms, inhibit bits, commissioning mode, permissive LEDs.",
+          "Analog: live-zero present? loop current within span? sensor fouling or range saturation?"
+        ]
+      },
+      {
+        layer: 2,
+        title: "Wiring & distribution",
+        summary: "Is the signal or power path intact from device to termination?",
+        checks: [
+          "Terminal torque, ferrules, wire numbers, broken strands, corrosion, wrong terminal family.",
+          "Continuity · insulation · shorts to ground/shield/peers — fuse or breaker that only feeds one branch blown open.",
+          "Polarity and sensor type mismatch (PNP vs NPN vs sourcing PLC input requirement).",
+          "Analog: shield drain single-point discipline · reference/common tied per drawing · noise on scope if needed."
+        ]
+      },
+      {
+        layer: 3,
+        title: "I/O module & field power at the PLC",
+        summary: "Is the PLC hardware seeing and driving the signals properly?",
+        checks: [
+          "Channel LEDs, rack/module status, inhibit/diagnostic overloads, fused VDC feeder to this card/group.",
+          "Correct module type/config/address vs project · wrong density or missing feature module misfiled.",
+          "Remote I/O / slice health: adapters online, ethernet/IP or fieldbus cyclic errors counted up.",
+          "Forced values or maintenance overrides masking real state · compare online vs documented safe defaults."
+        ]
+      },
+      {
+        layer: 4,
+        title: "PLC logic & program execution",
+        summary: "Is the program behaving as coded for the symptom you traced?",
+        checks: [
+          "<strong>Ladder/ST/SFC/FBD:</strong> trace power paths, permissive chains, one-shots/edge logic, resets that clear timers/counters prematurely.",
+          "Modes/sequences/handshake bits · recipe step mismatches vs expected tag values.",
+          "Timers/counters/math: units, overflows, presets that look right in HMI but differ in PLC memory.",
+          "Compare online project to controlled backup · know if someone edited without change control."
+        ]
+      },
+      {
+        layer: 5,
+        title: "Communications, HMI, SCADA & records",
+        summary: "Split on purpose — transport is not the same as presentation.",
+        commsChecks: [
+          "Industrial Ethernet/IP, Profinet, Ethernet/IP device level, serial, or OEM fieldbus: link lights, switch port stats, VLAN or spanning-tree events.",
+          "RPI / timeouts / cyclic connection drops · duplicate IP · cable plant damage · Wi-Fi handoff if wireless is in scope.",
+          "Remote racks, safety couplers, VFD gateways — verify device-specific diagnostic objects and maintenance buffers."
+        ],
+        hmiScadaChecks: [
+          "HMI alarming: correct tag wired, acknowledgment behavior, alarming limits, stale values when comms flap.",
+          "Translations, duplicated tags, typo in faceplate binding causing \"phantom\" symptoms.",
+          "Historian timestamps and units — correlate HMI spikes with PLC trend to prove whether it is visualization-only."
+        ]
+      }
+    ],
+
+    closeOut: {
+      title: "Closeout — after the fix",
+      items: [
+        "Return to safe normal production path · run the machine through the failing mode if safe to do so · confirm at rate if that is the risk.",
+        "Document <strong>root cause, corrective action, parts replaced, program revision</strong>, and what layers were ruled out.",
+        "If vendor or engineering touch was required, route through your site change control and retain backups."
+      ]
+    },
+
+    halfSplitTip:
+      "Between any two points in the signal chain, your multimeter is the tie-breaker when software status disagrees with expected physics.",
+
+    relatedModules: "Framed in training by Module 4 (layers & half-split), Module 6 (HMI alarms), Module 8 (logic & documentation), Module 9 (safety controllers), and bench scenarios in Module 7."
+  },
 
   handouts: [
     { id: "quick-ref", title: "Ladder Logic Quick Reference", description: "One-page reference card covering all ladder logic symbols and instructions (contacts, coils, timers, counters, comparison, math)." },
     { id: "wiring-diagram", title: "Bench Wiring Diagram Packet", description: "Complete wiring diagrams for the tabletop PLC bench including all three PLC platforms, I/O assignments, and field device connections." },
     { id: "ip-cheatsheet", title: "IP Configuration Cheat Sheet", description: "Step-by-step IP configuration for each platform with screenshots. Includes common subnet examples and ping troubleshooting." },
-    { id: "escalation-card", title: "Escalation Procedure Card", description: "Pocket-sized reference card showing Level 1/2/3 escalation criteria, contact information, and what to document before escalating." },
+    {
+      id: "escalation-card",
+      title: "Escalation Procedure Card",
+      description:
+        "Full escalation procedure (same as Escalation tab): packed onto the fewest ISO wallet slips practical (typically three)."
+    },
     { id: "safety-checklist", title: "Safe Work Practices Checklist", description: "Pre-work safety checklist covering LOTO verification, PPE requirements, and energized work guidelines. Students sign at start of training." },
-    { id: "troubleshooting-flowchart", title: "5-Layer Troubleshooting Flowchart", description: "Visual flowchart of the 5-layer fault isolation model: Physical Device → Wiring → I/O Module → PLC Logic → Network/HMI." }
+    {
+      id: "troubleshooting-flowchart",
+      title: "5-Layer Troubleshooting Flowchart",
+      description:
+        "Expanded poster handout: pre-check, documentation gate, entry tactics, safety & intermittent branches, full five layers (comms vs HMI split), and closeout."
+    }
   ]
 };
