@@ -10,6 +10,7 @@
     "regenerate-pptx": "node scripts/export_training_data.js && python3 scripts/generate_offline_ooxml.py",
     "generate-offline": "node scripts/export_training_data.js && python3 scripts/generate_offline_ooxml.py && python3 scripts/generate_offline_pdf.py",
     "generate-offline:pptx": "python3 -m pip install -r scripts/requirements-offline.txt && node scripts/export_training_data.js && python3 scripts/generate_offline_ooxml.py && python3 scripts/generate_offline_pdf.py",
-    "generate-offline:deps": "python3 -m pip install -r scripts/requirements-offline.txt && npm run generate-offline"
+    "generate-offline:deps": "python3 -m pip install -r scripts/requirements-offline.txt && npm run generate-offline",
+    "publish-github": "bash scripts/publish-to-github.sh"
   }
 }

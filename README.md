@@ -38,22 +38,35 @@ DOWNLOAD_IMAGES_FORCE=1 npm run download-images
 
 ## Publish on GitHub Pages (free, public URL)
 
-1. Create a **new public repository** on GitHub (e.g. `plc-training`).
-2. From this folder, add the remote and push:
+### One-shot (recommended)
 
-   ```bash
-   cd /path/to/plc-training
-   git remote add origin https://github.com/YOUR_USERNAME/plc-training.git
-   git push -u origin main
-   ```
+Install [GitHub CLI](https://cli.github.com/), then from this repo:
 
-3. In the repo on GitHub: **Settings → Pages → Build and deployment → Source**: choose **GitHub Actions**.
-4. Open **Actions**, confirm the workflow **Deploy to GitHub Pages** ran successfully.
-5. The site will be at:
+```bash
+gh auth login
+npm run publish-github
+```
 
-   `https://YOUR_USERNAME.github.io/plc-training/`
+Creates `plc-training` on your account (or pushes if `origin` already exists), then turn on Pages below.
 
-   (Use your real username and repo name in the path.)
+Optional environment variables:
+
+- `GH_REPO_NAME` — repo name (default `plc-training`)
+- `GH_REPO_VISIBILITY` — `public` or `private` (default `public`)
+
+### Manual push
+
+```bash
+cd /path/to/plc-training
+git remote add origin https://github.com/YOUR_USERNAME/plc-training.git
+git push -u origin main
+```
+
+### Enable the website
+
+1. In the repo on GitHub: **Settings → Pages → Build and deployment → Source**: choose **GitHub Actions**.
+2. Open **Actions**, confirm **Deploy to GitHub Pages** ran successfully.
+3. Open **`https://<your-login>.github.io/<repo>/`** (after the Pages deploy completes).
 
 ## Other quick options
 
