@@ -36,6 +36,22 @@ Re-download everything (overwrites existing files):
 DOWNLOAD_IMAGES_FORCE=1 npm run download-images
 ```
 
+## Cursor agent: GitHub access and GitHub CLI
+
+The Cursor **sandbox** can block or proxy outbound connections (often `HTTP(S)_PROXY` to localhost), which triggers **“Proxy CONNECT aborted”** when talking to GitHub.
+
+1. **Policy files** — This repo includes **`.cursor/sandbox.json`** with `"networkPolicy": { "default": "allow" }`. You should also have the same merge source at **`~/.cursor/sandbox.json`** (see Cursor’s [`sandbox.json` reference](https://cursor.com/docs/reference/sandbox)). **Restart Cursor** after changing either file.
+
+2. **UI confirmation** — In Cursor: **Settings → Auto-run controls → Sandbox networking** — choose **Allow all** (or a mode that includes your sandbox allowlist plus defaults).
+
+3. **Install `gh` into `~/.local/bin`** (no sudo). Prefer your **desktop terminal** first if downloads still fail in the Agent terminal:
+
+```bash
+npm run install-gh
+export PATH="$HOME/.local/bin:$PATH"
+gh --version
+```
+
 ## Publish on GitHub Pages (free, public URL)
 
 ### One-shot (recommended)

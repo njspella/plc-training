@@ -1,6 +1,8 @@
 .DS_Store
 Thumbs.db
-.cursor/
+# Untrack Cursor metadata except sandbox policy checked in below
+.cursor/*
+!.cursor/sandbox.json
 
 *.log
 # Generated from js/data.js — run `npm run generate-offline`
