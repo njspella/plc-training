@@ -52,6 +52,12 @@ export PATH="$HOME/.local/bin:$PATH"
 gh --version
 ```
 
+   If Curl fails with **connection reset** through Cursor’s localhost proxy, force a **direct** download (only where your machine can resolve `github.com` without that proxy):
+
+```bash
+npm run install-gh:direct
+```
+
 ## Publish on GitHub Pages (free, public URL)
 
 ### One-shot (recommended)
