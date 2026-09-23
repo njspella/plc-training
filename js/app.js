@@ -206,6 +206,13 @@ const App = (function () {
       t = t.replace(/\be\.g\.\s*,?\s*/gi, 'example ');
       // "24VDC", "24 VDC", "24V DC" -> "24 volt D. C." (any voltage number)
       t = t.replace(/\b(\d+)\s*V\s*DC\b/gi, '$1 volt D. C.');
+      // AC voltages spelled out: "120VAC" -> "one hundred and twenty volt A. C."
+      const acWords = { 120: 'one hundred and twenty', 240: 'two hundred and forty', 480: 'four hundred and eighty' };
+      t = t.replace(/\b(\d+)\s*V\s*AC\b/gi, (m, n) => (acWords[n] || n) + ' volt A. C.');
+      // Lockout/tagout terms
+      t = t.replace(/\block-?out\s*[\/&-]?\s*tag-?out\b/gi, 'lock out tag out');
+      t = t.replace(/\bLOTO\b/g, 'lock out tag out');
+      t = t.replace(/\btag-?out\b/gi, 'tag out');
       // Remove arrow characters and symbols
       t = t.replace(/[→←↑↓►▶◀▸▹▷▻►]/g, '');
       t = t.replace(/--\[.*?\]--/g, ''); // ladder logic symbols like --[ ]--
