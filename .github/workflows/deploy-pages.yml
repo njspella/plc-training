@@ -36,6 +36,10 @@ jobs:
           python3 scripts/emit_commons_image_urls_js.py
           mkdir -p _site
           cp -r css images js index.html _site/
+          if [ -d exports/html ]; then
+            mkdir -p _site/exports
+            cp -r exports/html _site/exports/
+          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

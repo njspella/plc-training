@@ -60,6 +60,14 @@ npm run install-gh:direct
 
 ## Publish on GitHub Pages (free, public URL)
 
+After you edit the training site HTML/CSS/JS, publish from this repo:
+
+```bash
+npm run deploy
+```
+
+Runs `npm run build`, commits if there are changes, pushes `main`, and GitHub Actions deploys the site.
+
 ### One-shot (recommended)
 
 Install [GitHub CLI](https://cli.github.com/), then from this repo:
@@ -70,6 +78,8 @@ npm run publish-github
 ```
 
 Creates `plc-training` on your account (or pushes if `origin` already exists), then turn on Pages below.
+
+Later updates: `npm run deploy` only.
 
 Optional environment variables:
 
