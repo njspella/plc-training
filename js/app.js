@@ -207,7 +207,7 @@ const App = (function () {
       // "24VDC", "24 VDC", "24V DC" -> "24 volt D. C." (any voltage number)
       t = t.replace(/\b(\d+)\s*V\s*DC\b/gi, '$1 volt D. C.');
       // AC voltages spelled out: "120VAC" -> "one hundred and twenty volt A. C."
-      const acWords = { 120: 'one hundred and twenty', 240: 'two hundred and forty', 480: 'four hundred and eighty' };
+      const acWords = { 120: 'one hundred and twenty', 240: 'two hundred and forty', 480: 'four hundred eighty' };
       t = t.replace(/\b(\d+)\s*V\s*AC\b/gi, (m, n) => (acWords[n] || n) + ' volt A. C.');
       // Lockout/tagout terms
       t = t.replace(/\block-?out\s*[\/&-]?\s*tag-?out\b/gi, 'lock out tag out');
