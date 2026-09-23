@@ -174,6 +174,7 @@ const App = (function () {
     moduleAutoPlay: false, // full-module mode: pause between lessons
     utterance: null,
     dwellTimer: null,
+    session: 0,
 
     getVoice() {
       const voices = speechSynthesis.getVoices();
@@ -277,19 +278,70 @@ const App = (function () {
       return this.cleanForSpeech(parts.join('. ').replace(/\.\./g, '.'));
     },
 
+    // Split into sentence-sized chunks: Chrome and online (network) voices cut off or
+    // error out on long utterances, which previously advanced the slide mid-narration.
+    splitChunks(text) {
+      const sentences = text.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g) || [text];
+      const chunks = [];
+      let buf = '';
+      for (const s of sentences) {
+        if (buf && (buf + s).length > 200) { chunks.push(buf.trim()); buf = ''; }
+        buf += s + ' ';
+      }
+      if (buf.trim()) chunks.push(buf.trim());
+      return chunks;
+    },
+
+    // Conservative minimum speaking time (~2.5 words/sec at rate 0.95)
+    estimateMs(text) {
+      const words = text.split(/\s+/).filter(Boolean).length;
+      return (words / 2.5) * 1000;
+    },
+
     speak(text, onEnd) {
       speechSynthesis.cancel();
       if (this.dwellTimer) { clearTimeout(this.dwellTimer); this.dwellTimer = null; }
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.voice = this.getVoice();
-      utter.rate = 0.95;
-      utter.pitch = 1.0;
-      utter.volume = 1;
-      utter.onend = () => { this.playing = false; if (onEnd) onEnd(); };
-      utter.onerror = () => { this.playing = false; if (onEnd) onEnd(); };
-      speechSynthesis.speak(utter);
+      // Session token: events from cancelled/previous utterances must not advance the slide
+      const session = ++this.session;
+      const chunks = this.splitChunks(text);
+      const voice = this.getVoice();
+      const minEndAt = Date.now() + this.estimateMs(text);
+      let idx = 0;
+
+      const finish = () => {
+        // Advance only once the engine is truly silent and the minimum speaking time has elapsed
+        const check = () => {
+          if (session !== this.session) return;
+          if (speechSynthesis.speaking || speechSynthesis.pending || Date.now() < minEndAt) {
+            this.dwellTimer = setTimeout(check, 250);
+            return;
+          }
+          this.playing = false;
+          if (onEnd) onEnd();
+        };
+        check();
+      };
+
+      const next = () => {
+        if (session !== this.session) return;
+        if (idx >= chunks.length) { finish(); return; }
+        const utter = new SpeechSynthesisUtterance(chunks[idx++]);
+        utter.voice = voice;
+        utter.rate = 0.95;
+        utter.pitch = 1.0;
+        utter.volume = 1;
+        utter.onend = () => { if (session === this.session) next(); };
+        utter.onerror = (e) => {
+          if (session !== this.session) return;
+          if (e.error === 'interrupted' || e.error === 'canceled') return;
+          next();
+        };
+        this.utterance = utter;
+        speechSynthesis.speak(utter);
+      };
+
       this.playing = true;
-      this.utterance = utter;
+      next();
     },
 
     speakSlide(slide, onDone) {
@@ -299,6 +351,7 @@ const App = (function () {
     },
 
     stop() {
+      this.session++;
       speechSynthesis.cancel();
       if (this.dwellTimer) { clearTimeout(this.dwellTimer); this.dwellTimer = null; }
       this.playing = false;
