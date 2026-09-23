@@ -288,7 +288,8 @@ const App = (function () {
     // Split into sentence-sized chunks: Chrome and online (network) voices cut off or
     // error out on long utterances, which previously advanced the slide mid-narration.
     splitChunks(text) {
-      const sentences = text.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g) || [text];
+      // split (not match) so no text is ever dropped, e.g. "etc.)." or "1.5"
+      const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
       const chunks = [];
       let buf = '';
       for (const s of sentences) {
