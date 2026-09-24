@@ -940,7 +940,8 @@ const TrainingData = {
           title: "Custom Machine Documentation",
           summary: "Where to find documentation for Cobot Carbide Tower, Cobot Reamer, Servo Motor, and Rodloader",
           content: [
-            { type: "paragraph", text: "All custom build documentation is stored on the shared network drive under: <strong>Engineering > Custom Builds > [Machine Name]</strong>. Always check here first before making any changes." },
+            { type: "paragraph", text: "All custom build documentation is stored on the shared network drive under: <strong>Engineering > Custom Builds > [Machine Name]</strong>. Always check here first before making any changes.",
+              speech: "All custom build documentation is stored on the shared network drive under: Engineering, then Custom Builds, then Machine Name. Always check here first before making any changes." },
             { type: "table", headers: ["Machine", "Key Documents"],
               rows: [
                 ["Cobot Carbide Tower", "Wiring diagrams, Omron NX1P2 PLC program, Sysmac Studio project file, robot cell layout. Check revision history for latest approved version."],

@@ -247,7 +247,8 @@ const App = (function () {
             (b.right || []).forEach(pushBlockSpeech);
             break;
           case 'paragraph':
-            parts.push(this.stripHtml(b.text));
+            // Optional `speech` in data.js overrides how a paragraph is read aloud
+            parts.push(b.speech || this.stripHtml(b.text));
             break;
           case 'heading': case 'subheading':
             parts.push(b.text);
